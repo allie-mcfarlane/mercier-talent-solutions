@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Contact Us | Mercier Talent Solutions">
+  <section class="section">
+    <div class="container contact-grid">
+      <div>
+        <p class="eyebrow">Contact us</p>
+        <h1>Let's do our best work together</h1>
+        <div class="direct">
+          <p><strong>Julia Mercier</strong><br /><a href="mailto:julia@merciertalentsolutions.com">julia@merciertalentsolutions.com</a><br />(917) 808-5668</p>
+          <p><strong>Allie McFarlane</strong><br /><a href="mailto:allie@merciertalentsolutions.com">allie@merciertalentsolutions.com</a><br />(347) 254-9298</p>
+        </div>
+      </div>
+      <form>
+        <label>FIRST NAME <input type="text" name="first_name" /></label>
+        <label>LAST NAME <input type="text" name="last_name" /></label>
+        <label>EMAIL <input type="email" name="email" required /></label>
+        <label>I'M INTERESTED IN
+          <select name="interest">
+            <option value="">Select one</option>
+            <option>COACHING</option>
+            <option>TRAINING</option>
+            <option>OTHER</option>
+          </select>
+        </label>
+        <label>MESSAGE <textarea name="message" rows="6"></textarea></label>
+        <button class="button" type="submit">Submit</button>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(300px, 1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+  }
+
+  h1 {
+    margin: 0.4rem 0 1.4rem;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .direct {
+    color: var(--color-muted);
+  }
+
+  form {
+    display: grid;
+    gap: 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    background: var(--color-white);
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  label {
+    display: grid;
+    gap: 0.35rem;
+    color: var(--color-blue-dark);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    padding: 0.85rem;
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  button {
+    border: 0;
+    cursor: pointer;
+  }
+
+  @media (max-width: 800px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

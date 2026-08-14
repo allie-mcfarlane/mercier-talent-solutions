@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="White Papers | Mercier Talent Solutions">
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">White Papers</p>
+        <h1>Thought leadership for firms that take development seriously</h1>
+        <p>In-depth papers on the systems, habits, and structures that shape how lawyers grow, written for firm leadership, talent teams, and practice leaders.</p>
+      </div>
+      <div class="papers">
+        <article class="card">
+          <p class="eyebrow">WHITE PAPER No. 02</p>
+          <h2>From Erosion to Opportunity</h2>
+          <p>Advancing Lawyer Development in the Al Era.</p>
+          <p>Three forces are eroding law firms’ traditional apprenticeship model: AI automation, generational friction, and reduced proximity. The result is a widening gap between what firms assume associates are learning and what they actually experience. This paper outlines concrete practices for rebuilding lawyer development around what comes next.</p>
+        </article>
+        <article class="card">
+          <p class="eyebrow">WHITE PAPER No. 01</p>
+          <h2>The Feedback Deficit</h2>
+          <p>How Law Firms can Operationalize Feedback Through Shared Models and Expectations.</p>
+          <p>Feedback avoidance erodes performance, trust, and retention in law firms. This paper explores why capable leaders hesitate to speak up and how firms can build shared models and expectations that make candid feedback a working norm rather than an aspiration.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin: 0.4rem 0 0;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 6vw, 5.5rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .papers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  h2 {
+    margin: 0.4rem 0 0.6rem;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(1.7rem, 3vw, 2.7rem);
+    font-weight: 500;
+  }
+
+  @media (max-width: 760px) {
+    .papers {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

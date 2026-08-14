@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About | Mercier Talent Solutions">
+  <section class="section">
+    <div class="container page">
+      <p class="eyebrow">About us</p>
+      <h1>Dedicated to developinglawyers into leaders</h1>
+      <p>Mercier Talent Solutions is a consulting firm dedicated to the development of lawyers and law firm leaders. We partner with firms and senior professionals to strengthen the leadership, communication, and management capabilities that shapе performance in modern legal practice.</p>
+      <p>Our work is grounded in deep experience inside global law firms and a clear understanding of the pressures lawyers face as they serve clients, lead teams, and build practices. Through coaching, assessments, and firmwide initiatives, we help lawyers develop the habits, systems, and leadership behaviors that support high-performing teams and sustained professional success.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: 860px;
+  }
+
+  h1 {
+    margin: 0.4rem 0 1.4rem;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  p:not(.eyebrow) {
+    color: var(--color-muted);
+    font-size: 1.12rem;
+  }
+</style>

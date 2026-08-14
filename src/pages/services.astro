@@ -1,0 +1,40 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { services } from "../data/site";
+---
+
+<BaseLayout title="Services | Mercier Talent Solutions">
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">Services</p>
+        <h1>Built for lawyers, designed to last</h1>
+        <p>Coaching, assessments, training, and consulting, spanning a wide range of programs and engagements, each grounded in the realities of legal practice.</p>
+      </div>
+      <div class="grid service-grid">
+        {services.map((service) => (
+          <article class="card">
+            <p class="eyebrow">{service.eyebrow}</p>
+            <h3>{service.title}</h3>
+            <p>{service.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin: 0.4rem 0 0;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .service-grid {
+    margin-top: 2rem;
+  }
+</style>

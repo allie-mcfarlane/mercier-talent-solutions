@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { recentPosts } from "../data/site";
+---
+
+<BaseLayout title="News & Insights | Mercier Talent Solutions">
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">News & Insights</p>
+        <h1>Thinking on modern legal practice</h1>
+        <p>Explore our latest thinking on lawyer development, leadership, and the changing legal profession, alongside updates from conferences, presentations, and other speaking engagements.</p>
+      </div>
+      <div class="posts">
+        {recentPosts.map((post) => (
+          <a class="card post" href={post.href}>
+            <h2>{post.title}</h2>
+            <p>{post.excerpt}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin: 0.4rem 0 0;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .posts {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .post {
+    text-decoration: none;
+  }
+
+  h2 {
+    margin: 0 0 0.55rem;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    font-weight: 500;
+  }
+</style>

@@ -1,0 +1,27 @@
+backend:
+  name: github
+  repo: allie-mcfarlane/mercier-talent-solutions
+  branch: main
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+publish_mode: editorial_workflow
+
+collections:
+  - name: posts
+    label: News & Insights
+    folder: src/content/posts
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Author, name: author, widget: string, default: Julia Mercier }
+      - { label: Publication Date, name: pubDate, widget: datetime }
+      - { label: Category, name: category, widget: select, options: [Insight, Speaking, White Paper, Announcement, News] }
+      - { label: Excerpt, name: excerpt, widget: text }
+      - { label: Featured Image, name: image, widget: image, required: false }
+      - { label: Featured Image Alt Text, name: imageAlt, widget: string, required: false }
+      - { label: SEO Title, name: seoTitle, widget: string, required: false }
+      - { label: SEO Description, name: seoDescription, widget: text, required: false }
+      - { label: Body, name: body, widget: markdown }
