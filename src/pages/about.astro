@@ -37,7 +37,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 <BaseLayout
   title="About | Mercier Talent Solutions"
   description={aboutData.lede}
-  image="/images/optimized/julia-mercier-1400.jpg"
+  image="/images/optimized/julia-mercier-headshot-1400.jpg"
 >
   <section class="section about-hero">
     <div class="container about-hero-inner">
@@ -220,12 +220,20 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     border-radius: 0;
   }
 
+  .person-1 .portrait {
+    aspect-ratio: 1 / 1.08;
+  }
+
   .person-2 .portrait {
     aspect-ratio: 1111 / 1416;
   }
 
   .portrait :global(img) {
     object-position: center;
+  }
+
+  .person-1 .portrait :global(img) {
+    object-position: center 34%;
   }
 
   .firm-card[data-reveal],

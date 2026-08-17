@@ -10,7 +10,7 @@ firm:
 team:
   - eyebrow: Principal
     name: Julia Mercier
-    image: /images/julia-mercier.jpg
+    image: /images/julia-mercier-headshot.jpg
     imageAlt: Julia Mercier
     paragraphs:
       - Julia Mercier is the Principal of Mercier Talent Solutions LLC and a trusted advisor to lawyers and law firm leaders. A former litigator with more than a decade of experience leading professional development initiatives in global law firms, Julia works with lawyers at critical points in their careers, associates, partners, practice group leaders, and senior business professionals navigating increased leadership responsibility and complexity.
