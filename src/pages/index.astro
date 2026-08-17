@@ -196,11 +196,13 @@ const stats = [
 <style>
   .hero {
     position: relative;
+    --hero-scroll: 0;
     overflow: hidden;
     height: 610px;
     min-height: 610px;
     padding: 0;
     background: var(--color-white);
+    isolation: isolate;
   }
 
   .hero-grid {
@@ -215,6 +217,9 @@ const stats = [
     position: relative;
     z-index: 1;
     width: min(500px, calc(100vw - 80px));
+    transform: translate3d(0, calc(var(--hero-scroll) * 18px), 0);
+    transition: transform 80ms linear;
+    will-change: transform;
   }
 
   .hero-copy::before {
@@ -285,6 +290,14 @@ const stats = [
     border-radius: 0;
     box-shadow: none;
     clip-path: polygon(17% 0, 100% 0, 100% 100%, 0 100%);
+    transform: translate3d(0, calc(var(--hero-scroll) * -10px), 0);
+    transition: transform 80ms linear;
+    will-change: transform;
+  }
+
+  .hero-panel img {
+    transform: scale(calc(1.01 + (var(--hero-scroll) * 0.045)));
+    transform-origin: center;
   }
 
   .hero-art-circle-animation {
@@ -301,6 +314,11 @@ const stats = [
     display: block;
     width: 100%;
     height: 100%;
+    transform: translate3d(calc(var(--hero-scroll) * -18px), calc(var(--hero-scroll) * -24px), 0)
+      scale(calc(1 + (var(--hero-scroll) * 0.025)));
+    transform-origin: 62% 48%;
+    transition: transform 80ms linear;
+    will-change: transform;
   }
 
   .draw {
@@ -791,6 +809,33 @@ const stats = [
     text-decoration: none;
   }
 
+  .proof article[data-reveal],
+  .stat[data-reveal],
+  .services-preview .card[data-reveal],
+  .news-card[data-reveal] {
+    opacity: 0.001;
+    transform: translate3d(0, 28px, 0);
+    transition: opacity 760ms var(--ease-soft), transform 860ms var(--ease-soft), border-color 260ms var(--ease-smooth),
+      box-shadow 260ms var(--ease-smooth);
+    transition-delay: var(--home-reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+
+  .proof article[data-reveal].is-visible,
+  .stat[data-reveal].is-visible,
+  .services-preview .card[data-reveal].is-visible,
+  .news-card[data-reveal].is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .services-preview .card.is-visible:hover,
+  .news-card.is-visible:hover {
+    border-color: rgba(69, 98, 142, 0.42);
+    box-shadow: 0 18px 48px rgba(23, 37, 62, 0.08);
+    transform: translate3d(0, -4px, 0);
+  }
+
   .news-card h3 {
     margin: 4px 0 0;
     font-size: 20px;
@@ -848,6 +893,11 @@ const stats = [
       border-radius: var(--radius);
       clip-path: none;
       box-shadow: var(--shadow);
+      transform: none;
+    }
+
+    .hero-panel img {
+      transform: none;
     }
 
     .hero-art-circle-animation {
@@ -982,8 +1032,13 @@ const stats = [
     .draw,
     .dot,
     .rings,
-    .floating-group {
+    .floating-group,
+    .hero-copy,
+    .hero-panel,
+    .hero-art-circle-animation svg {
       animation: none;
+      transform: none;
+      transition: none;
     }
 
     .draw {
@@ -1009,11 +1064,81 @@ const stats = [
     .chart-wrapper.animate .secondary-line,
     .chart-wrapper.animate .main-line,
     .chart-wrapper.animate .data-point,
-    .stat-number {
+    .stat-number,
+    .proof article[data-reveal],
+    .stat[data-reveal],
+    .services-preview .card[data-reveal],
+    .news-card[data-reveal] {
       animation: none;
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 </style>
+
+<script>
+  const homeMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const hero = document.querySelector<HTMLElement>(".hero");
+
+  if (hero && !homeMotionQuery.matches) {
+    let ticking = false;
+
+    const updateHeroDepth = () => {
+      const rect = hero.getBoundingClientRect();
+      const progress = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
+      hero.style.setProperty("--hero-scroll", progress.toFixed(3));
+      ticking = false;
+    };
+
+    const requestHeroDepthUpdate = () => {
+      if (ticking) {
+        return;
+      }
+
+      ticking = true;
+      requestAnimationFrame(updateHeroDepth);
+    };
+
+    updateHeroDepth();
+    window.addEventListener("scroll", requestHeroDepthUpdate, { passive: true });
+    window.addEventListener("resize", requestHeroDepthUpdate);
+  }
+</script>
+
+<script>
+  const homeRevealItems = document.querySelectorAll<HTMLElement>(".proof article, .stat");
+  const homeRevealMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  homeRevealItems.forEach((item, index) => {
+    item.style.setProperty("--home-reveal-delay", `${(index % 3) * 90}ms`);
+    item.setAttribute("data-reveal", "");
+  });
+
+  document.querySelectorAll<HTMLElement>(".services-preview .card, .news-card").forEach((item, index) => {
+    item.style.setProperty("--home-reveal-delay", `${(index % 3) * 90}ms`);
+  });
+
+  if (homeRevealItems.length > 0) {
+    if (homeRevealMotionQuery.matches || !("IntersectionObserver" in window)) {
+      homeRevealItems.forEach((item) => item.classList.add("is-visible"));
+    } else {
+      const homeRevealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              homeRevealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: "0px 0px -10% 0px", threshold: 0.14 },
+      );
+
+      homeRevealItems.forEach((item) => homeRevealObserver.observe(item));
+    }
+  }
+</script>
 
 <script>
   const chartWrapper = document.querySelector("[data-approach-chart]");
