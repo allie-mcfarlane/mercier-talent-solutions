@@ -1,12 +1,17 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { site } from "../data/site";
 import "../styles/global.css";
 
 const {
   title = "Mercier Talent Solutions",
   description = "Talent development for law firms.",
+  image,
 } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, site.url).toString();
+const imageUrl = image ? new URL(image, site.url).toString() : undefined;
 ---
 
 <!doctype html>
@@ -15,6 +20,18 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#45628E" />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {imageUrl && <meta property="og:image" content={imageUrl} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {imageUrl && <meta name="twitter:image" content={imageUrl} />}
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -34,7 +51,9 @@ const {
       const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
       if (!motionQuery.matches && "IntersectionObserver" in window) {
-        const revealItems = document.querySelectorAll(".hero, .section, .card, .news-card, .media-frame");
+        const revealItems = document.querySelectorAll(
+          ".hero-copy, .section-heading, .card, .news-card, .media-frame, .service-detail, .team-card",
+        );
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {

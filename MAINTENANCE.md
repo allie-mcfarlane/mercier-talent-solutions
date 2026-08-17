@@ -20,6 +20,8 @@ The site must include visible privacy links, a privacy policy with a last-update
 
 The privacy choices and data requests forms submit to `allie@merciertalentsolutions.com` through FormSubmit. After launch, send one test request from each form and click any FormSubmit confirmation email if prompted.
 
+The contact form submits to `julia@merciertalentsolutions.com` through FormSubmit. Cloudflare Turnstile is ready to activate with `PUBLIC_TURNSTILE_SITE_KEY`; server-side token verification still depends on the final hosting/form handling choice.
+
 Before launch, confirm:
 
 - Whether the site uses visitor data for targeted advertising.

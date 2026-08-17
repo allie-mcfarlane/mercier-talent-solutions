@@ -1,0 +1,14 @@
+---
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+---
+
+{
+  siteKey ? (
+    <>
+      <div class="cf-turnstile" data-sitekey={siteKey}></div>
+      <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    </>
+  ) : (
+    <p class="form-note">Anti-spam protection is ready to activate once the Cloudflare Turnstile site key is added.</p>
+  )
+}

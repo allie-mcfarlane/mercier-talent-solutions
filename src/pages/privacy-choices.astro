@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Turnstile from "../components/Turnstile.astro";
 import { site } from "../data/site";
 
 const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
@@ -43,6 +44,7 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
           MESSAGE
           <textarea name="message" rows="6"></textarea>
         </label>
+        <Turnstile />
         <button class="button" type="submit">Submit Request</button>
       </form>
     </div>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
 import { getCollection } from "astro:content";
 import { services, site } from "../data/site";
 
@@ -21,7 +22,7 @@ const marqueeItems = [
 ];
 ---
 
-<BaseLayout title="Home | Mercier Talent Solutions" description={site.description}>
+<BaseLayout title="Home | Mercier Talent Solutions" description={site.description} image="/images/optimized/waiting-area-1400.jpg">
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-copy">
@@ -37,7 +38,12 @@ const marqueeItems = [
         </div>
       </div>
       <div class="hero-panel media-frame">
-        <img src="/images/navy-office-corridor.png" alt="A calm professional office lounge and corridor" />
+        <ResponsiveImage
+          src="/images/waiting-area.png"
+          alt="A calm professional waiting area and office corridor"
+          sizes="(min-width: 900px) 56vw, 100vw"
+          eager
+        />
         <div class="hero-art-circle-animation" aria-hidden="true">
           <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
             <g class="floating-group">
@@ -309,35 +315,39 @@ const marqueeItems = [
   }
 
   .proof {
-    background: var(--color-blue-dark);
-    color: var(--color-white);
+    background: var(--color-white);
   }
 
   .proof-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1px;
-    background: transparent;
-    border: 0;
+    gap: 0;
+    border: 1px solid var(--color-line);
+    background: var(--color-white);
   }
 
   .proof article {
-    background: transparent;
+    background: var(--color-white);
     padding: clamp(1.4rem, 3vw, 2rem);
-    text-align: center;
+    text-align: left;
+  }
+
+  .proof article + article {
+    border-left: 1px solid var(--color-line);
   }
 
   .proof h2 {
     margin: 0 0 0.6rem;
-    color: var(--color-white);
+    color: var(--color-ink);
     font-family: var(--font-heading);
-    font-size: clamp(1.15rem, 2vw, 1.35rem);
-    font-weight: 800;
+    font-size: clamp(1.65rem, 2.4vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.14;
   }
 
   .proof p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.78);
+    color: var(--color-muted);
   }
 
   .marquee-band {
@@ -588,6 +598,11 @@ const marqueeItems = [
 
     .proof article {
       text-align: left;
+    }
+
+    .proof article + article {
+      border-top: 1px solid var(--color-line);
+      border-left: 0;
     }
 
     .chart-wrapper {

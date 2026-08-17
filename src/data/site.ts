@@ -1,5 +1,6 @@
 export const site = {
   name: "Mercier Talent Solutions",
+  url: "https://merciertalentsolutions.com",
   description:
     "Mercier Talent Solutions partners with law firms and legal professionals to strengthen the leadership, communication, and practice management capabilities that sustain excellence over time.",
   email: "julia@merciertalentsolutions.com",
@@ -28,6 +29,8 @@ export const services = [
     title: "Executive Coaching",
     text: "A focused, individualized approach for lawyers and senior professionals who want to lead with greater clarity and impact. Our coaching is practical, rigorous, and grounded in the realities of legal practice.",
     summary: "Focused, individualized coaching for lawyers who want to lead with greater clarity and impact.",
+    detail:
+      "A focused, individualized approach for lawyers and senior professionals who want to lead with greater clarity and impact. Our coaching is practical, rigorous, and grounded in the realities of legal practice.",
     image: "/images/executive-office.png",
     imageAlt: "Executive coaching visual from Mercier Talent Solutions",
   },
@@ -37,6 +40,13 @@ export const services = [
     title: "Assessments",
     text: "360-degree feedback, DISC, and Hogan assessments that reveal how professionals are perceived, how they operate under pressure, and how their styles affect clients and colleagues.",
     summary: "Deepening self-awareness and turning insight into action.",
+    detail:
+      "Assessment work is fully integrated into coaching engagements. Each tool is selected based on the client's objectives and professional context.",
+    highlights: [
+      ["360 Degree Feedback Assessments", "Confidential interviews with partners, associates, and colleagues-synthesized into a clear, narrative report on strengths, perception, and the most consequential development opportunities."],
+      ["DISC Assessments", "A practical way to understand communication style, working preferences, and interpersonal patterns."],
+      ["Hogan Assessments", "A deeper view into leadership strengths, derailers, and values under pressure."],
+    ],
     image: "/images/conference-nook.png",
     imageAlt: "Assessment visual from Mercier Talent Solutions",
   },
@@ -47,6 +57,8 @@ export const services = [
     text: "Signature programs that build the skills lawyers need to lead, communicate, and perform in high-pressure environments. Our training is practical, relevant, and immediately applicable.",
     summary:
       "Bespoke training programs designed for lawyers operating in demanding, high-stakes environments.",
+    detail:
+      "Each engagement is personalized to reflect the firm's culture, strategic priorities, and specific development needs, with focused programs spanning leadership and influence, feedback, communication, performance, productivity, and interpersonal dynamics. Sessions combine practical tools, relevant insights, and real-world application, and can be delivered as standalone programs or developed into broader learning experiences for teams, practice groups, and firm leaders.",
     image: "/images/training-room.png",
     imageAlt: "Training visual from Mercier Talent Solutions",
   },
@@ -56,6 +68,8 @@ export const services = [
     title: "Consulting",
     text: "Talent strategies that help firms attract, develop, and retain top legal talent in an increasingly competitive and demanding environment.",
     summary:
+      "Talent strategies that support performance, engagement, and long-term growth, informed by firsthand experience designing development systems inside complex legal organizations.",
+    detail:
       "Talent strategies that support performance, engagement, and long-term growth, informed by firsthand experience designing development systems inside complex legal organizations.",
     image: "/images/lobby-lounge-glass-offices.png",
     imageAlt: "Consulting visual from Mercier Talent Solutions",

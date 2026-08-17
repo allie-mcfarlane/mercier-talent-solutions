@@ -1,9 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
 import { focusAreas, services, trainingPrograms } from "../data/site";
 ---
 
-<BaseLayout title="Services | Mercier Talent Solutions">
+<BaseLayout title="Services | Mercier Talent Solutions" image="/images/optimized/services-hero-1400.jpg">
   <section class="section services-hero">
     <div class="container hero-grid">
       <div class="section-heading">
@@ -12,7 +13,12 @@ import { focusAreas, services, trainingPrograms } from "../data/site";
         <p>Coaching, assessments, training, and consulting, spanning a wide range of programs and engagements, each grounded in the realities of legal practice.</p>
       </div>
       <div class="media-frame hero-image">
-        <img src="/images/services-hero.png" alt="Mercier Talent Solutions services visual" />
+        <ResponsiveImage
+          src="/images/services-hero.png"
+          alt="Mercier Talent Solutions services visual"
+          sizes="(min-width: 900px) 42vw, 100vw"
+          eager
+        />
       </div>
     </div>
   </section>
@@ -39,10 +45,20 @@ import { focusAreas, services, trainingPrograms } from "../data/site";
             <span class="service-number">{service.number}</span>
             <h2>{service.title}</h2>
             <p class="summary">{service.summary}</p>
-            <p>{service.text}</p>
+            <p>{service.detail ?? service.text}</p>
+            {service.highlights && (
+              <div class="service-highlights">
+                {service.highlights.map(([title, text]) => (
+                  <article>
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
           <div class="media-frame service-image">
-            <img src={service.image} alt={service.imageAlt} />
+            <ResponsiveImage src={service.image} alt={service.imageAlt} sizes="(min-width: 900px) 42vw, 100vw" />
           </div>
         </article>
       ))}
@@ -181,6 +197,27 @@ import { focusAreas, services, trainingPrograms } from "../data/site";
 
   .service-image {
     aspect-ratio: 1.28;
+  }
+
+  .service-highlights {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 1.2rem;
+  }
+
+  .service-highlights article {
+    border-top: 1px solid var(--color-line);
+    padding-top: 0.9rem;
+  }
+
+  .service-highlights h3 {
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .service-highlights p {
+    margin: 0;
   }
 
   .training {

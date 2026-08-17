@@ -17,7 +17,11 @@ const titleStart = titleMatch?.[1] ?? "";
 const titleEnd = titleMatch?.[2] ?? post.data.title;
 ---
 
-<BaseLayout title={`${post.data.title} | Mercier Talent Solutions`} description={post.data.seoDescription ?? post.data.excerpt}>
+<BaseLayout
+  title={`${post.data.seoTitle ?? post.data.title} | Mercier Talent Solutions`}
+  description={post.data.seoDescription ?? post.data.excerpt}
+  image={post.data.image}
+>
   <article class="section">
     <div class="container article-shell">
       <a class="back-link" href="/news/">Back to News & Insights</a>

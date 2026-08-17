@@ -1,11 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title="News & Insights | Mercier Talent Solutions">
+<BaseLayout title="News & Insights | Mercier Talent Solutions" image="/images/optimized/news-hero-1400.jpg">
   <section class="section news-hero">
     <div class="container hero-grid">
       <div class="section-heading">
@@ -15,7 +16,7 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.value
         <p>Together, they offer timely insight into the challenges shaping law firms today and the approaches that can help strengthen leadership, collaboration, professional growth, and long-term performance.</p>
       </div>
       <div class="media-frame hero-image">
-        <img src="/images/news-hero.png" alt="News and insights visual" />
+        <ResponsiveImage src="/images/news-hero.png" alt="News and insights visual" sizes="(min-width: 900px) 38vw, 100vw" eager />
       </div>
     </div>
   </section>

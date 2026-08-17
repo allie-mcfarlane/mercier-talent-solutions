@@ -21,6 +21,9 @@ Included so far:
 - Markdown-backed News & Insights and White Paper collections
 - Static post detail routes for current Wix feed entries with migrated article bodies
 - Decap admin configuration for posts and white papers
+- Responsive optimized image derivatives in `public/images/optimized`
+- Contact and privacy forms wired with honeypots and Cloudflare Turnstile-ready markup
+- Canonical, Open Graph, Twitter card, robots, sitemap, and redirect groundwork
 - Starter documentation
 
 ## Commands
@@ -45,10 +48,12 @@ The admin area lives at `/admin/` and is configured with Decap CMS.
 - `publish_mode: editorial_workflow` keeps draft/review/publish stages available.
 - Publishing through the CMS commits to `main`; the production deployment should rebuild automatically from GitHub once deployment is connected.
 
-GitHub authentication/OAuth still needs to be completed before production admin publishing will work.
+GitHub authentication/OAuth still needs to be completed before production admin publishing will work. The CMS config is ready for the existing GitHub repository and includes local preview styling that matches the site typography.
 
 ## Privacy Requirement
 
 The site must include a visible privacy policy, privacy choices/opt-out page, and data requests/appeals page. The policy must show the month and year when it was last updated and disclose whether data is used for targeted advertising or large language model training.
 
-The privacy choices and data requests forms currently submit to `allie@merciertalentsolutions.com` through FormSubmit. After the site is live, submit one test request from each form and confirm the email route.
+The contact form submits to `julia@merciertalentsolutions.com`. The privacy choices and data requests forms submit to `allie@merciertalentsolutions.com` through FormSubmit. After the site is live, submit one test request from each form and confirm the email route.
+
+Cloudflare Turnstile markup is in place. Add `PUBLIC_TURNSTILE_SITE_KEY` in the deployment environment to show the widget. Keep the Turnstile secret key out of this public repository.

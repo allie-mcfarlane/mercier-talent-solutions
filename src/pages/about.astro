@@ -1,8 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
 ---
 
-<BaseLayout title="About | Mercier Talent Solutions">
+<BaseLayout title="About | Mercier Talent Solutions" image="/images/optimized/julia-mercier-1400.jpg">
   <section class="section about-hero">
     <div class="container hero-grid">
       <div>
@@ -22,7 +23,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="container team-list">
       <article class="team-card">
         <div class="media-frame portrait">
-          <img src="/images/julia-mercier.jpg" alt="Julia Mercier" />
+          <ResponsiveImage src="/images/julia-mercier.jpg" alt="Julia Mercier" sizes="(min-width: 900px) 38vw, 100vw" />
         </div>
         <div>
           <p class="eyebrow">Principal</p>
@@ -44,7 +45,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       <article class="team-card alternate">
         <div class="media-frame portrait">
-          <img src="/images/allie-mcfarlane-gray.png" alt="Allie McFarlane" />
+          <ResponsiveImage src="/images/allie-mcfarlane-gray.png" alt="Allie McFarlane" sizes="(min-width: 900px) 38vw, 100vw" />
         </div>
         <div>
           <p class="eyebrow">Practice Manager</p>

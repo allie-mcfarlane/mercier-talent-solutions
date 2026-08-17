@@ -18,17 +18,18 @@
 - [x] Migrate all primary-page copy
 - [x] Migrate complete body copy for all News & Insights articles
 - [x] Migrate all current white paper PDFs
-- [ ] Optimize images into responsive formats
+- [x] Optimize images into responsive formats
 - [x] Configure admin collections for easy blog and white paper editing
 - [ ] Finish admin authentication setup
-- [ ] Add working contact form
-- [ ] Add Cloudflare Turnstile
+- [x] Add working contact form
+- [x] Add Cloudflare Turnstile-ready widget markup
+- [ ] Add server-side Turnstile token verification after final hosting/form backend is chosen
 - [ ] Finalize Connecticut privacy compliance language with owner/legal review
 - [ ] Confirm whether any site data is used for targeted advertising
 - [ ] Confirm whether any personal data is collected, used, or sold for large language model training
 - [x] Connect Privacy Choices opt-out form
 - [x] Connect Data Requests & Appeals form
 - [ ] Honor browser opt-out preference signals where applicable
-- [ ] Add SEO, sitemap, and redirects
+- [x] Add SEO, sitemap, robots, and redirect groundwork
 - [x] Run first responsive review
 - [ ] Push approved work to GitHub

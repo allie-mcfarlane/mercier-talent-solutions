@@ -1,0 +1,32 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+  sizes?: string;
+  eager?: boolean;
+}
+
+const {
+  src,
+  alt,
+  class: className,
+  sizes = "(min-width: 900px) 50vw, 100vw",
+  eager = false,
+} = Astro.props;
+
+const optimizedBase = src.replace(/^\/images\//, "/images/optimized/").replace(/\.[^.]+$/, "");
+const fallbackSrc = `${optimizedBase}-1400.jpg`;
+const srcset = `${optimizedBase}-900.jpg 900w, ${optimizedBase}-1400.jpg 1400w`;
+---
+
+<img
+  src={fallbackSrc}
+  srcset={srcset}
+  sizes={sizes}
+  alt={alt}
+  class={className}
+  loading={eager ? "eager" : "lazy"}
+  decoding="async"
+  fetchpriority={eager ? "high" : "auto"}
+/>

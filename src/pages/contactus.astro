@@ -1,8 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Turnstile from "../components/Turnstile.astro";
+import { site } from "../data/site";
+
+const formEndpoint = `https://formsubmit.co/${site.email}`;
 ---
 
-<BaseLayout title="Contact Us | Mercier Talent Solutions">
+<BaseLayout title="Contact Us | Mercier Talent Solutions" image="/images/optimized/contact-hero-1400.jpg">
   <section class="section">
     <div class="container contact-grid">
       <div>
@@ -13,7 +17,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <p><strong>Allie McFarlane</strong><br /><a href="mailto:allie@merciertalentsolutions.com">allie@merciertalentsolutions.com</a><br />(347) 254-9298</p>
         </div>
       </div>
-      <form>
+      <form action={formEndpoint} method="POST">
+        <input type="hidden" name="_subject" value="Mercier Talent Solutions Contact Form" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="form_name" value="Contact Us" />
+        <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
         <label>FIRST NAME <input type="text" name="first_name" /></label>
         <label>LAST NAME <input type="text" name="last_name" /></label>
         <label>EMAIL <input type="email" name="email" required /></label>
@@ -26,6 +35,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </select>
         </label>
         <label>MESSAGE <textarea name="message" rows="6"></textarea></label>
+        <Turnstile />
         <button class="button" type="submit">Submit</button>
       </form>
     </div>
@@ -88,6 +98,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   button {
     border: 0;
     cursor: pointer;
+  }
+
+  .honeypot {
+    display: none;
   }
 
   @media (max-width: 800px) {
