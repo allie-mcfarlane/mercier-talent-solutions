@@ -33,7 +33,7 @@
 - [ ] Confirm whether any personal data is collected, used, or sold for large language model training
 - [x] Connect Privacy Choices opt-out form
 - [x] Connect Data Requests & Appeals form
-- [ ] Honor browser opt-out preference signals where applicable
+- [x] Honor browser opt-out preference signals where applicable
 - [x] Add SEO, sitemap, robots, and redirect groundwork
 - [x] Run first responsive review
 - [ ] Push approved work to GitHub

@@ -58,6 +58,27 @@ const modifiedIso = modifiedTime instanceof Date ? modifiedTime.toISOString() : 
     </main>
     <Footer />
     <script>
+      (() => {
+        const typedNavigator = navigator as unknown as Navigator & Record<string, unknown>;
+        const typedWindow = window as unknown as Window & Record<string, unknown>;
+        const hasGlobalPrivacyControl = typedNavigator["globalPrivacyControl"] === true;
+        const hasDoNotTrack =
+          typedNavigator.doNotTrack === "1" ||
+          typedWindow["doNotTrack"] === "1" ||
+          typedNavigator["msDoNotTrack"] === "1";
+        const privacySignal = hasGlobalPrivacyControl ? "global_privacy_control" : hasDoNotTrack ? "do_not_track" : "none";
+
+        document.documentElement.toggleAttribute("data-privacy-opt-out", privacySignal !== "none");
+        typedWindow["__MTS_PRIVACY_SIGNAL__"] = privacySignal;
+
+        document.querySelectorAll('input[name="browser_privacy_signal"]').forEach((input) => {
+          if (input instanceof HTMLInputElement) {
+            input.value = privacySignal;
+          }
+        });
+      })();
+    </script>
+    <script>
       const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
       if (!motionQuery.matches && "IntersectionObserver" in window) {

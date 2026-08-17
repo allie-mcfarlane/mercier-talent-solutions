@@ -59,4 +59,6 @@ The site must include a visible privacy policy, privacy choices/opt-out page, an
 
 The contact form submits to `julia@merciertalentsolutions.com`. The privacy choices and data requests forms submit to `allie@merciertalentsolutions.com` through FormSubmit. After the site is live, submit one test request from each form and confirm the email route.
 
+The site detects browser-level privacy preference signals, including Global Privacy Control and Do Not Track, and passes that signal through form submissions as `browser_privacy_signal`.
+
 Cloudflare Turnstile markup is in place. Add `PUBLIC_TURNSTILE_SITE_KEY` in the deployment environment to show the widget. Keep the Turnstile secret key out of this public repository.
