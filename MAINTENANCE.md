@@ -17,6 +17,8 @@ Never place private keys, passwords, email-service secrets, or Cloudflare Turnst
 
 The `/admin/` area is blocked from search indexing through both the admin page metadata and `robots.txt`.
 
+Static hosting headers are configured in `public/_headers` for basic browser hardening, admin noindex, and asset caching. If the final host does not support `_headers`, recreate the same rules in that host's dashboard.
+
 ## Privacy Compliance
 
 The site must include visible privacy links, a privacy policy with a last-updated month and year, a privacy choices page for targeted advertising opt-out requests, and a clear way for visitors to submit privacy requests and appeals.

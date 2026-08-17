@@ -25,6 +25,7 @@ Included so far:
 - Responsive optimized image derivatives in `public/images/optimized`
 - Contact and privacy forms wired with honeypots and Cloudflare Turnstile-ready markup
 - Canonical, Open Graph, Twitter card, robots, sitemap, and redirect groundwork
+- Static hosting headers for basic browser hardening, admin noindex, and asset caching
 - GitHub Actions build check on pushes and pull requests to `main`
 - Starter documentation
 
