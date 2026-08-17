@@ -268,10 +268,13 @@ collections:
       - { label: Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote] }
   - name: white-papers
     label: White Papers
+    label_singular: White Paper
     folder: src/content/white-papers
     create: true
+    identifier_field: title
     slug: "{{slug}}"
-    summary: "No. {{number}} - {{title}}"
+    description: "Add or edit white papers. Each entry automatically creates one tile on the White Papers page."
+    summary: "No. {{number}} - {{title}} - {{date}}"
     preview_path: "whitepapers"
     sortable_fields: [number, title, date]
     view_groups:
@@ -279,11 +282,11 @@ collections:
         field: date
         pattern: \d{4}
     fields:
-      - { label: Title, name: title, widget: string }
-      - { label: Number, name: number, widget: string }
-      - { label: Publication Date, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, default: "{{now}}" }
-      - { label: Description, name: description, widget: text }
-      - { label: Document, name: document, widget: file, required: false }
+      - { label: Title, name: title, widget: string, hint: "This becomes the tile title." }
+      - { label: White Paper Number, name: number, widget: string, hint: "Use the display number, for example 03. This becomes WHITE PAPER No. 03." }
+      - { label: Publication Date, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, default: "{{now}}", hint: "This controls the displayed date and newest-first ordering." }
+      - { label: Description, name: description, widget: text, hint: "This becomes the italic subtitle on the tile." }
+      - { label: Document, name: document, widget: file, required: false, media_folder: public/documents, public_folder: /documents, hint: "Upload the PDF here. The download button appears automatically when a document is attached." }
       - { label: Featured Image, name: image, widget: image, required: false }
       - { label: Featured Image Alt Text, name: imageAlt, widget: string, required: false }
-      - { label: Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote] }
+      - { label: Tile Text, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote], hint: "This is the main paragraph shown on the tile." }
