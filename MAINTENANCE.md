@@ -10,7 +10,8 @@ Routine future workflow:
 4. Run a build check.
 5. Commit with a clear message.
 6. Push to GitHub.
-7. Let the connected hosting service publish the update.
+7. Confirm the GitHub Actions build check passes.
+8. Let the connected hosting service publish the update.
 
 Never place private keys, passwords, email-service secrets, or Cloudflare Turnstile secret keys in the public site files.
 

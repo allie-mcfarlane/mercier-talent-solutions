@@ -35,5 +35,6 @@
 - [x] Connect Data Requests & Appeals form
 - [x] Honor browser opt-out preference signals where applicable
 - [x] Add SEO, sitemap, robots, and redirect groundwork
+- [x] Add GitHub Actions build check
 - [x] Run first responsive review
 - [ ] Push approved work to GitHub

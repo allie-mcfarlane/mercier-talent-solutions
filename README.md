@@ -25,6 +25,7 @@ Included so far:
 - Responsive optimized image derivatives in `public/images/optimized`
 - Contact and privacy forms wired with honeypots and Cloudflare Turnstile-ready markup
 - Canonical, Open Graph, Twitter card, robots, sitemap, and redirect groundwork
+- GitHub Actions build check on pushes and pull requests to `main`
 - Starter documentation
 
 ## Commands
@@ -50,6 +51,7 @@ The admin area lives at `/admin/` and is configured with Decap CMS.
 - Uploaded images and documents go through the CMS media library.
 - `publish_mode: editorial_workflow` keeps draft/review/publish stages available.
 - Publishing through the CMS commits to `main`; the production deployment should rebuild automatically from GitHub once deployment is connected.
+- GitHub Actions runs the Astro build whenever changes are pushed to `main` or opened as pull requests.
 
 GitHub authentication/OAuth still needs to be completed before production admin publishing will work. The CMS config is ready for the existing GitHub repository and includes local preview styling that matches the site typography.
 
