@@ -73,12 +73,12 @@ const serviceLinks = [
 
   .footer-grid {
     display: grid;
-    grid-template-columns: minmax(170px, 205px) minmax(110px, 130px) minmax(130px, 150px) minmax(190px, 220px);
-    gap: clamp(2rem, 4vw, 3.5rem);
+    grid-template-columns: minmax(170px, 1fr) minmax(110px, 130px) minmax(130px, 150px) minmax(190px, 220px);
+    gap: clamp(2rem, 5vw, 5rem);
     align-items: start;
     border-top: 0;
-    justify-content: center;
-    max-width: 780px;
+    justify-content: stretch;
+    max-width: var(--container);
     padding-top: 0;
   }
 
