@@ -19,6 +19,8 @@
   --heading-content-gap: clamp(1.75rem, 3vw, 2.875rem);
   --heading-label-gap: clamp(1.35rem, 2.2vw, 2rem);
   --container: 1680px;
+  --content-wide: 1320px;
+  --reading-width: 980px;
   --page-gutter: clamp(1rem, 4.5vw, 5rem);
   --radius: 8px;
   --shadow: 0 18px 50px rgba(23, 37, 62, 0.09);
@@ -165,7 +167,7 @@ img {
 .section-heading {
   display: grid;
   gap: var(--heading-content-gap);
-  max-width: 780px;
+  max-width: var(--reading-width);
 }
 
 .section-heading h2 {

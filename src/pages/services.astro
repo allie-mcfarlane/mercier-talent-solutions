@@ -157,7 +157,7 @@ const servicesData = servicesPage.data as ServicesData;
   .focus-grid,
   .service-detail {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+    grid-template-columns: minmax(0, 0.96fr) minmax(380px, 1fr);
     gap: clamp(2.5rem, 6vw, 4.75rem);
     align-items: center;
   }
@@ -176,7 +176,7 @@ const servicesData = servicesPage.data as ServicesData;
   }
 
   .hero-image {
-    aspect-ratio: 1.22;
+    aspect-ratio: 1.32;
     border-radius: 0;
     box-shadow: none;
   }
@@ -221,6 +221,7 @@ const servicesData = servicesPage.data as ServicesData;
   }
 
   .focus-section p {
+    max-width: 760px;
     color: rgba(255, 255, 255, 0.82);
     font-size: var(--paragraph-size);
   }
@@ -258,6 +259,8 @@ const servicesData = servicesPage.data as ServicesData;
   .service-stack {
     display: grid;
     gap: clamp(2.6rem, 5vw, 4.3rem);
+    max-width: var(--content-wide);
+    margin-inline: auto;
   }
 
   .service-detail:nth-child(even) .service-image {
@@ -285,7 +288,7 @@ const servicesData = servicesPage.data as ServicesData;
   }
 
   .service-image {
-    aspect-ratio: 1.28;
+    aspect-ratio: 1.36;
   }
 
   .service-highlights {
@@ -341,7 +344,7 @@ const servicesData = servicesPage.data as ServicesData;
   }
 
   .training > h2 {
-    max-width: 860px;
+    max-width: var(--reading-width);
     margin: 0.4rem 0 1.65rem;
     font-size: clamp(2rem, 4vw, 4rem);
   }

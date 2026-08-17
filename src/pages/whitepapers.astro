@@ -65,7 +65,7 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   }
 
   .section-heading {
-    max-width: 680px;
+    max-width: var(--reading-width);
     gap: 0;
   }
 
@@ -81,8 +81,10 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
 
   .paper {
     display: grid;
-    grid-template-columns: minmax(220px, 0.36fr) minmax(0, 0.64fr);
+    grid-template-columns: minmax(280px, 0.38fr) minmax(0, 0.62fr);
+    max-width: var(--content-wide);
     min-height: 300px;
+    margin-inline: auto;
     overflow: hidden;
     border: 1px solid var(--color-line);
     background: var(--color-white);
@@ -108,7 +110,7 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   }
 
   .paper-title-panel h2 {
-    max-width: 280px;
+    max-width: 460px;
     margin: 2rem 0 0;
     color: var(--color-white);
     font-family: var(--font-heading);
@@ -125,7 +127,7 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   }
 
   .paper-content-panel p {
-    max-width: 720px;
+    max-width: 860px;
     margin: 0;
     color: var(--color-ink);
   }

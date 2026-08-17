@@ -89,7 +89,7 @@ const description = "Contact Mercier Talent Solutions for executive coaching, as
 
   .contact-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.82fr) minmax(300px, 0.78fr);
+    grid-template-columns: minmax(0, 0.86fr) minmax(380px, 1fr);
     gap: clamp(2.5rem, 6vw, 4.75rem);
     align-items: center;
   }
@@ -126,9 +126,11 @@ const description = "Contact Mercier Talent Solutions for executive coaching, as
 
   .contact-main {
     display: grid;
-    grid-template-columns: minmax(260px, 0.72fr) minmax(420px, 0.88fr);
+    grid-template-columns: minmax(300px, 0.74fr) minmax(440px, 0.86fr);
     gap: clamp(2.5rem, 6vw, 5.5rem);
+    max-width: var(--content-wide);
     margin-top: clamp(3.5rem, 7vw, 5rem);
+    margin-inline: auto;
     align-items: start;
   }
 
@@ -161,7 +163,7 @@ const description = "Contact Mercier Talent Solutions for executive coaching, as
   }
 
   .contact-image {
-    aspect-ratio: 499 / 369;
+    aspect-ratio: 1.42;
   }
 
   .form-wrap {

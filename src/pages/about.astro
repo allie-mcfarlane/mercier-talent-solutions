@@ -112,7 +112,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .about-hero-copy {
-    max-width: 860px;
+    max-width: var(--reading-width);
     padding-top: clamp(1.25rem, 4vw, 3.75rem);
   }
 
@@ -154,18 +154,20 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .team-card {
     display: grid;
-    grid-template-columns: minmax(220px, 286px) minmax(0, 780px);
+    grid-template-columns: minmax(240px, 340px) minmax(0, 960px);
     gap: clamp(3.75rem, 6.4vw, 6.5rem);
     align-items: start;
     justify-content: center;
+    max-width: var(--content-wide);
+    margin-inline: auto;
   }
 
   .firm-card {
     display: grid;
-    grid-template-columns: minmax(260px, 0.45fr) minmax(320px, 0.55fr);
+    grid-template-columns: minmax(300px, 0.46fr) minmax(360px, 0.54fr);
     gap: clamp(3rem, 6vw, 6.25rem);
     align-items: center;
-    max-width: 1120px;
+    max-width: var(--content-wide);
     min-height: clamp(260px, 26vw, 320px);
     margin-inline: auto;
   }
@@ -178,12 +180,12 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .firm-text {
-    max-width: 640px;
+    max-width: 760px;
   }
 
   h1 {
     margin: 2.4rem 0 1.5rem;
-    max-width: 850px;
+    max-width: var(--reading-width);
     color: var(--color-white);
     font-family: var(--font-heading);
     font-size: var(--page-title-size);
@@ -202,7 +204,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .about-hero p:not(.eyebrow) {
-    max-width: 760px;
+    max-width: 860px;
     color: rgba(255, 255, 255, 0.78);
     font-size: var(--paragraph-size);
     line-height: 1.55;
@@ -240,7 +242,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .firm-card h2 {
-    max-width: 440px;
+    max-width: 560px;
     font-size: clamp(2rem, 3vw, 2.55rem);
     line-height: 1.16;
   }
@@ -276,7 +278,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .portrait {
-    width: min(100%, 286px);
+    width: min(100%, 340px);
     aspect-ratio: 1729 / 1764;
     justify-self: start;
     border-radius: 0;
