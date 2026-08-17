@@ -248,6 +248,11 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     letter-spacing: 6px;
   }
 
+  .team-copy > .eyebrow::before,
+  .credentials .eyebrow::before {
+    content: none;
+  }
+
   .team-copy > .eyebrow + h2 {
     margin-top: 1.05rem;
   }
