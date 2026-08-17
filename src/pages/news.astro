@@ -42,8 +42,9 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
             <span class="pill">{post.data.category}</span>
             <h2>{post.data.title}</h2>
             <p>{post.data.excerpt}</p>
-            <span class="meta-row">
-              Julia Mercier · {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}
+            <span class="meta-row news-author">
+              <img src={post.data.image ?? "/images/julia-mercier.jpg"} alt="" loading="lazy" />
+              <span>{post.data.author} · {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}</span>
             </span>
           </a>
         ))}
@@ -86,6 +87,20 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
 
   .post {
     text-decoration: none;
+  }
+
+  .news-author {
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .news-author img {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 30%;
   }
 
   h2 {
