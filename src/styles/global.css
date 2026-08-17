@@ -80,14 +80,26 @@ img {
 }
 
 .eyebrow {
+  display: inline-flex;
+  gap: 14px;
+  align-items: center;
   color: var(--color-blue);
   font-family: var(--font-label);
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
-  letter-spacing: 4px;
+  letter-spacing: 6px;
   line-height: 1.25;
   text-transform: uppercase;
+}
+
+.eyebrow::before {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 1px;
+  background: currentColor;
+  content: "";
 }
 
 .button-row {

@@ -117,18 +117,11 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .about-hero .eyebrow {
-    display: inline-flex;
-    gap: 14px;
-    align-items: center;
     color: rgba(255, 255, 255, 0.72);
   }
 
   .about-hero .eyebrow::before {
-    display: inline-block;
-    width: 16px;
-    height: 1px;
     background: rgba(255, 255, 255, 0.62);
-    content: "";
   }
 
   .about-rings {
@@ -172,11 +165,15 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     gap: clamp(3rem, 6vw, 6.25rem);
     align-items: center;
     max-width: 1120px;
+    min-height: clamp(260px, 26vw, 320px);
     margin-inline: auto;
   }
 
   .firm-kicker {
+    display: grid;
+    align-content: center;
     max-width: 470px;
+    min-height: 100%;
   }
 
   .firm-text {
@@ -230,22 +227,21 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .firm-card .eyebrow {
-    display: inline-flex;
-    gap: 14px;
-    align-items: center;
     letter-spacing: 6px;
   }
 
   .firm-card .eyebrow::before {
-    display: inline-block;
-    width: 16px;
-    height: 1px;
     background: var(--color-blue);
-    content: "";
   }
 
   .firm-card .eyebrow + h2 {
-    margin-top: 1.05rem;
+    margin-top: 1.45rem;
+  }
+
+  .firm-card h2 {
+    max-width: 440px;
+    font-size: clamp(2rem, 3vw, 2.55rem);
+    line-height: 1.16;
   }
 
   .team-copy > .eyebrow {
