@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
-import { getEntry } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 import { site } from "../data/site";
 
 type HomeData = {
@@ -32,6 +32,15 @@ if (!home || !servicesPage || !servicesPage.data.services) {
 const serviceItems = servicesPage.data.services as ServiceItem[];
 const homeServices = [serviceItems[0], serviceItems[1], serviceItems[2], serviceItems[3]];
 const homeData = home.data as HomeData;
+const recentPosts = (await getCollection("posts"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
+const stats = [
+  { value: "9+", text: "Years of developing lawyers in-house and as a consultant for global firms" },
+  { value: "12+", text: "Coaching, assessment & training offerings" },
+  { value: "9+", text: "Signature training programs for legal teams" },
+];
 ---
 
 <BaseLayout title="Home | Mercier Talent Solutions" description={site.description} image="/images/optimized/waiting-area-1400.jpg">
@@ -97,6 +106,17 @@ const homeData = home.data as HomeData;
     </div>
   </section>
 
+  <section class="section stats-band">
+    <div class="container stats-grid">
+      {stats.map((item) => (
+        <article>
+          <h2>{item.value}</h2>
+          <p>{item.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
   <section class="section services-preview">
     <div class="container">
       <div class="section-heading">
@@ -153,6 +173,18 @@ const homeData = home.data as HomeData;
         <p class="eyebrow">{homeData.news.eyebrow}</p>
         <h2>{homeData.news.title}</h2>
       </div>
+      <div class="news-list">
+        {recentPosts.map((post) => (
+          <a class="card news-card" href={`/post/${post.slug}/`}>
+            <span class="pill">{post.data.category}</span>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.excerpt}</p>
+            <span class="meta-row">
+              Julia Mercier · {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}
+            </span>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -161,8 +193,8 @@ const homeData = home.data as HomeData;
   .hero {
     position: relative;
     overflow: hidden;
-    height: 530px;
-    min-height: 530px;
+    height: 610px;
+    min-height: 610px;
     padding: 0;
     background: var(--color-white);
   }
@@ -170,7 +202,7 @@ const homeData = home.data as HomeData;
   .hero-grid {
     display: grid;
     height: 100%;
-    grid-template-columns: minmax(340px, 360px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 500px) minmax(0, 1fr);
     gap: 48px;
     align-items: start;
   }
@@ -178,24 +210,43 @@ const homeData = home.data as HomeData;
   .hero-copy {
     position: relative;
     z-index: 1;
-    width: min(590px, calc(100vw - 80px));
+    width: min(500px, calc(100vw - 80px));
   }
 
   .hero-copy::before {
+    content: none;
+  }
+
+  .hero .eyebrow {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    margin-top: 0.1rem;
+  }
+
+  .hero .eyebrow::before {
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: var(--color-blue);
+    content: "";
+  }
+
+  h1::before {
     display: block;
     width: 92px;
     height: 3px;
-    margin: 1.5rem 0 2.6rem;
+    margin: 2.35rem 0 2.45rem;
     background: var(--color-blue-dark);
     content: "";
   }
 
   h1 {
-    max-width: 820px;
+    max-width: 500px;
     margin: 0.45rem 0 1.1rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
-    font-size: var(--page-title-size);
+    font-size: clamp(2.55rem, 4.4vw, 3.45rem);
     font-weight: 700;
     line-height: 1.2;
   }
@@ -206,18 +257,31 @@ const homeData = home.data as HomeData;
   }
 
   .lede {
-    max-width: 680px;
+    max-width: 470px;
     margin: 0 0 1.5rem;
     color: var(--color-muted);
     font-size: clamp(1.05rem, 2vw, 1.25rem);
+  }
+
+  .hero .button {
+    min-width: 164px;
+    min-height: 42px;
+    border-radius: 0;
+    padding: 0.62rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .hero .button-row {
+    gap: 60px;
   }
 
   .hero-panel {
     position: relative;
     align-self: stretch;
     width: calc(100% + max(1rem, (100vw - var(--container)) / 2) + 4rem);
-    height: 546px;
-    min-height: 546px;
+    height: 626px;
+    min-height: 626px;
     margin-top: -17px;
     border: 0;
     border-radius: 0;
@@ -311,7 +375,7 @@ const homeData = home.data as HomeData;
   }
 
   .proof {
-    background: var(--color-white);
+    background: var(--color-blue-dark);
     padding: 0;
   }
 
@@ -319,33 +383,39 @@ const homeData = home.data as HomeData;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
-    border: 1px solid var(--color-line);
-    background: var(--color-white);
+    border: 0;
+    background: var(--color-blue-dark);
     min-height: 236px;
   }
 
   .proof article {
-    background: var(--color-white);
+    display: grid;
+    align-content: center;
+    background: var(--color-blue-dark);
     padding: clamp(1.55rem, 3vw, 2rem);
-    text-align: left;
+    text-align: center;
   }
 
   .proof article + article {
-    border-left: 1px solid var(--color-line);
+    border-left: 0;
   }
 
   .proof h2 {
     margin: 0 0 0.6rem;
-    color: var(--color-ink);
+    color: var(--color-white);
     font-family: var(--font-heading);
-    font-size: clamp(1.65rem, 2.4vw, 2.25rem);
+    font-size: 18px;
     font-weight: 700;
-    line-height: 1.14;
+    line-height: 1.35;
   }
 
   .proof p {
+    max-width: 390px;
     margin: 0;
-    color: var(--color-muted);
+    margin-inline: auto;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 15px;
+    line-height: 1.5;
   }
 
   .marquee-band {
@@ -386,13 +456,70 @@ const homeData = home.data as HomeData;
     margin-top: 34px;
   }
 
+  .stats-band {
+    padding: 70px 0 62px;
+    background: var(--color-white);
+  }
+
+  .stats-grid {
+    display: grid;
+    min-height: 216px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-white);
+  }
+
+  .stats-grid article {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .stats-grid article + article {
+    border-left: 1px solid var(--color-line);
+  }
+
+  .stats-grid h2 {
+    margin: 0 0 0.85rem;
+    color: var(--color-blue-dark);
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 5.6vw, 4.85rem);
+    font-weight: 700;
+    line-height: 0.9;
+  }
+
+  .stats-grid p {
+    max-width: 340px;
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
   .services-preview {
-    padding: 387px 0 121px;
+    padding: 55px 0 121px;
   }
 
   .services-preview .section-heading {
     max-width: 543px;
     gap: 49px;
+  }
+
+  .services-preview .section-heading > .eyebrow {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .services-preview .section-heading > .eyebrow::before {
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: var(--color-blue);
+    content: "";
   }
 
   .services-preview .section-heading h2 {
@@ -598,8 +725,7 @@ const homeData = home.data as HomeData;
   }
 
   .news-band {
-    min-height: 2392px;
-    padding: 46px 0 0;
+    padding: 46px 0 92px;
     background: var(--color-white);
   }
 
@@ -614,11 +740,45 @@ const homeData = home.data as HomeData;
     line-height: 1.3;
   }
 
+  .news-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  .news-card {
+    display: grid;
+    min-height: 306px;
+    align-content: start;
+    gap: 14px;
+    padding: 31px 30px 28px;
+    text-decoration: none;
+  }
+
+  .news-card h3 {
+    margin: 4px 0 0;
+    font-size: 20px;
+    line-height: 1.28;
+  }
+
+  .news-card p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .news-card .meta-row {
+    align-self: end;
+    margin-top: 10px;
+  }
+
   @media (max-width: 860px) {
     .hero-grid,
     .approach-grid,
     .proof-grid,
-    .services-preview .service-grid {
+    .stats-grid,
+    .services-preview .service-grid,
+    .news-list {
       grid-template-columns: 1fr;
     }
 
@@ -628,8 +788,8 @@ const homeData = home.data as HomeData;
       padding: clamp(3.75rem, 10vw, 5rem) 0 clamp(3rem, 8vw, 4rem);
     }
 
-    .hero-copy::before {
-      margin: 1.2rem 0 2rem;
+    h1::before {
+      margin: 1.9rem 0 2rem;
     }
 
     .hero-panel {
@@ -654,11 +814,20 @@ const homeData = home.data as HomeData;
       border-left: 0;
     }
 
+    .stats-grid article + article {
+      border-top: 1px solid var(--color-line);
+      border-left: 0;
+    }
+
     .chart-wrapper {
       min-height: 420px;
     }
 
     .services-preview {
+      padding: clamp(4rem, 12vw, 6rem) 0;
+    }
+
+    .stats-band {
       padding: clamp(4rem, 12vw, 6rem) 0;
     }
 
