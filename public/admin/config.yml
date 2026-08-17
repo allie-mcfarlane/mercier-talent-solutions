@@ -26,6 +26,52 @@ public_folder: /images/uploads
 publish_mode: editorial_workflow
 
 collections:
+  - name: pages
+    label: Site Pages
+    files:
+      - name: home
+        label: Home Page
+        file: src/content/pages/home.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string, hint: "The final italic blue word." }
+          - { label: Intro Text, name: lede, widget: text }
+          - label: Primary Button
+            name: primaryCta
+            widget: object
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: Link, name: href, widget: string }
+          - label: Secondary Button
+            name: secondaryCta
+            widget: object
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: Link, name: href, widget: string }
+          - label: Proof Cards
+            name: proof
+            widget: list
+            min: 3
+            max: 3
+            fields:
+              - { label: Title, name: title, widget: string }
+              - { label: Text, name: text, widget: text }
+          - { label: Marquee Items, name: marqueeItems, widget: list, field: { label: Item, name: item, widget: string } }
+          - label: Approach Section
+            name: approach
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Text, name: text, widget: text }
+              - { label: Bullet Items, name: items, widget: list, field: { label: Item, name: item, widget: string } }
+          - label: News Section
+            name: news
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Title, name: title, widget: string }
   - name: posts
     label: News & Insights
     folder: src/content/posts

@@ -20,6 +20,8 @@
 - [x] Migrate all current white paper PDFs
 - [x] Optimize images into responsive formats
 - [x] Configure admin collections for easy blog and white paper editing
+- [x] Add CMS-editable homepage content
+- [ ] Move remaining page copy into CMS-editable content files
 - [ ] Finish admin authentication setup
 - [x] Add working contact form
 - [x] Add Cloudflare Turnstile-ready widget markup

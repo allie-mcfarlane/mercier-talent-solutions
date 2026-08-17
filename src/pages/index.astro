@@ -1,40 +1,32 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
-import { getCollection } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 import { services, site } from "../data/site";
+
+const home = await getEntry("pages", "home");
+if (!home) {
+  throw new Error("Home page content is missing.");
+}
 
 const recentPosts = (await getCollection("posts"))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 8);
 
 const homeServices = [services[0], services[2], services[1], services[3]];
-const marqueeItems = [
-  "Leadership",
-  "Communication",
-  "Executive Presence",
-  "Feedback",
-  "Delegation",
-  "Business Development",
-  "Time Management",
-  "Team Effectiveness",
-  "Career Strategy",
-];
+const homeData = home.data;
 ---
 
 <BaseLayout title="Home | Mercier Talent Solutions" description={site.description} image="/images/optimized/waiting-area-1400.jpg">
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow">Talent development for law firms</p>
-        <h1>Let's do our best work <em>together</em></h1>
-        <p class="lede">
-          Mercier Talent Solutions partners with law firms and legal professionals to strengthen the leadership,
-          communication, and practice management capabilities that sustain excellence over time.
-        </p>
+        <p class="eyebrow">{homeData.eyebrow}</p>
+        <h1>{homeData.title} <em>{homeData.titleAccent}</em></h1>
+        <p class="lede">{homeData.lede}</p>
         <div class="button-row">
-          <a class="button" href="/services/">Explore our services</a>
-          <a class="button secondary" href="/contactus/">Contact us</a>
+          <a class="button" href={homeData.primaryCta.href}>{homeData.primaryCta.label}</a>
+          <a class="button secondary" href={homeData.secondaryCta.href}>{homeData.secondaryCta.label}</a>
         </div>
       </div>
       <div class="hero-panel media-frame">
@@ -73,24 +65,18 @@ const marqueeItems = [
 
   <section class="section proof">
     <div class="container proof-grid">
-      <article>
-        <h2>Beyond technical excellence</h2>
-        <p>The demands of legal practice are more visible and interconnected than ever, requiring lawyers to lead, communicate, and manage with greater intentionality.</p>
-      </article>
-      <article>
-        <h2>Leadership is learned</h2>
-        <p>Strong leadership, effective communication, and executive presence are learned capabilities built deliberately, not left to chance.</p>
-      </article>
-      <article>
-        <h2>Firms built to perform</h2>
-        <p>Deliberate investment in professional skills builds more engaged teams, stronger practices, and organizations positioned to perform over the long term.</p>
-      </article>
+      {homeData.proof.map((item) => (
+        <article>
+          <h2>{item.title}</h2>
+          <p>{item.text}</p>
+        </article>
+      ))}
     </div>
   </section>
 
   <section class="marquee-band" aria-label="Core focus areas">
     <div class="marquee-track">
-      {[...marqueeItems, ...marqueeItems].map((item) => <span>{item}</span>)}
+      {[...homeData.marqueeItems, ...homeData.marqueeItems].map((item) => <span>{item}</span>)}
     </div>
   </section>
 
@@ -117,15 +103,12 @@ const marqueeItems = [
     <div class="container approach-grid">
       <div class="approach-copy">
         <div class="section-heading">
-          <p class="eyebrow">Our approach</p>
-          <h2>Grounded in the realities of legal practice</h2>
-          <p>Our firm is led by Julia Mercier, a former litigator, executive coach, and seasoned legal talent professional who has designed and implemented firmwide training systems inside global law firms.</p>
+          <p class="eyebrow">{homeData.approach.eyebrow}</p>
+          <h2>{homeData.approach.title}</h2>
+          <p>{homeData.approach.text}</p>
         </div>
         <ul>
-          <li>Practical, rigorous engagements, not generic leadership theory</li>
-          <li>Deep experience inside complex, global legal organizations</li>
-          <li>Insight that translates into action, habits, and systems</li>
-          <li>Measurable progress for individuals, teams, and firms</li>
+          {homeData.approach.items.map((item) => <li>{item}</li>)}
         </ul>
       </div>
       <div class="chart-wrapper approach-chart" data-approach-chart>
@@ -149,8 +132,8 @@ const marqueeItems = [
   <section class="section news-band">
     <div class="container">
       <div class="section-heading">
-        <p class="eyebrow">News & Insights</p>
-        <h2>Thought leadership on modern legal practice.</h2>
+        <p class="eyebrow">{homeData.news.eyebrow}</p>
+        <h2>{homeData.news.title}</h2>
       </div>
       <div class="news-list">
         {recentPosts.map((post) => (

@@ -27,7 +27,42 @@ const whitePapers = defineCollection({
   }),
 });
 
+const pages = defineCollection({
+  schema: z.object({
+    eyebrow: z.string(),
+    title: z.string(),
+    titleAccent: z.string(),
+    lede: z.string(),
+    primaryCta: z.object({
+      label: z.string(),
+      href: z.string(),
+    }),
+    secondaryCta: z.object({
+      label: z.string(),
+      href: z.string(),
+    }),
+    proof: z.array(
+      z.object({
+        title: z.string(),
+        text: z.string(),
+      }),
+    ),
+    marqueeItems: z.array(z.string()),
+    approach: z.object({
+      eyebrow: z.string(),
+      title: z.string(),
+      text: z.string(),
+      items: z.array(z.string()),
+    }),
+    news: z.object({
+      eyebrow: z.string(),
+      title: z.string(),
+    }),
+  }),
+});
+
 export const collections = {
+  pages,
   posts,
   "white-papers": whitePapers,
 };
