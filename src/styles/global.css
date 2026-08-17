@@ -64,9 +64,10 @@ img {
 
 .eyebrow {
   color: var(--color-blue);
+  margin: 0 0 0.5rem;
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -130,7 +131,7 @@ img {
   line-height: 1.05;
 }
 
-.section-heading p {
+.section-heading p:not(.eyebrow) {
   color: var(--color-muted);
   font-size: 1.08rem;
 }
