@@ -133,6 +133,65 @@ collections:
               - { label: Email, name: email, widget: string }
               - { label: Phone, name: phone, widget: string }
               - { label: LinkedIn, name: linkedin, widget: string, required: false }
+      - name: services-page
+        label: Services Page
+        file: src/content/pages/services.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Intro Text, name: lede, widget: text }
+          - { label: Hero Image, name: heroImage, widget: image }
+          - { label: Hero Image Alt Text, name: heroImageAlt, widget: string }
+          - { label: Focus Intro, name: focusIntro, widget: text }
+          - label: Focus Areas
+            name: focusAreas
+            widget: list
+            fields:
+              - { label: Title, name: title, widget: string }
+              - { label: Text, name: text, widget: text }
+          - label: Services
+            name: services
+            widget: list
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Number, name: number, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Home Card Text, name: text, widget: text }
+              - { label: Summary, name: summary, widget: text }
+              - { label: Detail, name: detail, widget: text }
+              - { label: Image, name: image, widget: image }
+              - { label: Image Alt Text, name: imageAlt, widget: string }
+              - label: Highlights
+                name: highlights
+                widget: list
+                required: false
+                fields:
+                  - { label: Title, name: title, widget: string }
+                  - { label: Text, name: text, widget: text }
+          - label: Training Section
+            name: training
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Title, name: title, widget: string }
+              - label: Groups
+                name: groups
+                widget: list
+                fields:
+                  - { label: Group, name: group, widget: string }
+                  - label: Items
+                    name: items
+                    widget: list
+                    fields:
+                      - { label: Title, name: title, widget: string }
+                      - { label: Text, name: text, widget: text }
+          - label: Consulting Section
+            name: consulting
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Items, name: items, widget: list, field: { label: Item, name: item, widget: string } }
   - name: posts
     label: News & Insights
     folder: src/content/posts

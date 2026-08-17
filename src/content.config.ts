@@ -103,6 +103,62 @@ const pages = defineCollection({
         }),
       )
       .optional(),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().optional(),
+    focusIntro: z.string().optional(),
+    focusAreas: z
+      .array(
+        z.object({
+          title: z.string(),
+          text: z.string(),
+        }),
+      )
+      .optional(),
+    services: z
+      .array(
+        z.object({
+          eyebrow: z.string(),
+          number: z.string(),
+          title: z.string(),
+          text: z.string(),
+          summary: z.string(),
+          detail: z.string(),
+          image: z.string(),
+          imageAlt: z.string(),
+          highlights: z
+            .array(
+              z.object({
+                title: z.string(),
+                text: z.string(),
+              }),
+            )
+            .optional(),
+        }),
+      )
+      .optional(),
+    training: z
+      .object({
+        eyebrow: z.string(),
+        title: z.string(),
+        groups: z.array(
+          z.object({
+            group: z.string(),
+            items: z.array(
+              z.object({
+                title: z.string(),
+                text: z.string(),
+              }),
+            ),
+          }),
+        ),
+      })
+      .optional(),
+    consulting: z
+      .object({
+        eyebrow: z.string(),
+        items: z.array(z.string()),
+      })
+      .optional(),
   }),
 });
 

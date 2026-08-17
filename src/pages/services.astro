@@ -1,21 +1,58 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
-import { focusAreas, services, trainingPrograms } from "../data/site";
+import { getEntry } from "astro:content";
+
+type ServiceItem = {
+  eyebrow: string;
+  number: string;
+  title: string;
+  text: string;
+  summary: string;
+  detail: string;
+  image: string;
+  imageAlt: string;
+  highlights?: { title: string; text: string }[];
+};
+
+type ServicesData = {
+  eyebrow: string;
+  title: string;
+  titleAccent: string;
+  lede: string;
+  heroImage: string;
+  heroImageAlt: string;
+  focusIntro: string;
+  focusAreas: { title: string; text: string }[];
+  services: ServiceItem[];
+  training: {
+    eyebrow: string;
+    title: string;
+    groups: { group: string; items: { title: string; text: string }[] }[];
+  };
+  consulting: { eyebrow: string; items: string[] };
+};
+
+const servicesPage = await getEntry("pages", "services");
+if (!servicesPage || !servicesPage.data.services || !servicesPage.data.focusAreas || !servicesPage.data.training || !servicesPage.data.consulting) {
+  throw new Error("Services page content is missing.");
+}
+
+const servicesData = servicesPage.data as ServicesData;
 ---
 
 <BaseLayout title="Services | Mercier Talent Solutions" image="/images/optimized/services-hero-1400.jpg">
   <section class="section services-hero">
     <div class="container hero-grid">
       <div class="section-heading">
-        <p class="eyebrow">Services</p>
-        <h1>Built for lawyers, designed to <em>last</em></h1>
-        <p>Coaching, assessments, training, and consulting, spanning a wide range of programs and engagements, each grounded in the realities of legal practice.</p>
+        <p class="eyebrow">{servicesData.eyebrow}</p>
+        <h1>{servicesData.title} <em>{servicesData.titleAccent}</em></h1>
+        <p>{servicesData.lede}</p>
       </div>
       <div class="media-frame hero-image">
         <ResponsiveImage
-          src="/images/services-hero.png"
-          alt="Mercier Talent Solutions services visual"
+          src={servicesData.heroImage}
+          alt={servicesData.heroImageAlt}
           sizes="(min-width: 900px) 42vw, 100vw"
           eager
         />
@@ -25,9 +62,9 @@ import { focusAreas, services, trainingPrograms } from "../data/site";
 
   <section class="section focus-section">
     <div class="container focus-grid">
-      <p>We work with associates, partners, practice group leaders, and senior business professionals. Every engagement is tailored to the client's role, goals, and context and built for practical insight and measurable progress. Common focus areas include:</p>
+      <p>{servicesData.focusIntro}</p>
       <div class="focus-list">
-        {focusAreas.map(([title, text]) => (
+        {servicesData.focusAreas.map(({ title, text }) => (
           <article>
             <h2>{title}</h2>
             <p>{text}</p>
@@ -39,16 +76,16 @@ import { focusAreas, services, trainingPrograms } from "../data/site";
 
   <section class="section">
     <div class="container service-stack">
-      {services.map((service) => (
+      {servicesData.services.map((service) => (
         <article class="service-detail" id={service.title.toLowerCase().replaceAll(" ", "-")}>
           <div>
             <span class="service-number">{service.number}</span>
             <h2>{service.title}</h2>
             <p class="summary">{service.summary}</p>
-            <p>{service.detail ?? service.text}</p>
+            <p>{service.detail}</p>
             {service.highlights && (
               <div class="service-highlights">
-                {service.highlights.map(([title, text]) => (
+                {service.highlights.map(({ title, text }) => (
                   <article>
                     <h3>{title}</h3>
                     <p>{text}</p>
@@ -64,14 +101,14 @@ import { focusAreas, services, trainingPrograms } from "../data/site";
       ))}
 
       <section class="training">
-        <p class="eyebrow">Training programs</p>
-        <h2>Focused programs spanning leadership, feedback, performance, productivity, and culture.</h2>
+        <p class="eyebrow">{servicesData.training.eyebrow}</p>
+        <h2>{servicesData.training.title}</h2>
         <div class="program-groups">
-          {trainingPrograms.map((group) => (
+          {servicesData.training.groups.map((group) => (
             <article>
               <h3>{group.group}</h3>
               <div class="program-list">
-                {group.items.map(([title, text]) => (
+                {group.items.map(({ title, text }) => (
                   <div>
                     <h4>{title}</h4>
                     <p>{text}</p>
@@ -84,9 +121,9 @@ import { focusAreas, services, trainingPrograms } from "../data/site";
       </section>
 
       <section class="consulting-list">
-        <p class="eyebrow">Consulting</p>
+        <p class="eyebrow">{servicesData.consulting.eyebrow}</p>
         <div class="grid">
-          {["Learning & Development Strategy", "Engagement & Retention", "Leadership Development", "Career Paths & Progression", "Feedback & Mentoring Programs"].map((item) => (
+          {servicesData.consulting.items.map((item) => (
             <article class="card"><h3>{item}</h3></article>
           ))}
         </div>

@@ -22,7 +22,8 @@
 - [x] Configure admin collections for easy blog and white paper editing
 - [x] Add CMS-editable homepage content
 - [x] Move About, News, White Papers, and Contact copy into CMS-editable content files
-- [ ] Move Services and privacy-page copy into CMS-editable content files
+- [x] Move Services copy and page data into CMS-editable content files
+- [ ] Move privacy-page copy into CMS-editable content files
 - [ ] Finish admin authentication setup
 - [x] Add working contact form
 - [x] Add Cloudflare Turnstile-ready widget markup
