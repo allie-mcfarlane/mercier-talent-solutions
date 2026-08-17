@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
-import { getCollection, getEntry } from "astro:content";
+import { getEntry } from "astro:content";
 import { site } from "../data/site";
 
 type HomeData = {
@@ -29,14 +29,9 @@ if (!home || !servicesPage || !servicesPage.data.services) {
   throw new Error("Home page content is missing.");
 }
 
-const recentPosts = (await getCollection("posts"))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 8);
-
 const serviceItems = servicesPage.data.services as ServiceItem[];
-const homeServices = [serviceItems[0], serviceItems[2], serviceItems[1], serviceItems[3]];
+const homeServices = [serviceItems[0], serviceItems[1], serviceItems[2], serviceItems[3]];
 const homeData = home.data as HomeData;
-const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
 ---
 
 <BaseLayout title="Home | Mercier Talent Solutions" description={site.description} image="/images/optimized/waiting-area-1400.jpg">
@@ -102,7 +97,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
     </div>
   </section>
 
-  <section class="section">
+  <section class="section services-preview">
     <div class="container">
       <div class="section-heading">
         <p class="eyebrow">What we do</p>
@@ -132,6 +127,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
         <ul>
           {homeData.approach.items.map((item) => <li>{item}</li>)}
         </ul>
+        <a class="button secondary approach-cta" href="/about/">Meet the team</a>
       </div>
       <div class="chart-wrapper approach-chart" data-approach-chart>
         <svg viewBox="0 0 900 800" preserveAspectRatio="none" role="img" aria-labelledby="approachChartDescription">
@@ -157,16 +153,6 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
         <p class="eyebrow">{homeData.news.eyebrow}</p>
         <h2>{homeData.news.title}</h2>
       </div>
-      <div class="news-list">
-        {recentPosts.map((post) => (
-          <a class="news-card" href={`/post/${post.slug}/`}>
-            <span class="pill">{post.data.category}</span>
-            <h3>{post.data.title}</h3>
-            <p>{post.data.excerpt}</p>
-            <span class="meta-row">Julia Mercier · {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}</span>
-          </a>
-        ))}
-      </div>
     </div>
   </section>
 </BaseLayout>
@@ -175,21 +161,24 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   .hero {
     position: relative;
     overflow: hidden;
-    min-height: min(720px, calc(100vh - 78px));
-    padding: clamp(4.75rem, 8vw, 7.5rem) 0 clamp(3.4rem, 6vw, 5.6rem);
+    height: 530px;
+    min-height: 530px;
+    padding: 0;
     background: var(--color-white);
   }
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
-    gap: clamp(2.4rem, 6vw, 4.75rem);
-    align-items: center;
+    height: 100%;
+    grid-template-columns: minmax(340px, 360px) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
   }
 
   .hero-copy {
     position: relative;
     z-index: 1;
+    width: min(590px, calc(100vw - 80px));
   }
 
   .hero-copy::before {
@@ -208,7 +197,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
     font-family: var(--font-heading);
     font-size: var(--page-title-size);
     font-weight: 700;
-    line-height: 0.96;
+    line-height: 1.2;
   }
 
   h1 em {
@@ -226,8 +215,10 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   .hero-panel {
     position: relative;
     align-self: stretch;
-    width: calc(100% + max(1rem, (100vw - var(--container)) / 2));
-    min-height: 520px;
+    width: calc(100% + max(1rem, (100vw - var(--container)) / 2) + 4rem);
+    height: 546px;
+    min-height: 546px;
+    margin-top: -17px;
     border: 0;
     border-radius: 0;
     box-shadow: none;
@@ -321,6 +312,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
 
   .proof {
     background: var(--color-white);
+    padding: 0;
   }
 
   .proof-grid {
@@ -329,11 +321,12 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
     gap: 0;
     border: 1px solid var(--color-line);
     background: var(--color-white);
+    min-height: 236px;
   }
 
   .proof article {
     background: var(--color-white);
-    padding: clamp(1.4rem, 3vw, 2rem);
+    padding: clamp(1.55rem, 3vw, 2rem);
     text-align: left;
   }
 
@@ -357,7 +350,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
 
   .marquee-band {
     overflow: hidden;
-    padding: 1.05rem 0;
+    padding: 1.32rem 0;
     background: #d8d7d2;
     color: rgba(26, 43, 70, 0.58);
     text-transform: uppercase;
@@ -390,29 +383,82 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   }
 
   .service-grid {
-    margin-top: clamp(2rem, 4vw, 3rem);
+    margin-top: 34px;
+  }
+
+  .services-preview {
+    padding: 387px 0 121px;
+  }
+
+  .services-preview .section-heading {
+    max-width: 543px;
+    gap: 49px;
+  }
+
+  .services-preview .section-heading h2 {
+    width: min(436px, 100%);
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  .services-preview .service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 35px 24px;
+  }
+
+  .services-preview .card {
+    min-height: 296px;
+    padding: 40px 34px 28px;
+  }
+
+  .services-preview .card h3 {
+    margin: 19px 0 14px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .services-preview .card p:not(.eyebrow) {
+    max-width: 522px;
+    font-size: 16px;
+    line-height: 1.5;
   }
 
   .approach {
-    background: var(--color-blue-dark);
-    color: var(--color-white);
-  }
-
-  .approach .section-heading h2,
-  .approach .section-heading p {
-    color: var(--color-white);
+    min-height: 523px;
+    padding: 0;
+    background: var(--color-white);
+    color: var(--color-text);
   }
 
   .approach-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.9fr);
-    gap: clamp(2.5rem, 6vw, 4.75rem);
-    align-items: center;
+    min-height: 523px;
+    grid-template-columns: minmax(0, 671px) minmax(380px, 1fr);
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: stretch;
   }
 
   .approach-copy {
     display: grid;
-    gap: clamp(1.8rem, 4vw, 2.7rem);
+    align-content: start;
+    gap: 28px;
+    padding-top: 48px;
+  }
+
+  .approach .section-heading {
+    max-width: 588px;
+    gap: 46px;
+  }
+
+  .approach .section-heading h2 {
+    font-size: 19px;
+    line-height: 1.3;
+  }
+
+  .approach .section-heading p:not(.eyebrow) {
+    max-width: 588px;
+    font-size: 16px;
+    line-height: 1.5;
   }
 
   ul {
@@ -420,19 +466,29 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
     padding: 0;
     list-style: none;
     display: grid;
-    gap: 1rem;
+    gap: 12px;
   }
 
   li {
-    border-top: 1px solid rgba(255, 255, 255, 0.24);
-    padding-top: 1rem;
-    color: rgba(255, 255, 255, 0.82);
+    border-top: 0;
+    padding-top: 0;
+    padding-left: 31px;
+    color: var(--color-text);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .approach-cta {
+    justify-self: start;
+    margin-top: 2px;
+    border-color: var(--color-blue);
+    color: var(--color-blue);
   }
 
   .chart-wrapper {
     display: flex;
     width: 100%;
-    min-height: 520px;
+    min-height: 523px;
     align-items: stretch;
     justify-content: stretch;
     overflow: hidden;
@@ -542,46 +598,34 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   }
 
   .news-band {
+    min-height: 2392px;
+    padding: 46px 0 0;
     background: var(--color-white);
   }
 
-  .news-list {
-    display: grid;
-    margin-top: clamp(2rem, 4vw, 3rem);
-    border-top: 1px solid var(--color-line);
+  .news-band .section-heading {
+    max-width: 1202px;
+    gap: 24px;
   }
 
-  .news-card {
-    display: grid;
-    gap: 0.55rem;
-    padding: 1.45rem 0;
-    border-bottom: 1px solid var(--color-line);
-    text-decoration: none;
-  }
-
-  .news-card h3 {
-    margin: 0;
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: clamp(1.45rem, 3vw, 2.4rem);
-    font-weight: 700;
-  }
-
-  .news-card p {
-    max-width: 780px;
-    margin: 0;
-    color: var(--color-muted);
+  .news-band .section-heading h2 {
+    max-width: 585px;
+    font-size: 20px;
+    line-height: 1.3;
   }
 
   @media (max-width: 860px) {
     .hero-grid,
     .approach-grid,
-    .proof-grid {
+    .proof-grid,
+    .services-preview .service-grid {
       grid-template-columns: 1fr;
     }
 
     .hero {
+      height: auto;
       min-height: 0;
+      padding: clamp(3.75rem, 10vw, 5rem) 0 clamp(3rem, 8vw, 4rem);
     }
 
     .hero-copy::before {
@@ -612,6 +656,32 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
 
     .chart-wrapper {
       min-height: 420px;
+    }
+
+    .services-preview {
+      padding: clamp(4rem, 12vw, 6rem) 0;
+    }
+
+    .services-preview .section-heading,
+    .approach .section-heading {
+      gap: 0.72rem;
+    }
+
+    .approach {
+      padding: clamp(4rem, 12vw, 6rem) 0;
+    }
+
+    .approach-grid {
+      min-height: 0;
+    }
+
+    .approach-copy {
+      padding-top: 0;
+    }
+
+    .news-band {
+      min-height: 0;
+      padding: clamp(4rem, 12vw, 6rem) 0;
     }
   }
 
