@@ -43,17 +43,17 @@ const serviceLinks = [
 
 <style>
   .site-footer {
-    min-height: 412px;
+    min-height: 292px;
     background: var(--color-blue-dark);
     color: var(--color-white);
-    padding: 98px 0 1.25rem;
+    padding: 48px 0 0.85rem;
   }
 
   .footer-cta {
     display: grid;
     justify-items: center;
     max-width: none;
-    margin-bottom: 21px;
+    margin-bottom: 14px;
     padding-left: 0;
     text-align: center;
   }
@@ -73,21 +73,22 @@ const serviceLinks = [
 
   .footer-grid {
     display: grid;
-    grid-template-columns: minmax(190px, 230px) minmax(130px, 150px) minmax(150px, 170px) minmax(220px, 250px);
-    gap: clamp(3rem, 6vw, 5.25rem);
+    grid-template-columns: minmax(170px, 205px) minmax(110px, 130px) minmax(130px, 150px) minmax(190px, 220px);
+    gap: clamp(2rem, 4vw, 3.5rem);
     align-items: start;
     border-top: 0;
     justify-content: center;
-    max-width: 900px;
+    max-width: 780px;
     padding-top: 0;
   }
 
   .footer-brand {
     width: fit-content;
+    justify-self: start;
   }
 
   img {
-    width: min(210px, 64vw);
+    width: min(172px, 58vw);
     height: auto;
   }
 
@@ -95,7 +96,7 @@ const serviceLinks = [
   .contact {
     display: grid;
     gap: 0.28rem;
-    padding-top: 24px;
+    padding-top: 12px;
     font-size: 12px;
     line-height: 1.5;
   }
@@ -126,9 +127,12 @@ const serviceLinks = [
   }
 
   .copyright {
-    margin-top: 22px;
+    width: fit-content;
+    max-width: calc(100% - 2rem);
+    margin-top: 10px;
     color: rgba(255, 255, 255, 0.58);
     font-size: 12px;
+    text-align: center;
   }
 
   .privacy-links {
@@ -136,7 +140,9 @@ const serviceLinks = [
     flex-wrap: wrap;
     gap: 0.75rem 1.25rem;
     justify-content: center;
-    margin-top: 2rem;
+    width: fit-content;
+    max-width: calc(100% - 2rem);
+    margin-top: 1.1rem;
     color: rgba(255, 255, 255, 0.76);
     font-size: 12px;
     text-align: center;
