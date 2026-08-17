@@ -59,7 +59,7 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
 
   .papers {
     display: grid;
-    gap: 1.5rem;
+    gap: clamp(1.25rem, 2.5vw, 1.75rem);
     margin-top: clamp(2.5rem, 6vw, 4.5rem);
   }
 
@@ -76,7 +76,7 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
     display: grid;
     align-content: space-between;
     min-height: 300px;
-    padding: clamp(1.2rem, 3vw, 2.2rem);
+    padding: clamp(1.35rem, 3vw, 2.35rem);
     background: var(--color-blue-dark);
     color: var(--color-white);
   }
@@ -104,8 +104,8 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   .paper-content-panel {
     display: grid;
     align-content: center;
-    gap: 1rem;
-    padding: clamp(1.4rem, 4vw, 3rem);
+    gap: 1.15rem;
+    padding: clamp(1.55rem, 4vw, 3.15rem);
   }
 
   .paper-content-panel p {

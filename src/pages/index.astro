@@ -176,14 +176,14 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
     position: relative;
     overflow: hidden;
     min-height: min(720px, calc(100vh - 78px));
-    padding: clamp(4.5rem, 9vw, 8rem) 0 clamp(3rem, 7vw, 6rem);
+    padding: clamp(4.75rem, 8vw, 7.5rem) 0 clamp(3.4rem, 6vw, 5.6rem);
     background: var(--color-white);
   }
 
   .hero-grid {
     display: grid;
     grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
-    gap: clamp(2rem, 6vw, 5rem);
+    gap: clamp(2.4rem, 6vw, 4.75rem);
     align-items: center;
   }
 
@@ -196,7 +196,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
     display: block;
     width: 92px;
     height: 3px;
-    margin: 1.7rem 0 2.8rem;
+    margin: 1.5rem 0 2.6rem;
     background: var(--color-blue-dark);
     content: "";
   }
@@ -251,7 +251,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   }
 
   .draw {
-    animation: drawline 1.8s 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: drawline 2.2s 0.35s var(--ease-smooth) forwards;
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
   }
@@ -261,7 +261,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
     transform: scale(0);
     transform-box: fill-box;
     transform-origin: center;
-    animation: dotPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: dotPop 0.72s cubic-bezier(0.34, 1.36, 0.64, 1) forwards;
   }
 
   .dot-1 {
@@ -281,11 +281,11 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
     transform: scale(0.92);
     transform-box: fill-box;
     transform-origin: center;
-    animation: ringsIn 1.5s 1.6s ease forwards;
+    animation: ringsIn 1.8s 1.45s var(--ease-smooth) forwards;
   }
 
   .floating-group {
-    animation: floatGraphic 8s 3s ease-in-out infinite;
+    animation: floatGraphic 11s 3s ease-in-out infinite;
   }
 
   @keyframes drawline {
@@ -315,7 +315,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
 
   @keyframes floatGraphic {
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-6px);
     }
   }
 
@@ -367,7 +367,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee 34s linear infinite;
+    animation: marquee 42s linear infinite;
   }
 
   .marquee-track span {
@@ -390,7 +390,7 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   }
 
   .service-grid {
-    margin-top: 2rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
   }
 
   .approach {
@@ -406,13 +406,13 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   .approach-grid {
     display: grid;
     grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.9fr);
-    gap: clamp(2rem, 6vw, 5rem);
+    gap: clamp(2.5rem, 6vw, 4.75rem);
     align-items: center;
   }
 
   .approach-copy {
     display: grid;
-    gap: clamp(1.6rem, 4vw, 2.8rem);
+    gap: clamp(1.8rem, 4vw, 2.7rem);
   }
 
   ul {
@@ -485,16 +485,16 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
   }
 
   .chart-wrapper.animate .secondary-line {
-    animation: drawSecondary 2.8s ease-out forwards;
+    animation: drawSecondary 3.15s var(--ease-smooth) forwards;
   }
 
   .chart-wrapper.animate .main-line {
-    animation: drawMain 3.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: drawMain 3.95s var(--ease-smooth) forwards;
     animation-delay: 0.2s;
   }
 
   .chart-wrapper.animate .data-point {
-    animation: revealPoint 0.55s ease-out forwards;
+    animation: revealPoint 0.68s var(--ease-soft) forwards;
   }
 
   .chart-wrapper.animate .point-1 {
@@ -547,14 +547,14 @@ const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: 
 
   .news-list {
     display: grid;
-    margin-top: 2rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
     border-top: 1px solid var(--color-line);
   }
 
   .news-card {
     display: grid;
     gap: 0.55rem;
-    padding: 1.25rem 0;
+    padding: 1.45rem 0;
     border-bottom: 1px solid var(--color-line);
     text-decoration: none;
   }

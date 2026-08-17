@@ -150,7 +150,7 @@ const servicesData = servicesPage.data as ServicesData;
   .service-detail {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
-    gap: clamp(2rem, 6vw, 5rem);
+    gap: clamp(2.5rem, 6vw, 4.75rem);
     align-items: center;
   }
 
@@ -182,7 +182,7 @@ const servicesData = servicesPage.data as ServicesData;
 
   .service-strip a {
     display: flex;
-    min-height: 86px;
+    min-height: 92px;
     align-items: center;
     justify-content: center;
     border-left: 1px solid rgba(255, 255, 255, 0.18);
@@ -218,12 +218,12 @@ const servicesData = servicesPage.data as ServicesData;
   .focus-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    gap: clamp(1rem, 2vw, 1.35rem);
   }
 
   .focus-list article {
     border-top: 1px solid rgba(255, 255, 255, 0.25);
-    padding-top: 1rem;
+    padding-top: 1.15rem;
   }
 
   h2,
@@ -247,7 +247,7 @@ const servicesData = servicesPage.data as ServicesData;
 
   .service-stack {
     display: grid;
-    gap: clamp(3rem, 8vw, 6rem);
+    gap: clamp(3.75rem, 8vw, 6.5rem);
   }
 
   .service-detail:nth-child(even) .service-image {
@@ -280,13 +280,13 @@ const servicesData = servicesPage.data as ServicesData;
 
   .service-highlights {
     display: grid;
-    gap: 0.8rem;
-    margin-top: 1.2rem;
+    gap: 1rem;
+    margin-top: 1.45rem;
   }
 
   .service-highlights article {
     border-top: 1px solid var(--color-line);
-    padding-top: 0.9rem;
+    padding-top: 1rem;
   }
 
   .service-highlights h3 {
@@ -301,7 +301,7 @@ const servicesData = servicesPage.data as ServicesData;
 
   .training {
     margin-inline: calc(50% - 50vw);
-    padding: clamp(3rem, 7vw, 6rem) max(1rem, calc((100vw - var(--container)) / 2));
+    padding: clamp(4rem, 7vw, 6.5rem) max(1rem, calc((100vw - var(--container)) / 2));
     background: var(--color-blue-dark);
     color: var(--color-white);
   }
@@ -314,12 +314,12 @@ const servicesData = servicesPage.data as ServicesData;
 
   .program-groups {
     display: grid;
-    gap: 1.2rem;
+    gap: 1.35rem;
   }
 
   .program-groups article {
     border-top: 1px solid rgba(255, 255, 255, 0.24);
-    padding-top: 1.2rem;
+    padding-top: 1.35rem;
   }
 
   .program-groups h3 {
@@ -330,8 +330,8 @@ const servicesData = servicesPage.data as ServicesData;
   .program-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: clamp(1rem, 2vw, 1.35rem);
+    margin-top: 1.25rem;
   }
 
   .program-list h4 {
