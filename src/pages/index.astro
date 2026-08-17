@@ -37,9 +37,9 @@ const recentPosts = (await getCollection("posts"))
   .slice(0, 3);
 const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
 const stats = [
-  { value: "9+", text: "Years of developing lawyers in-house and as a consultant for global firms" },
-  { value: "12+", text: "Coaching, assessment & training offerings" },
-  { value: "9+", text: "Signature training programs for legal teams" },
+  { value: "9", suffix: "+", text: "Years of developing lawyers in-house and as a consultant for global firms" },
+  { value: "12", suffix: "+", text: "Coaching, assessment & training offerings" },
+  { value: "9", suffix: "+", text: "Signature training programs for legal teams" },
 ];
 ---
 
@@ -109,9 +109,12 @@ const stats = [
   <section class="section stats-band">
     <div class="container stats-grid">
       {stats.map((item) => (
-        <article>
-          <h2>{item.value}</h2>
-          <p>{item.text}</p>
+        <article class="stat">
+          <div class="number-row" aria-label={`${item.value}${item.suffix}`}>
+            <span class="stat-number" data-count-target={item.value}>{item.value}</span>
+            <span class="suffix" aria-hidden="true">{item.suffix}</span>
+          </div>
+          <p class="description">{item.text}</p>
         </article>
       ))}
     </div>
@@ -465,38 +468,61 @@ const stats = [
     display: grid;
     min-height: 216px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
     border-top: 1px solid var(--color-line);
     border-bottom: 1px solid var(--color-line);
     background: var(--color-white);
   }
 
-  .stats-grid article {
-    display: grid;
-    align-content: center;
-    justify-items: center;
-    padding: 2rem;
+  .stat {
+    display: flex;
+    min-width: 0;
+    min-height: 215px;
+    flex-direction: column;
+    align-items: center;
+    padding: 42px 35px 35px;
     text-align: center;
   }
 
-  .stats-grid article + article {
+  .stat + .stat {
     border-left: 1px solid var(--color-line);
   }
 
-  .stats-grid h2 {
-    margin: 0 0 0.85rem;
-    color: var(--color-blue-dark);
-    font-family: var(--font-heading);
-    font-size: clamp(3.5rem, 5.6vw, 4.85rem);
-    font-weight: 700;
-    line-height: 0.9;
+  .number-row {
+    display: flex;
+    width: 100%;
+    align-items: baseline;
+    justify-content: center;
+    margin-bottom: 14px;
+    line-height: 1;
+    text-align: center;
   }
 
-  .stats-grid p {
-    max-width: 340px;
+  .stat-number {
+    color: #172641;
+    font-family: var(--font-heading);
+    font-size: 62px;
+    font-weight: 700;
+    letter-spacing: -2px;
+  }
+
+  .suffix {
+    margin-left: 5px;
+    color: var(--color-blue);
+    font-family: var(--font-heading);
+    font-size: 43px;
+    font-weight: 500;
+  }
+
+  .description {
+    width: 100%;
+    max-width: 300px;
     margin: 0;
     color: var(--color-muted);
     font-size: 16px;
-    line-height: 1.45;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
   }
 
   .services-preview {
@@ -776,7 +802,6 @@ const stats = [
     .hero-grid,
     .approach-grid,
     .proof-grid,
-    .stats-grid,
     .services-preview .service-grid,
     .news-list {
       grid-template-columns: 1fr;
@@ -810,11 +835,6 @@ const stats = [
     }
 
     .proof article + article {
-      border-top: 1px solid var(--color-line);
-      border-left: 0;
-    }
-
-    .stats-grid article + article {
       border-top: 1px solid var(--color-line);
       border-left: 0;
     }
@@ -854,6 +874,86 @@ const stats = [
     }
   }
 
+  @media (max-width: 900px) {
+    .stats-band {
+      padding: 64px 0 58px;
+    }
+
+    .stat {
+      min-height: 165px;
+      padding: 26px 18px 24px;
+    }
+
+    .number-row {
+      margin-bottom: 10px;
+    }
+
+    .stat-number {
+      font-size: 42px;
+      letter-spacing: -1.5px;
+    }
+
+    .suffix {
+      margin-left: 4px;
+      font-size: 29px;
+    }
+
+    .description {
+      max-width: 100%;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .stat {
+      min-height: 155px;
+      padding: 24px 14px 22px;
+    }
+
+    .stat-number {
+      font-size: 36px;
+    }
+
+    .suffix {
+      font-size: 25px;
+    }
+
+    .description {
+      font-size: 13px;
+      line-height: 1.35;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stat {
+      min-height: auto;
+      padding: 26px 20px;
+    }
+
+    .stat + .stat {
+      border-top: 1px solid var(--color-line);
+      border-left: 0;
+    }
+
+    .stat-number {
+      font-size: 42px;
+    }
+
+    .suffix {
+      font-size: 29px;
+    }
+
+    .description {
+      font-size: 15px;
+      line-height: 1.45;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .draw,
     .dot,
@@ -884,7 +984,8 @@ const stats = [
 
     .chart-wrapper.animate .secondary-line,
     .chart-wrapper.animate .main-line,
-    .chart-wrapper.animate .data-point {
+    .chart-wrapper.animate .data-point,
+    .stat-number {
       animation: none;
     }
   }
@@ -926,4 +1027,75 @@ const stats = [
       chartObserver.observe(chartWrapper);
     }
   }
+</script>
+
+<script>
+  const statNumbers = document.querySelectorAll<HTMLElement>("[data-count-target]");
+  const statsBand = document.querySelector(".stats-band");
+  const countMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let countAnimationHasRun = false;
+
+  const easeOutCubic = (progress: number) => 1 - Math.pow(1 - progress, 3);
+
+  const animateNumber = (element: HTMLElement, duration: number) => {
+    const target = Number(element.dataset.countTarget);
+    const startTime = performance.now();
+    element.textContent = "0";
+
+    const updateNumber = (currentTime: number) => {
+      const elapsedTime = currentTime - startTime;
+      const progress = Math.min(elapsedTime / duration, 1);
+      const easedProgress = easeOutCubic(progress);
+
+      element.textContent = String(Math.round(target * easedProgress));
+
+      if (progress < 1) {
+        requestAnimationFrame(updateNumber);
+      } else {
+        element.textContent = String(target);
+      }
+    };
+
+    requestAnimationFrame(updateNumber);
+  };
+
+  const startCountUp = () => {
+    if (countAnimationHasRun) {
+      return;
+    }
+
+    countAnimationHasRun = true;
+
+    statNumbers.forEach((number) => {
+      animateNumber(number, 1800);
+    });
+  };
+
+  if (statNumbers.length > 0 && statsBand) {
+    if (countMotionQuery.matches || !("IntersectionObserver" in window)) {
+      statNumbers.forEach((number) => {
+        number.textContent = number.dataset.countTarget ?? number.textContent;
+      });
+    } else {
+      const countObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              startCountUp();
+              countObserver.disconnect();
+            }
+          });
+        },
+        { rootMargin: "0px 0px -10% 0px", threshold: 0.3 },
+      );
+
+      countObserver.observe(statsBand);
+    }
+  }
+
+  window.addEventListener("message", (event) => {
+    if (event.data === "start-count-up") {
+      startCountUp();
+    }
+  });
 </script>
