@@ -39,14 +39,16 @@ if (!servicesPage || !servicesPage.data.services || !servicesPage.data.focusArea
 }
 
 const servicesData = servicesPage.data as ServicesData;
+const [coaching, assessments, trainingService, consultingService] = servicesData.services;
+const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
 ---
 
 <BaseLayout title="Services | Mercier Talent Solutions" description={servicesData.lede} image="/images/optimized/services-hero-1400.jpg">
-  <section class="section services-hero">
-    <div class="container hero-grid">
-      <div class="section-heading">
+  <section class="services-hero">
+    <div class="container services-hero-grid">
+      <div class="section-heading hero-copy">
         <p class="eyebrow">{servicesData.eyebrow}</p>
-        <h1>{servicesData.title} <em>{servicesData.titleAccent}</em></h1>
+        <h1><span>{servicesData.title}</span> <em>{servicesData.titleAccent}</em></h1>
         <p>{servicesData.lede}</p>
       </div>
       <div class="media-frame hero-image">
@@ -57,91 +59,116 @@ const servicesData = servicesPage.data as ServicesData;
           eager
         />
       </div>
+      <div class="hero-rings" aria-hidden="true">
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </section>
 
   <nav class="service-strip" aria-label="Service sections">
     <div class="container service-strip-inner">
-      {servicesData.services.map((service) => (
-        <a href={`#${service.title.toLowerCase().replaceAll(" ", "-")}`}>{service.title}</a>
-      ))}
+      {servicesData.services.map((service) => <a href={`#${slugify(service.title)}`}>{service.title}</a>)}
     </div>
   </nav>
 
-  <section class="section focus-section">
-    <div class="container focus-grid">
-      <p>{servicesData.focusIntro}</p>
-      <div class="focus-list">
-        {servicesData.focusAreas.map(({ title, text }) => (
-          <article>
-            <h2>{title}</h2>
-            <p>{text}</p>
-          </article>
-        ))}
+  <section class="section service-section coaching-section" id={slugify(coaching.title)}>
+    <div class="container service-intro-grid">
+      <div class="service-lead">
+        <p class="service-number">{coaching.number}</p>
+        <h2>{coaching.title}</h2>
+        <p>{coaching.summary}</p>
+        <div class="media-frame service-image">
+          <ResponsiveImage src={coaching.image} alt={coaching.imageAlt} sizes="(min-width: 900px) 36vw, 100vw" />
+        </div>
+      </div>
+      <div class="focus-panel">
+        <p>{servicesData.focusIntro}</p>
+        <div class="focus-list">
+          {servicesData.focusAreas.map(({ title, text }) => (
+            <article>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container service-stack">
-      {servicesData.services.map((service) => (
-        <article class="service-detail" id={service.title.toLowerCase().replaceAll(" ", "-")}>
-          <div>
-            <span class="service-number">{service.number}</span>
-            <h2>{service.title}</h2>
-            <p class="summary">{service.summary}</p>
-            <p>{service.detail}</p>
-            {service.highlights && (
-              <div class="service-highlights">
-                {service.highlights.map(({ title, text }, index) => (
-                  <details open={index === 0}>
-                    <summary>
-                      <h3>{title}</h3>
-                      <span aria-hidden="true"></span>
-                    </summary>
-                    <p>{text}</p>
-                  </details>
-                ))}
-              </div>
-            )}
+  <section class="section service-section split-section shaded" id={slugify(assessments.title)}>
+    <div class="container split-grid">
+      <div class="media-frame service-image tall-image">
+        <ResponsiveImage src={assessments.image} alt={assessments.imageAlt} sizes="(min-width: 900px) 38vw, 100vw" />
+      </div>
+      <div class="service-copy">
+        <p class="service-number">{assessments.number}</p>
+        <h2>{assessments.title}</h2>
+        <p class="summary">{assessments.summary}</p>
+        <p>{assessments.detail}</p>
+        {assessments.highlights && (
+          <div class="accordion-list">
+            {assessments.highlights.map(({ title, text }, index) => (
+              <details open={index === 0}>
+                <summary>
+                  <span>{title}</span>
+                  <b aria-hidden="true"></b>
+                </summary>
+                <p>{text}</p>
+              </details>
+            ))}
           </div>
-          <div class="media-frame service-image">
-            <ResponsiveImage src={service.image} alt={service.imageAlt} sizes="(min-width: 900px) 42vw, 100vw" />
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="section service-section training-section" id={slugify(trainingService.title)}>
+    <div class="container training-grid">
+      <div class="service-copy">
+        <p class="service-number">{trainingService.number}</p>
+        <h2>{trainingService.title}</h2>
+        <p class="summary">{trainingService.summary}</p>
+        <p>{trainingService.detail}</p>
+      </div>
+      <div class="media-frame service-image training-image">
+        <ResponsiveImage src={trainingService.image} alt={trainingService.imageAlt} sizes="(min-width: 900px) 42vw, 100vw" />
+      </div>
+    </div>
+    <div class="container program-groups">
+      {servicesData.training.groups.map((group) => (
+        <article>
+          <h3>{group.group}</h3>
+          <div class="program-list">
+            {group.items.map(({ title }) => (
+              <div>
+                <span>{title}</span>
+              </div>
+            ))}
           </div>
         </article>
       ))}
+    </div>
+  </section>
 
-      <section class="training">
-        <p class="eyebrow">{servicesData.training.eyebrow}</p>
-        <h2>{servicesData.training.title}</h2>
-        <div class="program-groups">
-          {servicesData.training.groups.map((group) => (
-            <article>
-              <h3>{group.group}</h3>
-              <div class="program-list">
-                {group.items.map(({ title, text }) => (
-                  <div>
-                    <h4>{title}</h4>
-                    <p class="sr-only">{text}</p>
-                  </div>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="consulting-list">
-        <p class="eyebrow">{servicesData.consulting.eyebrow}</p>
-        <div class="grid">
-          {servicesData.consulting.items.map((item) => (
-            <article class="card">
-              <h3>{typeof item === "string" ? item : item.title}</h3>
-              {typeof item !== "string" && <p>{item.text}</p>}
-            </article>
-          ))}
-        </div>
-      </section>
+  <section class="section service-section consulting-section shaded" id={slugify(consultingService.title)}>
+    <div class="container consulting-heading">
+      <p class="service-number">{consultingService.number}</p>
+      <h2>{consultingService.title}</h2>
+      <p>{consultingService.detail}</p>
+    </div>
+    <div class="container consulting-grid">
+      <div class="media-frame service-image">
+        <ResponsiveImage src={consultingService.image} alt={consultingService.imageAlt} sizes="(min-width: 900px) 42vw, 100vw" />
+      </div>
+      <div class="consulting-list">
+        {servicesData.consulting.items.map((item) => (
+          <article>
+            <h3>{typeof item === "string" ? item : item.title}</h3>
+            {typeof item !== "string" && <p>{item.text}</p>}
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -153,32 +180,76 @@ const servicesData = servicesPage.data as ServicesData;
     background: #e7e6e0;
   }
 
-  .hero-grid,
-  .focus-grid,
-  .service-detail {
+  .services-hero-grid {
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 0.96fr) minmax(380px, 1fr);
-    gap: clamp(2.5rem, 6vw, 4.75rem);
+    min-height: clamp(500px, 45vw, 600px);
+    grid-template-columns: minmax(360px, 0.85fr) minmax(420px, 0.9fr);
+    gap: clamp(3rem, 7vw, 7rem);
     align-items: center;
+    padding-block: clamp(3.35rem, 5.5vw, 5rem);
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
   }
 
   h1 {
+    display: grid;
+    gap: 0.15em;
     margin: 0;
     color: var(--color-ink);
     font-family: var(--font-heading);
     font-size: var(--page-title-size);
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.02;
   }
 
-  .service-grid {
-    margin-top: 2rem;
+  h1 em {
+    color: var(--color-blue);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 700;
   }
 
   .hero-image {
-    aspect-ratio: 1.32;
+    position: relative;
+    z-index: 1;
+    aspect-ratio: 1.28;
+    border: 0;
     border-radius: 0;
     box-shadow: none;
+  }
+
+  .hero-image::after {
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.74);
+    content: "";
+    pointer-events: none;
+  }
+
+  .hero-rings {
+    position: absolute;
+    right: min(-18vw, -120px);
+    bottom: -32%;
+    z-index: 0;
+    width: min(57vw, 740px);
+    aspect-ratio: 1;
+    pointer-events: none;
+  }
+
+  .hero-rings span {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(69, 98, 142, 0.28);
+    border-radius: 50%;
+  }
+
+  .hero-rings span + span {
+    inset: 15%;
   }
 
   .service-strip {
@@ -192,7 +263,7 @@ const servicesData = servicesPage.data as ServicesData;
 
   .service-strip a {
     display: flex;
-    min-height: 92px;
+    min-height: 86px;
     align-items: center;
     justify-content: center;
     border-left: 1px solid rgba(255, 255, 255, 0.18);
@@ -210,195 +281,264 @@ const servicesData = servicesPage.data as ServicesData;
     border-right: 1px solid rgba(255, 255, 255, 0.18);
   }
 
-  .service-strip a:hover,
-  .service-strip a:focus-visible {
-    background: rgba(255, 255, 255, 0.08);
+  .service-section {
+    overflow: hidden;
+    background: var(--color-white);
   }
 
-  .focus-section {
-    background: var(--color-blue-dark);
-    color: var(--color-white);
+  .service-section.shaded {
+    background: #ececec;
   }
 
-  .focus-section p {
+  .service-intro-grid,
+  .split-grid,
+  .training-grid,
+  .consulting-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.82fr) minmax(420px, 1fr);
+    gap: clamp(3rem, 7vw, 7.5rem);
+    align-items: center;
+  }
+
+  .service-lead,
+  .service-copy,
+  .focus-panel,
+  .consulting-heading,
+  .consulting-list {
     max-width: 760px;
-    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .service-lead {
+    display: grid;
+    gap: clamp(1.3rem, 2.4vw, 2.15rem);
+  }
+
+  .service-number {
+    margin: 0;
+    color: var(--color-blue);
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 7vw, 5.8rem);
+    font-weight: 700;
+    line-height: 0.85;
+  }
+
+  h2,
+  h3 {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  h2 {
+    max-width: 720px;
+    font-size: clamp(2.15rem, 4.15vw, 4.05rem);
+  }
+
+  h3 {
+    font-size: clamp(1.15rem, 1.8vw, 1.55rem);
+  }
+
+  p {
+    margin: 0;
+    color: var(--color-ink);
     font-size: var(--paragraph-size);
+    line-height: 1.58;
+  }
+
+  .summary {
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  .service-copy {
+    display: grid;
+    gap: clamp(1.1rem, 2vw, 1.75rem);
+  }
+
+  .service-image {
+    width: 100%;
+    aspect-ratio: 1.35;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .tall-image,
+  .training-image {
+    aspect-ratio: 1.28;
+  }
+
+  .focus-panel {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
   }
 
   .focus-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(1rem, 2vw, 1.35rem);
+    gap: 0;
+    border-top: 1px solid var(--color-line);
+    border-left: 1px solid var(--color-line);
   }
 
   .focus-list article {
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
-    padding-top: 1.15rem;
-  }
-
-  h2,
-  h3,
-  h4 {
-    margin: 0;
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-weight: 700;
-    line-height: 1.08;
-  }
-
-  .focus-list h2,
-  .training h2 {
-    color: var(--color-white);
-  }
-
-  .focus-list h2 {
-    font-size: 1.5rem;
-  }
-
-  .service-stack {
     display: grid;
-    gap: clamp(2.6rem, 5vw, 4.3rem);
-    max-width: var(--content-wide);
-    margin-inline: auto;
+    min-height: 148px;
+    align-content: start;
+    gap: 0.55rem;
+    border-right: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    padding: clamp(1.1rem, 2vw, 1.55rem);
+    background: rgba(255, 255, 255, 0.48);
   }
 
-  .service-detail:nth-child(even) .service-image {
-    order: -1;
+  .focus-list h3,
+  .accordion-list summary,
+  .program-groups h3,
+  .consulting-list h3 {
+    font-size: 16px;
+    text-transform: none;
   }
 
-  .service-number {
-    display: block;
-    color: var(--color-blue);
-    font-family: var(--font-heading);
-    font-size: clamp(3rem, 8vw, 6rem);
-    line-height: 0.9;
-  }
-
-  .service-detail h2 {
-    margin: 0.4rem 0 0.75rem;
-    font-size: clamp(2rem, 5vw, 4rem);
-  }
-
-  .summary {
-    color: var(--color-blue-dark);
-    font-family: var(--font-heading);
-    font-size: var(--paragraph-size);
-    font-weight: 700;
-  }
-
-  .service-image {
-    aspect-ratio: 1.36;
-  }
-
-  .service-highlights {
+  .accordion-list {
     display: grid;
-    margin-top: 1.35rem;
+    margin-top: 0.5rem;
     border-top: 1px solid var(--color-line);
   }
 
-  .service-highlights details {
+  .accordion-list details {
     border-bottom: 1px solid var(--color-line);
-    padding: 0.95rem 0;
+    padding: 1.05rem 0;
   }
 
-  .service-highlights summary {
+  .accordion-list summary {
     display: flex;
     cursor: pointer;
     list-style: none;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-weight: 700;
   }
 
-  .service-highlights summary::-webkit-details-marker {
+  .accordion-list summary::-webkit-details-marker {
     display: none;
   }
 
-  .service-highlights h3 {
-    font-size: 1rem;
-    font-weight: 800;
-  }
-
-  .service-highlights summary span::before {
-    color: var(--color-blue-dark);
-    font-family: var(--font-heading);
-    font-weight: 800;
+  .accordion-list b::before {
+    color: var(--color-blue);
     content: "+";
   }
 
-  .service-highlights details[open] summary span::before {
+  .accordion-list details[open] b::before {
     content: "-";
   }
 
-  .service-highlights p {
-    margin: 0.85rem 0 0;
-    color: var(--color-ink);
+  .accordion-list p {
+    margin-top: 0.8rem;
   }
 
-  .training {
-    margin-inline: calc(50% - 50vw);
-    padding: clamp(3rem, 5.2vw, 4.7rem) max(var(--page-gutter), calc((100vw - var(--container)) / 2));
-    background: var(--color-blue-dark);
-    color: var(--color-white);
-  }
-
-  .training > h2 {
-    max-width: var(--reading-width);
-    margin: 0.4rem 0 1.65rem;
-    font-size: clamp(2rem, 4vw, 4rem);
+  .training-section {
+    display: grid;
+    gap: clamp(3.5rem, 6vw, 5.5rem);
   }
 
   .program-groups {
     display: grid;
-    gap: 1.35rem;
+    gap: 0;
+    border-top: 1px solid var(--color-line);
   }
 
   .program-groups article {
-    border-top: 1px solid rgba(255, 255, 255, 0.24);
-    padding-top: 1.35rem;
-  }
-
-  .program-groups h3 {
-    color: var(--color-white);
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    display: grid;
+    grid-template-columns: minmax(220px, 0.58fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    border-bottom: 1px solid var(--color-line);
+    padding: clamp(1.45rem, 3vw, 2.05rem) 0;
   }
 
   .program-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.7rem clamp(1rem, 2vw, 1.35rem);
-    margin-top: 1.25rem;
+    gap: 0.75rem clamp(1.25rem, 3vw, 2.35rem);
   }
 
-  .program-list h4 {
-    color: var(--color-white);
-    font-family: var(--font-heading);
-    font-size: 1rem;
-    font-weight: 800;
+  .program-list div {
+    position: relative;
+    padding-left: 1.35rem;
   }
 
-  .program-list p {
-    color: rgba(255, 255, 255, 0.78);
+  .program-list div::before {
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    background: var(--color-blue);
+    content: "";
+    transform: rotate(45deg);
   }
 
-  .consulting-list h3 {
-    font-family: var(--font-heading);
-    font-size: 1rem;
-    font-weight: 800;
-  }
-
-  .consulting-list .card p {
-    margin-top: 0.65rem;
+  .program-list span {
     color: var(--color-ink);
     font-size: var(--paragraph-size);
-    line-height: 1.5;
+    line-height: 1.45;
   }
 
-  @media (max-width: 860px) {
-    .hero-grid,
-    .focus-grid,
-    .service-detail,
+  .consulting-heading {
+    display: grid;
+    gap: clamp(1.2rem, 2.5vw, 2rem);
+    margin-bottom: clamp(3rem, 5vw, 4.5rem);
+  }
+
+  .consulting-list {
+    display: grid;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .consulting-list article {
+    display: grid;
+    grid-template-columns: minmax(190px, 0.5fr) minmax(0, 1fr);
+    gap: clamp(1.2rem, 3vw, 2rem);
+    border-bottom: 1px solid var(--color-line);
+    padding: 1.35rem 0;
+  }
+
+  @media (max-width: 980px) {
+    .services-hero-grid,
+    .service-intro-grid,
+    .split-grid,
+    .training-grid,
+    .consulting-grid,
+    .program-groups article,
+    .consulting-list article {
+      grid-template-columns: 1fr;
+    }
+
+    .service-strip-inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .services-hero-grid {
+      min-height: auto;
+    }
+
+    .hero-image {
+      aspect-ratio: 1.45;
+    }
+
+    .split-grid .media-frame {
+      order: 2;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .focus-list,
     .program-list,
     .service-strip-inner {
       grid-template-columns: 1fr;
@@ -406,20 +546,10 @@ const servicesData = servicesPage.data as ServicesData;
 
     .service-strip a,
     .service-strip a:last-child {
-      min-height: 64px;
+      min-height: 62px;
       border-right: 0;
       border-left: 0;
       border-top: 1px solid rgba(255, 255, 255, 0.18);
-    }
-
-    .service-detail:nth-child(even) .service-image {
-      order: 0;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .focus-list {
-      grid-template-columns: 1fr;
     }
   }
 </style>

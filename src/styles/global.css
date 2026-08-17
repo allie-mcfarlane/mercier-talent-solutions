@@ -313,12 +313,13 @@ h4 em,
 }
 
 [data-reveal] {
-  opacity: 1;
-  transform: translateY(12px);
-  transition: transform 760ms var(--ease-soft);
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 760ms var(--ease-soft), transform 760ms var(--ease-soft);
 }
 
 [data-reveal].is-visible {
+  opacity: 1;
   transform: translateY(0);
 }
 

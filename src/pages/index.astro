@@ -208,15 +208,18 @@ const stats = [
   .hero-grid {
     display: grid;
     height: 100%;
-    grid-template-columns: minmax(0, 500px) minmax(0, 1fr);
-    gap: 48px;
+    width: 100%;
+    max-width: none;
+    grid-template-columns: minmax(420px, 42vw) minmax(0, 1fr);
+    gap: 0;
     align-items: start;
   }
 
   .hero-copy {
     position: relative;
     z-index: 1;
-    width: min(500px, calc(100vw - 80px));
+    width: min(100%, 620px);
+    margin-left: var(--page-gutter);
     padding-top: clamp(0.6rem, 1.35vw, 1.15rem);
     transform: translate3d(0, calc(var(--hero-scroll) * 18px), 0);
     transition: transform 80ms linear;
@@ -246,11 +249,11 @@ const stats = [
   }
 
   h1 {
-    max-width: 500px;
+    max-width: 580px;
     margin: 0.45rem 0 1.55rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
-    font-size: clamp(2.55rem, 4.4vw, 3.45rem);
+    font-size: clamp(2.55rem, 3.25vw, 4.1rem);
     font-weight: 700;
     line-height: 1.2;
   }
@@ -261,7 +264,7 @@ const stats = [
   }
 
   .lede {
-    max-width: 470px;
+    max-width: 540px;
     margin: 0 0 clamp(1.8rem, 3vw, 2.35rem);
     color: var(--color-ink);
     font-size: var(--paragraph-size);
@@ -283,14 +286,14 @@ const stats = [
   .hero-panel {
     position: relative;
     align-self: stretch;
-    width: calc(100% + max(var(--page-gutter), (100vw - var(--container)) / 2) + 4rem);
+    width: 100%;
     height: 627px;
     min-height: 627px;
     margin-top: -17px;
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    clip-path: polygon(17% 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
     transform: translate3d(0, calc(var(--hero-scroll) * -10px), 0);
     transition: transform 80ms linear;
     will-change: transform;
@@ -885,6 +888,10 @@ const stats = [
 
     h1::before {
       margin: 1.9rem 0 2rem;
+    }
+
+    .hero-copy {
+      margin-left: 0;
     }
 
     .hero-panel {
