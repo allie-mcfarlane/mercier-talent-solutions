@@ -73,15 +73,20 @@ const serviceLinks = [
 
   .footer-grid {
     display: grid;
-    grid-template-columns: 250px 200px 170px 1fr;
-    gap: 59px;
+    grid-template-columns: minmax(185px, 1fr) minmax(130px, 150px) minmax(150px, 170px) minmax(220px, 250px) minmax(185px, 1fr);
+    gap: 35px;
     align-items: start;
     border-top: 0;
     padding-top: 0;
   }
 
   .footer-brand {
+    grid-column: 1;
     width: fit-content;
+  }
+
+  .footer-grid nav:first-of-type {
+    grid-column: 2;
   }
 
   img {
@@ -113,6 +118,11 @@ const serviceLinks = [
     text-decoration: none;
   }
 
+  nav a,
+  .contact a {
+    white-space: nowrap;
+  }
+
   a:hover,
   a:focus-visible {
     text-decoration: underline;
@@ -142,6 +152,15 @@ const serviceLinks = [
 
     .footer-brand {
       grid-column: 1 / -1;
+    }
+
+    .footer-grid nav:first-of-type {
+      grid-column: auto;
+    }
+
+    nav a,
+    .contact a {
+      white-space: normal;
     }
   }
 
