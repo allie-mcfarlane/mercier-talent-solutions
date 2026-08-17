@@ -21,9 +21,10 @@ if (!page || !page.data.requestOptions) {
 const pageData = page.data as PrivacyFormData;
 const { Content } = await page.render();
 const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
+const description = "Opt out of targeted advertising data use with Mercier Talent Solutions.";
 ---
 
-<BaseLayout title="Privacy Choices | Mercier Talent Solutions">
+<BaseLayout title="Privacy Choices | Mercier Talent Solutions" description={description}>
   <section class="section">
     <div class="container privacy-grid">
       <div>

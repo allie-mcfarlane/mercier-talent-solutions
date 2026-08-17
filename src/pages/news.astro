@@ -19,7 +19,7 @@ const newsPageData = newsPage.data as NewsPageData;
 const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title="News & Insights | Mercier Talent Solutions" image="/images/optimized/news-hero-1400.jpg">
+<BaseLayout title="News & Insights | Mercier Talent Solutions" description={newsPageData.paragraphs[0]} image="/images/optimized/news-hero-1400.jpg">
   <section class="section news-hero">
     <div class="container hero-grid">
       <div class="section-heading">

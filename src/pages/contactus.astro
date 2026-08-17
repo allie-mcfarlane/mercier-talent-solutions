@@ -18,9 +18,10 @@ if (!contact || !contact.data.contacts) {
 
 const contactData = contact.data as ContactData;
 const formEndpoint = `https://formsubmit.co/${site.email}`;
+const description = "Contact Mercier Talent Solutions for executive coaching, assessments, training, and consulting for law firms.";
 ---
 
-<BaseLayout title="Contact Us | Mercier Talent Solutions" image="/images/optimized/contact-hero-1400.jpg">
+<BaseLayout title="Contact Us | Mercier Talent Solutions" description={description} image="/images/optimized/contact-hero-1400.jpg">
   <section class="section">
     <div class="container contact-grid">
       <div>

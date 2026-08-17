@@ -16,9 +16,10 @@ if (!privacy) {
 
 const privacyData = privacy.data as PrivacyData;
 const { Content } = await privacy.render();
+const description = "Mercier Talent Solutions privacy policy for visitors, clients, and prospective clients.";
 ---
 
-<BaseLayout title="Privacy Policy | Mercier Talent Solutions">
+<BaseLayout title="Privacy Policy | Mercier Talent Solutions" description={description}>
   <section class="section">
     <div class="container policy">
       <p class="eyebrow">{privacyData.eyebrow}</p>

@@ -21,6 +21,10 @@ const titleEnd = titleMatch?.[2] ?? post.data.title;
   title={`${post.data.seoTitle ?? post.data.title} | Mercier Talent Solutions`}
   description={post.data.seoDescription ?? post.data.excerpt}
   image={post.data.image}
+  type="article"
+  publishedTime={post.data.pubDate}
+  modifiedTime={post.data.updatedDate}
+  author={post.data.author}
 >
   <article class="section">
     <div class="container article-shell">

@@ -22,9 +22,10 @@ if (!page || !page.data.requestOptions) {
 const pageData = page.data as PrivacyFormData;
 const { Content } = await page.render();
 const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
+const description = "Submit a privacy request or appeal to Mercier Talent Solutions.";
 ---
 
-<BaseLayout title="Data Requests & Appeals | Mercier Talent Solutions">
+<BaseLayout title="Data Requests & Appeals | Mercier Talent Solutions" description={description}>
   <section class="section">
     <div class="container privacy-grid">
       <div>

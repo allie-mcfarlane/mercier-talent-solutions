@@ -33,7 +33,11 @@ if (!about || !about.data.firm || !about.data.team) {
 const aboutData = about.data as AboutData;
 ---
 
-<BaseLayout title="About | Mercier Talent Solutions" image="/images/optimized/julia-mercier-1400.jpg">
+<BaseLayout
+  title="About | Mercier Talent Solutions"
+  description={aboutData.lede}
+  image="/images/optimized/julia-mercier-1400.jpg"
+>
   <section class="section about-hero">
     <div class="container hero-grid">
       <div>

@@ -18,7 +18,7 @@ const whitePapersPageData = whitePapersPage.data as WhitePapersPageData;
 const papers = (await getCollection("white-papers")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<BaseLayout title="White Papers | Mercier Talent Solutions">
+<BaseLayout title="White Papers | Mercier Talent Solutions" description={whitePapersPageData.lede}>
   <section class="section">
     <div class="container">
       <div class="section-heading">
