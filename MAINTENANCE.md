@@ -15,6 +15,8 @@ Routine future workflow:
 
 Never place private keys, passwords, email-service secrets, or Cloudflare Turnstile secret keys in the public site files.
 
+The `/admin/` area is blocked from search indexing through both the admin page metadata and `robots.txt`.
+
 ## Privacy Compliance
 
 The site must include visible privacy links, a privacy policy with a last-updated month and year, a privacy choices page for targeted advertising opt-out requests, and a clear way for visitors to submit privacy requests and appeals.
