@@ -150,20 +150,20 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .firm-band {
     background: var(--color-white);
-    padding: clamp(5.2rem, 8.5vw, 8rem) 0;
+    padding: clamp(6rem, 9.5vw, 9rem) 0;
   }
 
   .team-card {
     display: grid;
     grid-template-columns: minmax(220px, 286px) minmax(0, 1fr);
-    gap: clamp(3rem, 5.6vw, 5.4rem);
+    gap: clamp(3.5rem, 6.2vw, 6rem);
     align-items: start;
   }
 
   .firm-card {
     display: grid;
     grid-template-columns: minmax(260px, 0.45fr) minmax(320px, 0.55fr);
-    gap: clamp(2rem, 5vw, 5rem);
+    gap: clamp(3rem, 6vw, 6.25rem);
     align-items: center;
   }
 
@@ -205,12 +205,12 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .team-band {
     background: var(--color-paper);
-    padding: clamp(5.3rem, 8.8vw, 8.3rem) 0;
+    padding: clamp(6.2rem, 9.5vw, 9rem) 0 clamp(7.4rem, 11vw, 10.5rem);
   }
 
   .team-list {
     display: grid;
-    gap: clamp(5rem, 8vw, 7.5rem);
+    gap: clamp(6rem, 9vw, 8.75rem);
   }
 
   .firm-card .eyebrow {
@@ -234,6 +234,23 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .team-copy > .eyebrow + h2 {
     margin-top: 0.75rem;
+  }
+
+  .team-copy > h2 {
+    margin-bottom: 1.45rem;
+  }
+
+  .team-copy > p:not(.eyebrow) {
+    margin: 0 0 1.35rem;
+  }
+
+  .team-copy > p:not(.eyebrow):last-of-type {
+    margin-bottom: 1.45rem;
+  }
+
+  .team-copy .meta-row {
+    margin-top: 0.2rem;
+    margin-bottom: 1.9rem;
   }
 
   .portrait {
