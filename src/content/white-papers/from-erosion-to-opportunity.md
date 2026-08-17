@@ -2,7 +2,7 @@
 title: "From Erosion to Opportunity"
 number: "02"
 date: 2026-03-30
-description: "Advancing Lawyer Development in the Al Era."
+description: "Advancing Lawyer Development in the AI Era."
 document: "/documents/from-erosion-to-opportunity.pdf"
 ---
 

@@ -19,8 +19,8 @@ Included so far:
 - Wix reference imagery copied into `public/images`
 - Current white paper PDFs copied into `public/documents`
 - Markdown-backed News & Insights and White Paper collections
-- Static post detail routes for current Wix feed entries
-- Starter Decap admin configuration for posts and white papers
+- Static post detail routes for current Wix feed entries with migrated article bodies
+- Decap admin configuration for posts and white papers
 - Starter documentation
 
 ## Commands
@@ -34,6 +34,18 @@ pnpm build
 ## Content Rule
 
 Do not rewrite, shorten, polish, or correct site wording unless the owner approves it. Possible copy issues belong in `CONTENT-AUDIT.md`.
+
+## Admin And Blog Workflow
+
+The admin area lives at `/admin/` and is configured with Decap CMS.
+
+- News & Insights posts are Markdown files in `src/content/posts`.
+- White papers are Markdown files in `src/content/white-papers`.
+- Uploaded images and documents go through the CMS media library.
+- `publish_mode: editorial_workflow` keeps draft/review/publish stages available.
+- Publishing through the CMS commits to `main`; the production deployment should rebuild automatically from GitHub once deployment is connected.
+
+GitHub authentication/OAuth still needs to be completed before production admin publishing will work.
 
 ## Privacy Requirement
 

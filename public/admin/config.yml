@@ -3,6 +3,11 @@ backend:
   repo: allie-mcfarlane/mercier-talent-solutions
   branch: main
 
+site_url: https://merciertalentsolutions.com
+display_url: https://merciertalentsolutions.com
+logo_url: /images/mercier-logo-color.png
+show_preview_links: true
+
 media_folder: public/images/uploads
 public_folder: /images/uploads
 
@@ -14,28 +19,32 @@ collections:
     folder: src/content/posts
     create: true
     slug: "{{slug}}"
+    summary: "{{title}} - {{category}} - {{pubDate}}"
+    preview_path: "post/{{slug}}"
     fields:
       - { label: Title, name: title, widget: string }
       - { label: Author, name: author, widget: string, default: Julia Mercier }
-      - { label: Publication Date, name: pubDate, widget: datetime }
-      - { label: Category, name: category, widget: select, options: [Insight, Speaking, White Paper, Announcement, News] }
-      - { label: Excerpt, name: excerpt, widget: text }
+      - { label: Publication Date, name: pubDate, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
+      - { label: Category, name: category, widget: select, default: Insight, options: [Insight, Speaking, White Paper, Announcement, News] }
+      - { label: Excerpt, name: excerpt, widget: text, hint: "Short card and SEO summary shown on the News & Insights page." }
       - { label: Featured Image, name: image, widget: image, required: false }
       - { label: Featured Image Alt Text, name: imageAlt, widget: string, required: false }
       - { label: SEO Title, name: seoTitle, widget: string, required: false }
       - { label: SEO Description, name: seoDescription, widget: text, required: false }
-      - { label: Body, name: body, widget: markdown }
+      - { label: Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote] }
   - name: white-papers
     label: White Papers
     folder: src/content/white-papers
     create: true
     slug: "{{slug}}"
+    summary: "No. {{number}} - {{title}}"
+    preview_path: "whitepapers"
     fields:
       - { label: Title, name: title, widget: string }
       - { label: Number, name: number, widget: string }
-      - { label: Publication Date, name: date, widget: datetime }
+      - { label: Publication Date, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
       - { label: Description, name: description, widget: text }
       - { label: Document, name: document, widget: file, required: false }
       - { label: Featured Image, name: image, widget: image, required: false }
       - { label: Featured Image Alt Text, name: imageAlt, widget: string, required: false }
-      - { label: Body, name: body, widget: markdown }
+      - { label: Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote] }

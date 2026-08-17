@@ -74,4 +74,49 @@ const { Content } = await post.render();
   .article-body :global(p) {
     margin: 0 0 1.1rem;
   }
+
+  .article-body :global(h2),
+  .article-body :global(h3),
+  .article-body :global(h4) {
+    margin: 2rem 0 0.8rem;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .article-body :global(h2) {
+    font-size: clamp(1.9rem, 4vw, 3rem);
+  }
+
+  .article-body :global(h3) {
+    font-size: clamp(1.45rem, 3vw, 2rem);
+  }
+
+  .article-body :global(ul),
+  .article-body :global(ol) {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0 0 1.3rem;
+    padding-left: 1.2rem;
+  }
+
+  .article-body :global(li) {
+    padding-left: 0.25rem;
+  }
+
+  .article-body :global(blockquote) {
+    margin: 1.6rem 0;
+    border-left: 3px solid var(--color-blue);
+    padding: 0.2rem 0 0.2rem 1.2rem;
+    color: var(--color-blue-dark);
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+    line-height: 1.35;
+  }
+
+  .article-body :global(a) {
+    color: var(--color-blue-dark);
+    font-weight: 700;
+  }
 </style>

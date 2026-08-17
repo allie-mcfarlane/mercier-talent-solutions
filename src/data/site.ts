@@ -76,7 +76,7 @@ export const trainingPrograms = [
     group: "Leadership & Influence",
     items: [
       ["Leadership Skills for Lawyers", "Lawyers are trained to advise, not necessarily to lead. This program builds the practical leadership behaviors that earn trust and followership: setting direction, holding people accountable, and creating the conditions for teams to do their best work under pressure."],
-      ["Emotional Intellegence for Law Firm Leaders", "Self-awareness, empathy, and composure are decisive in high-stakes legal environments. Participants learn to read team dynamics, manage their own reactions under stress, and navigate the interpersonal complexity of firm life with greater skill."],
+      ["Emotional Intelligence for Law Firm Leaders", "Self-awareness, empathy, and composure are decisive in high-stakes legal environments. Participants learn to read team dynamics, manage their own reactions under stress, and navigate the interpersonal complexity of firm life with greater skill."],
       ["Emerging Leadership", "The skills that make a great associate are not the ones that make a great leader. Designed for those stepping into supervisory roles, this session covers the mindset shift from doing the work to enabling it — delegation, oversight, and developing others."],
       ["Presence, Authority & Impact", "A framework for showing up with credibility and confidence — in pitch meetings, partner discussions, and firm forums. Covers verbal and non-verbal presence, structuring a point for impact, and holding the room without overpowering it."],
     ],
@@ -85,7 +85,7 @@ export const trainingPrograms = [
     group: "Feedback, Communication & Difficult Conversations",
     items: [
       ["The Feedback Deficit", "Explores why capable leaders hesitate to give candid feedback, and the quiet cost of that avoidance to performance, trust, and retention. Sets the case for feedback as a firm-wide discipline rather than an annual event."],
-      ["Recieving Feedback Without Defensiveness", "Feedback only works if it can be received. This session builds the skills to listen, process, and respond to feedback in ways that keep dialogue open and model the behavior leaders want to see across their teams."],
+      ["Receiving Feedback Without Defensiveness", "Feedback only works if it can be received. This session builds the skills to listen, process, and respond to feedback in ways that keep dialogue open and model the behavior leaders want to see across their teams."],
       ["Feedback Across Generations", "Different generations bring different expectations to feedback. This program helps leaders adapt their approach across levels and age groups, reducing friction and building mutual understanding within mixed teams."],
       ["From Avoidance to Candor", "A practical toolkit for delivering clear, direct feedback that lands without triggering defensiveness or damaging the relationship. Includes structures for framing difficult messages and rehearsing high-stakes conversations."],
       ["Feedback as a Leadership Skill", "Reframes feedback as a core leadership discipline: setting clear expectations up front, course-correcting in real time, and reinforcing progress so that development is continuous rather than confined to review season."],
@@ -95,7 +95,7 @@ export const trainingPrograms = [
     group: "Performance, Productivity & Time Management",
     items: [
       ["Strategic Time Management and Prioritization", "For lawyers managing competing demands, this session builds systems for setting priorities under pressure and making deliberate tradeoffs — protecting focus and judgment in high-volume, high-stakes work."],
-      ["Reducing Friction in Team Colaboration", "Identifies where unclear expectations and clumsy handoffs slow legal teams down, and offers practical ways to simplify processes, clarify ownership, and make collaboration smoother across a matter."],
+      ["Reducing Friction in Team Collaboration", "Identifies where unclear expectations and clumsy handoffs slow legal teams down, and offers practical ways to simplify processes, clarify ownership, and make collaboration smoother across a matter."],
       ["Concise Communication for High Stakes Environments", "Senior audiences want the answer first. Participants learn to structure messages for clarity and impact, lead with the conclusion, and improve decision-making by cutting through detail without losing rigor."],
     ],
   },

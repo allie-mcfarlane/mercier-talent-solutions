@@ -6,6 +6,19 @@ import { services, site } from "../data/site";
 const recentPosts = (await getCollection("posts"))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 8);
+
+const homeServices = [services[0], services[2], services[1], services[3]];
+const marqueeItems = [
+  "Leadership",
+  "Communication",
+  "Executive Presence",
+  "Feedback",
+  "Delegation",
+  "Business Development",
+  "Time Management",
+  "Team Effectiveness",
+  "Career Strategy",
+];
 ---
 
 <BaseLayout title="Home | Mercier Talent Solutions" description={site.description}>
@@ -24,7 +37,7 @@ const recentPosts = (await getCollection("posts"))
         </div>
       </div>
       <div class="hero-panel media-frame">
-        <img src="/images/waiting-area.png" alt="A calm professional waiting area" />
+        <img src="/images/navy-office-corridor.png" alt="A calm professional office lounge and corridor" />
       </div>
     </div>
   </section>
@@ -46,6 +59,12 @@ const recentPosts = (await getCollection("posts"))
     </div>
   </section>
 
+  <section class="marquee-band" aria-label="Core focus areas">
+    <div class="marquee-track">
+      {[...marqueeItems, ...marqueeItems].map((item) => <span>{item}</span>)}
+    </div>
+  </section>
+
   <section class="section">
     <div class="container">
       <div class="section-heading">
@@ -53,7 +72,7 @@ const recentPosts = (await getCollection("posts"))
         <h2>How we work with firms</h2>
       </div>
       <div class="grid service-grid">
-        {services.map((service) => (
+        {homeServices.map((service) => (
           <article class="card">
             <p class="eyebrow">{service.eyebrow}</p>
             <h3>{service.title}</h3>
@@ -103,17 +122,32 @@ const recentPosts = (await getCollection("posts"))
 
 <style>
   .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: min(720px, calc(100vh - 78px));
     padding: clamp(4.5rem, 9vw, 8rem) 0 clamp(3rem, 7vw, 6rem);
-    background:
-      linear-gradient(120deg, rgba(245, 245, 243, 0.94), rgba(245, 245, 243, 0.74)),
-      radial-gradient(circle at 84% 12%, rgba(69, 98, 142, 0.18), transparent 34%);
+    background: var(--color-white);
   }
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.16fr) minmax(280px, 0.84fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
     gap: clamp(2rem, 6vw, 5rem);
     align-items: center;
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-copy::before {
+    display: block;
+    width: 92px;
+    height: 3px;
+    margin: 1.7rem 0 2.8rem;
+    background: var(--color-blue-dark);
+    content: "";
   }
 
   h1 {
@@ -139,37 +173,107 @@ const recentPosts = (await getCollection("posts"))
   }
 
   .hero-panel {
-    aspect-ratio: 0.92;
+    position: relative;
+    align-self: stretch;
+    width: calc(100% + max(1rem, (100vw - var(--container)) / 2));
+    min-height: 520px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    clip-path: polygon(17% 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .hero-panel::before,
+  .hero-panel::after {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    content: "";
+  }
+
+  .hero-panel::before {
+    right: 14%;
+    top: 2%;
+    width: 52%;
+    height: 94%;
+    border-right: 3px solid rgba(255, 255, 255, 0.78);
+    border-radius: 50%;
+    transform: rotate(-17deg);
+  }
+
+  .hero-panel::after {
+    right: 12%;
+    top: 4%;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
   }
 
   .proof {
-    background: var(--color-white);
+    background: var(--color-blue-dark);
+    color: var(--color-white);
   }
 
   .proof-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1px;
-    background: var(--color-line);
-    border: 1px solid var(--color-line);
+    background: transparent;
+    border: 0;
   }
 
   .proof article {
-    background: var(--color-white);
+    background: transparent;
     padding: clamp(1.4rem, 3vw, 2rem);
+    text-align: center;
   }
 
   .proof h2 {
     margin: 0 0 0.6rem;
-    color: var(--color-ink);
-    font-family: var(--font-serif);
-    font-size: clamp(1.45rem, 3vw, 2.35rem);
-    font-weight: 500;
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: clamp(1.15rem, 2vw, 1.35rem);
+    font-weight: 800;
   }
 
   .proof p {
     margin: 0;
-    color: var(--color-muted);
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .marquee-band {
+    overflow: hidden;
+    padding: 1.05rem 0;
+    background: #d8d7d2;
+    color: rgba(26, 43, 70, 0.58);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 34s linear infinite;
+  }
+
+  .marquee-track span {
+    display: inline-flex;
+    align-items: center;
+    font-size: clamp(0.86rem, 1.3vw, 1.06rem);
+    font-weight: 600;
+  }
+
+  .marquee-track span::after {
+    margin: 0 0.9rem;
+    color: rgba(69, 98, 142, 0.62);
+    content: "◆";
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
   }
 
   .service-grid {
@@ -244,6 +348,32 @@ const recentPosts = (await getCollection("posts"))
     .approach-grid,
     .proof-grid {
       grid-template-columns: 1fr;
+    }
+
+    .hero {
+      min-height: 0;
+    }
+
+    .hero-copy::before {
+      margin: 1.2rem 0 2rem;
+    }
+
+    .hero-panel {
+      width: 100%;
+      min-height: auto;
+      aspect-ratio: 1.25;
+      border-radius: var(--radius);
+      clip-path: none;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel::before,
+    .hero-panel::after {
+      display: none;
+    }
+
+    .proof article {
+      text-align: left;
     }
   }
 </style>
