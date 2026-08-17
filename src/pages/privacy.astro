@@ -1,67 +1,30 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { site } from "../data/site";
+import { getEntry } from "astro:content";
+
+type PrivacyData = {
+  eyebrow: string;
+  title: string;
+  titleAccent: string;
+  updated: string;
+};
+
+const privacy = await getEntry("pages", "privacy");
+if (!privacy) {
+  throw new Error("Privacy policy content is missing.");
+}
+
+const privacyData = privacy.data as PrivacyData;
+const { Content } = await privacy.render();
 ---
 
 <BaseLayout title="Privacy Policy | Mercier Talent Solutions">
   <section class="section">
     <div class="container policy">
-      <p class="eyebrow">Privacy Policy</p>
-      <h1>Privacy <em>Policy</em></h1>
-      <p class="updated">Last updated: August 2026</p>
-
-      <p>
-        Mercier Talent Solutions respects the privacy of visitors, clients, and prospective clients. This
-        policy explains the kinds of information the website may collect, how that information may be used,
-        and how visitors may contact us about privacy requests.
-      </p>
-
-      <h2>Information We May Collect</h2>
-      <p>
-        We may collect information that visitors choose to provide through the contact form, such as name,
-        email address, message details, and the area of service interest selected by the visitor.
-      </p>
-      <p>
-        The website may also collect limited technical information, such as browser type, device information,
-        general usage information, and security information needed to protect the site from spam or abuse.
-      </p>
-
-      <h2>How We May Use Information</h2>
-      <p>
-        We may use information to respond to inquiries, provide requested information, operate and protect
-        the website, improve the website, and maintain business records.
-      </p>
-
-      <h2>Targeted Advertising</h2>
-      <p>
-        This website is being built so visitors have a visible way to opt out of data collection or use for
-        targeted advertising. Visit <a href="/privacy-choices/">Privacy Choices</a> to submit an opt-out
-        request.
-      </p>
-
-      <h2>Large Language Model Training</h2>
-      <p>
-        This policy must disclose whether Mercier Talent Solutions collects, uses, or sells personal data
-        for the purpose of training large language models. This statement should be finalized by the site
-        owner before launch.
-      </p>
-
-      <h2>Privacy Requests And Appeals</h2>
-      <p>
-        Visitors may submit privacy requests, including appeal requests, through the
-        <a href="/data-requests/">Data Requests & Appeals</a> page or by emailing
-        <a href={`mailto:${site.privacyEmail}`}>{site.privacyEmail}</a>.
-      </p>
-      <p>
-        Website privacy forms are sent to Mercier Talent Solutions by a third-party form service. The form
-        service may process the information needed to deliver the request email.
-      </p>
-
-      <h2>Contact</h2>
-      <p>
-        Questions about this policy may be sent to
-        <a href={`mailto:${site.privacyEmail}`}>{site.privacyEmail}</a>.
-      </p>
+      <p class="eyebrow">{privacyData.eyebrow}</p>
+      <h1>{privacyData.title} <em>{privacyData.titleAccent}</em></h1>
+      <p class="updated">{privacyData.updated}</p>
+      <Content />
     </div>
   </section>
 </BaseLayout>
@@ -85,7 +48,7 @@ import { site } from "../data/site";
     font-weight: 800;
   }
 
-  h2 {
+  .policy :global(h2) {
     margin: 2rem 0 0.55rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
@@ -93,8 +56,13 @@ import { site } from "../data/site";
     font-weight: 700;
   }
 
-  p {
+  .policy :global(p) {
     color: var(--color-muted);
     font-size: 1.08rem;
+  }
+
+  .policy :global(a) {
+    color: var(--color-blue-dark);
+    font-weight: 800;
   }
 </style>

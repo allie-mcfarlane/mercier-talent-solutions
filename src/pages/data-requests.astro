@@ -2,7 +2,25 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Turnstile from "../components/Turnstile.astro";
 import { site } from "../data/site";
+import { getEntry } from "astro:content";
 
+type PrivacyFormData = {
+  eyebrow: string;
+  title: string;
+  titleAccent: string;
+  formSubject: string;
+  formName: string;
+  includeName?: boolean;
+  requestOptions: string[];
+};
+
+const page = await getEntry("pages", "data-requests");
+if (!page || !page.data.requestOptions) {
+  throw new Error("Data requests content is missing.");
+}
+
+const pageData = page.data as PrivacyFormData;
+const { Content } = await page.render();
 const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
 ---
 
@@ -10,28 +28,22 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
   <section class="section">
     <div class="container privacy-grid">
       <div>
-        <p class="eyebrow">Data Requests & Appeals</p>
-        <h1>Submit a privacy request or <em>appeal</em></h1>
-        <p>
-          Visitors may use this page to request access, correction, deletion, portability, opt out, or to
-          appeal a privacy request decision.
-        </p>
-        <p>
-          This form sends privacy requests and appeals to
-          <a href={`mailto:${site.privacyEmail}`}>{site.privacyEmail}</a>. Visitors may also email that
-          address directly.
-        </p>
+        <p class="eyebrow">{pageData.eyebrow}</p>
+        <h1>{pageData.title} <em>{pageData.titleAccent}</em></h1>
+        <div class="intro"><Content /></div>
       </div>
       <form action={formEndpoint} method="POST">
-        <input type="hidden" name="_subject" value="Privacy Request or Appeal" />
+        <input type="hidden" name="_subject" value={pageData.formSubject} />
         <input type="hidden" name="_template" value="table" />
         <input type="hidden" name="_captcha" value="false" />
-        <input type="hidden" name="form_name" value="Data Requests and Appeals" />
+        <input type="hidden" name="form_name" value={pageData.formName} />
         <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
-        <label>
-          NAME
-          <input type="text" name="name" />
-        </label>
+        {pageData.includeName && (
+          <label>
+            NAME
+            <input type="text" name="name" />
+          </label>
+        )}
         <label>
           EMAIL
           <input type="email" name="email" required />
@@ -40,12 +52,7 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
           REQUEST TYPE
           <select name="request_type" required>
             <option value="">Select one</option>
-            <option>Access my data</option>
-            <option>Correct my data</option>
-            <option>Delete my data</option>
-            <option>Receive a copy of my data</option>
-            <option>Opt out of targeted advertising data use</option>
-            <option>Appeal a privacy request decision</option>
+            {pageData.requestOptions.map((option) => <option>{option}</option>)}
           </select>
         </label>
         <label>
@@ -75,9 +82,14 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
     line-height: 1;
   }
 
-  p {
+  .intro :global(p) {
     color: var(--color-muted);
     font-size: 1.08rem;
+  }
+
+  .intro :global(a) {
+    color: var(--color-blue-dark);
+    font-weight: 800;
   }
 
   form {

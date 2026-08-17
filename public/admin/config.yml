@@ -192,6 +192,38 @@ collections:
             fields:
               - { label: Eyebrow, name: eyebrow, widget: string }
               - { label: Items, name: items, widget: list, field: { label: Item, name: item, widget: string } }
+      - name: privacy
+        label: Privacy Policy
+        file: src/content/pages/privacy.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Last Updated, name: updated, widget: string }
+          - { label: Policy Content, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list] }
+      - name: privacy-choices
+        label: Privacy Choices Page
+        file: src/content/pages/privacy-choices.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Form Email Subject, name: formSubject, widget: string }
+          - { label: Form Name, name: formName, widget: string }
+          - { label: Request Options, name: requestOptions, widget: list, field: { label: Option, name: option, widget: string } }
+          - { label: Page Intro Content, name: body, widget: markdown, buttons: [bold, italic, link, bulleted-list, numbered-list] }
+      - name: data-requests
+        label: Data Requests & Appeals Page
+        file: src/content/pages/data-requests.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Form Email Subject, name: formSubject, widget: string }
+          - { label: Form Name, name: formName, widget: string }
+          - { label: Show Name Field, name: includeName, widget: boolean, default: true }
+          - { label: Request Options, name: requestOptions, widget: list, field: { label: Option, name: option, widget: string } }
+          - { label: Page Intro Content, name: body, widget: markdown, buttons: [bold, italic, link, bulleted-list, numbered-list] }
   - name: posts
     label: News & Insights
     folder: src/content/posts

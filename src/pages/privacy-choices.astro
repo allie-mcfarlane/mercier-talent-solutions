@@ -2,7 +2,24 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Turnstile from "../components/Turnstile.astro";
 import { site } from "../data/site";
+import { getEntry } from "astro:content";
 
+type PrivacyFormData = {
+  eyebrow: string;
+  title: string;
+  titleAccent: string;
+  formSubject: string;
+  formName: string;
+  requestOptions: string[];
+};
+
+const page = await getEntry("pages", "privacy-choices");
+if (!page || !page.data.requestOptions) {
+  throw new Error("Privacy choices content is missing.");
+}
+
+const pageData = page.data as PrivacyFormData;
+const { Content } = await page.render();
 const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
 ---
 
@@ -10,22 +27,15 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
   <section class="section">
     <div class="container privacy-grid">
       <div>
-        <p class="eyebrow">Privacy Choices</p>
-        <h1>Opt out of targeted advertising data <em>use</em></h1>
-        <p>
-          Use this page to opt out of data collection or use for targeted advertising purposes. This page is
-          included so visitors have a clear, visible privacy choice.
-        </p>
-        <p>
-          This form sends opt-out requests to <a href={`mailto:${site.privacyEmail}`}>{site.privacyEmail}</a>.
-          Visitors may also email that address directly.
-        </p>
+        <p class="eyebrow">{pageData.eyebrow}</p>
+        <h1>{pageData.title} <em>{pageData.titleAccent}</em></h1>
+        <div class="intro"><Content /></div>
       </div>
       <form action={formEndpoint} method="POST">
-        <input type="hidden" name="_subject" value="Privacy Opt-Out Request" />
+        <input type="hidden" name="_subject" value={pageData.formSubject} />
         <input type="hidden" name="_template" value="table" />
         <input type="hidden" name="_captcha" value="false" />
-        <input type="hidden" name="form_name" value="Privacy Choices Opt-Out" />
+        <input type="hidden" name="form_name" value={pageData.formName} />
         <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
         <label>
           EMAIL
@@ -35,9 +45,7 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
           REQUEST TYPE
           <select name="request_type" required>
             <option value="">Select one</option>
-            <option>Opt out of targeted advertising data use</option>
-            <option>Opt out of sale of personal data, if applicable</option>
-            <option>Other privacy choice</option>
+            {pageData.requestOptions.map((option) => <option>{option}</option>)}
           </select>
         </label>
         <label>
@@ -67,9 +75,14 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
     line-height: 1;
   }
 
-  p {
+  .intro :global(p) {
     color: var(--color-muted);
     font-size: 1.08rem;
+  }
+
+  .intro :global(a) {
+    color: var(--color-blue-dark);
+    font-weight: 800;
   }
 
   form {

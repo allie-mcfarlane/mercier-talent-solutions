@@ -92,6 +92,11 @@ const pages = defineCollection({
       )
       .optional(),
     paragraphs: z.array(z.string()).optional(),
+    updated: z.string().optional(),
+    formSubject: z.string().optional(),
+    formName: z.string().optional(),
+    includeName: z.boolean().optional(),
+    requestOptions: z.array(z.string()).optional(),
     contacts: z
       .array(
         z.object({
