@@ -335,7 +335,7 @@ const servicesData = servicesPage.data as ServicesData;
 
   .training {
     margin-inline: calc(50% - 50vw);
-    padding: clamp(3rem, 5.2vw, 4.7rem) max(1rem, calc((100vw - var(--container)) / 2));
+    padding: clamp(3rem, 5.2vw, 4.7rem) max(var(--page-gutter), calc((100vw - var(--container)) / 2));
     background: var(--color-blue-dark);
     color: var(--color-white);
   }
