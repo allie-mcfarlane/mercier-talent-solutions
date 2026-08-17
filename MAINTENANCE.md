@@ -2,6 +2,8 @@
 
 This site should be updated through this GitHub repository.
 
+Use `LAUNCH-CHECKLIST.md` to track production launch, admin authentication, form testing, Turnstile activation, and domain cutover.
+
 Routine future workflow:
 
 1. Pull the latest repository version.

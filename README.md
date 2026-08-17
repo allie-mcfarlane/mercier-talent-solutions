@@ -28,6 +28,7 @@ Included so far:
 - Static hosting headers for basic browser hardening, admin noindex, and asset caching
 - GitHub Actions build check on pushes and pull requests to `main`
 - Starter documentation
+- Launch checklist in `LAUNCH-CHECKLIST.md`
 
 ## Commands
 
