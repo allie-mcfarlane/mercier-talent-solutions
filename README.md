@@ -8,15 +8,19 @@ https://allie637.wixstudio.com/my-site
 
 ## Current Status
 
-First build foundation in progress.
+First build foundation and content migration in progress.
 
 Included so far:
 
 - Astro project setup
 - Main page routes
 - Shared header, footer, layout, and styles
-- Early homepage implementation
-- Starter admin configuration
+- Homepage, About, Services, News & Insights, White Papers, contact, and privacy routes
+- Wix reference imagery copied into `public/images`
+- Current white paper PDFs copied into `public/documents`
+- Markdown-backed News & Insights and White Paper collections
+- Static post detail routes for current Wix feed entries
+- Starter Decap admin configuration for posts and white papers
 - Starter documentation
 
 ## Commands

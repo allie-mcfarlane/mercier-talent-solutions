@@ -25,3 +25,17 @@ collections:
       - { label: SEO Title, name: seoTitle, widget: string, required: false }
       - { label: SEO Description, name: seoDescription, widget: text, required: false }
       - { label: Body, name: body, widget: markdown }
+  - name: white-papers
+    label: White Papers
+    folder: src/content/white-papers
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Number, name: number, widget: string }
+      - { label: Publication Date, name: date, widget: datetime }
+      - { label: Description, name: description, widget: text }
+      - { label: Document, name: document, widget: file, required: false }
+      - { label: Featured Image, name: image, widget: image, required: false }
+      - { label: Featured Image Alt Text, name: imageAlt, widget: string, required: false }
+      - { label: Body, name: body, widget: markdown }

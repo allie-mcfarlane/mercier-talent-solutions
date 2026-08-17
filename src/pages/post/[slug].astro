@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={`${post.data.title} | Mercier Talent Solutions`} description={post.data.seoDescription ?? post.data.excerpt}>
+  <article class="section">
+    <div class="container article-shell">
+      <a class="back-link" href="/news/">Back to News & Insights</a>
+      <header>
+        <span class="pill">{post.data.category}</span>
+        <h1>{post.data.title}</h1>
+        <p class="dek">{post.data.excerpt}</p>
+        <div class="meta-row">
+          <span>Julia Mercier</span>
+          <time datetime={post.data.pubDate.toISOString()}>
+            {post.data.pubDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+          </time>
+        </div>
+      </header>
+      <div class="article-body">
+        <Content />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-shell {
+    max-width: 880px;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    color: var(--color-blue-dark);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  h1 {
+    margin: 0.5rem 0 1rem;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .dek {
+    color: var(--color-muted);
+    font-size: clamp(1.08rem, 2vw, 1.28rem);
+  }
+
+  .article-body {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: 2rem;
+    color: var(--color-text);
+    font-size: 1.08rem;
+  }
+
+  .article-body :global(p) {
+    margin: 0 0 1.1rem;
+  }
+</style>

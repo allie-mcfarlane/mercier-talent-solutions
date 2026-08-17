@@ -6,15 +6,19 @@
 - [x] Empty repository cloned
 - [x] First site foundation created
 - [x] First build check
-- [ ] First preview review
+- [x] First preview review
+- [x] Local Wix assets copied for current page imagery
+- [x] News & Insights collection created from Wix post feed
+- [x] Post detail routes created
+- [x] White paper collection and download links created
 
 ## Later Steps
 
-- [ ] Migrate all primary-page copy
-- [ ] Migrate all News & Insights articles
-- [ ] Migrate all white paper PDFs
-- [ ] Migrate and optimize images
-- [ ] Finish admin editing setup
+- [x] Migrate all primary-page copy
+- [ ] Migrate complete body copy for all News & Insights articles
+- [x] Migrate all current white paper PDFs
+- [ ] Optimize images into responsive formats
+- [ ] Finish admin authentication setup
 - [ ] Add working contact form
 - [ ] Add Cloudflare Turnstile
 - [ ] Finalize Connecticut privacy compliance language with owner/legal review
@@ -24,5 +28,5 @@
 - [x] Connect Data Requests & Appeals form
 - [ ] Honor browser opt-out preference signals where applicable
 - [ ] Add SEO, sitemap, and redirects
-- [ ] Run full responsive review
+- [x] Run first responsive review
 - [ ] Push approved work to GitHub

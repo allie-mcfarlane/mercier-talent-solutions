@@ -1,6 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { recentPosts, services, site } from "../data/site";
+import { getCollection } from "astro:content";
+import { services, site } from "../data/site";
+
+const recentPosts = (await getCollection("posts"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 8);
 ---
 
 <BaseLayout title="Home | Mercier Talent Solutions" description={site.description}>
@@ -18,8 +23,8 @@ import { recentPosts, services, site } from "../data/site";
           <a class="button secondary" href="/contactus/">Contact us</a>
         </div>
       </div>
-      <div class="hero-panel" aria-label="Mercier Talent Solutions focus areas">
-        <p>LEADERSHIP ◆ COMMUNICATION ◆ EXECUTIVE PRESENCE ◆ FEEDBACK ◆ DELEGATION ◆ BUSINESS DEVELOPMENT ◆ TIME MANAGEMENT ◆ TEAM EFFECTIVENESS ◆ CAREER STRATEGY ◆</p>
+      <div class="hero-panel media-frame">
+        <img src="/images/waiting-area.png" alt="A calm professional waiting area" />
       </div>
     </div>
   </section>
@@ -53,6 +58,7 @@ import { recentPosts, services, site } from "../data/site";
             <p class="eyebrow">{service.eyebrow}</p>
             <h3>{service.title}</h3>
             <p>{service.text}</p>
+            <a class="button text" href="/services/">LEARN MORE</a>
           </article>
         ))}
       </div>
@@ -83,9 +89,11 @@ import { recentPosts, services, site } from "../data/site";
       </div>
       <div class="news-list">
         {recentPosts.map((post) => (
-          <a class="news-card" href={post.href}>
-            <h3>{post.title}</h3>
-            <p>{post.excerpt}</p>
+          <a class="news-card" href={`/post/${post.slug}/`}>
+            <span class="pill">{post.data.category}</span>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.excerpt}</p>
+            <span class="meta-row">Julia Mercier · {post.data.pubDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
           </a>
         ))}
       </div>
@@ -131,19 +139,7 @@ import { recentPosts, services, site } from "../data/site";
   }
 
   .hero-panel {
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius);
-    background: var(--color-white);
-    box-shadow: var(--shadow);
-    padding: clamp(1.4rem, 4vw, 2rem);
-  }
-
-  .hero-panel p {
-    margin: 0;
-    color: var(--color-blue-dark);
-    font-size: clamp(1.4rem, 3vw, 2.3rem);
-    font-weight: 800;
-    line-height: 1.18;
+    aspect-ratio: 0.92;
   }
 
   .proof {

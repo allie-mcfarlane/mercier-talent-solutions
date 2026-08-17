@@ -1,5 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const papers = (await getCollection("white-papers")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <BaseLayout title="White Papers | Mercier Talent Solutions">
@@ -11,18 +14,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <p>In-depth papers on the systems, habits, and structures that shape how lawyers grow, written for firm leadership, talent teams, and practice leaders.</p>
       </div>
       <div class="papers">
-        <article class="card">
-          <p class="eyebrow">WHITE PAPER No. 02</p>
-          <h2>From Erosion to Opportunity</h2>
-          <p>Advancing Lawyer Development in the Al Era.</p>
-          <p>Three forces are eroding law firms’ traditional apprenticeship model: AI automation, generational friction, and reduced proximity. The result is a widening gap between what firms assume associates are learning and what they actually experience. This paper outlines concrete practices for rebuilding lawyer development around what comes next.</p>
-        </article>
-        <article class="card">
-          <p class="eyebrow">WHITE PAPER No. 01</p>
-          <h2>The Feedback Deficit</h2>
-          <p>How Law Firms can Operationalize Feedback Through Shared Models and Expectations.</p>
-          <p>Feedback avoidance erodes performance, trust, and retention in law firms. This paper explores why capable leaders hesitate to speak up and how firms can build shared models and expectations that make candid feedback a working norm rather than an aspiration.</p>
-        </article>
+        {papers.map((paper) => (
+          <article class="card paper">
+            <p class="eyebrow">WHITE PAPER No. {paper.data.number}</p>
+            <h2>{paper.data.title}</h2>
+            <p class="subtitle">{paper.data.description}</p>
+            <p>{paper.body}</p>
+            <div class="paper-actions">
+              {paper.data.document && <a class="button" href={paper.data.document}>Download the Paper</a>}
+              <span class="meta-row">{paper.data.date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -45,12 +48,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     margin-top: 2rem;
   }
 
+  .paper {
+    display: grid;
+    gap: 0.8rem;
+  }
+
   h2 {
     margin: 0.4rem 0 0.6rem;
     color: var(--color-ink);
     font-family: var(--font-serif);
     font-size: clamp(1.7rem, 3vw, 2.7rem);
     font-weight: 500;
+  }
+
+  .subtitle {
+    color: var(--color-blue-dark);
+    font-weight: 800;
+  }
+
+  .paper-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 0.4rem;
   }
 
   @media (max-width: 760px) {

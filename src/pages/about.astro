@@ -3,19 +3,87 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="About | Mercier Talent Solutions">
-  <section class="section">
-    <div class="container page">
-      <p class="eyebrow">About us</p>
-      <h1>Dedicated to developinglawyers into leaders</h1>
-      <p>Mercier Talent Solutions is a consulting firm dedicated to the development of lawyers and law firm leaders. We partner with firms and senior professionals to strengthen the leadership, communication, and management capabilities that shapе performance in modern legal practice.</p>
-      <p>Our work is grounded in deep experience inside global law firms and a clear understanding of the pressures lawyers face as they serve clients, lead teams, and build practices. Through coaching, assessments, and firmwide initiatives, we help lawyers develop the habits, systems, and leadership behaviors that support high-performing teams and sustained professional success.</p>
+  <section class="section about-hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">About us</p>
+        <h1>Dedicated to developing lawyers into leaders</h1>
+        <p>Mercier Talent Solutions is a consulting firm dedicated to the development of lawyers and law firm leaders. We partner with firms and senior professionals to strengthen the leadership, communication, and management capabilities that shapе performance in modern legal practice.</p>
+      </div>
+      <div class="firm-card">
+        <p class="eyebrow">The firm</p>
+        <h2>Experience from inside global law firms</h2>
+        <p>Our work is grounded in deep experience inside global law firms and a clear understanding of the pressures lawyers face as they serve clients, lead teams, and build practices. Through coaching, assessments, and firmwide initiatives, we help lawyers develop the habits, systems, and leadership behaviors that support high-performing teams and sustained professional success.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section team-band">
+    <div class="container team-list">
+      <article class="team-card">
+        <div class="media-frame portrait">
+          <img src="/images/julia-mercier.jpg" alt="Julia Mercier" />
+        </div>
+        <div>
+          <p class="eyebrow">Principal</p>
+          <h2>Julia Mercier</h2>
+          <p>Julia Mercier is the Principal of Mercier Talent Solutions LLC and a trusted advisor to lawyers and law firm leaders. A former litigator with more than a decade of experience leading professional development initiatives in global law firms, Julia works with lawyers at critical points in their careers, associates, partners, practice group leaders, and senior business professionals navigating increased leadership responsibility and complexity.</p>
+          <p>Her work focuses on strengthening leadership effectiveness, communication, and management capability in complex legal environments, with particular attention to the systems, habits, and leadership behaviors that reinforce accountability, collaboration, and high-performing teams. She is a frequent speaker for law firms and professional audiences on leadership, communication, and talent development.</p>
+          <p>Outside of client work, Julia contributes her expertise pro bono to the UN Women's Peace and Humanitarian Fund, and is an amateur competitive rider, often drawing on lessons from the discipline in her leadership work, particularly around presence and mindfulness.</p>
+          <div class="meta-row">
+            <a href="mailto:julia@merciertalentsolutions.com">julia@merciertalentsolutions.com</a>
+            <a href="tel:9178085668">(917)808-5668</a>
+            <a href="https://www.linkedin.com/in/juliamercier/">LinkedIn</a>
+          </div>
+          <div class="credentials">
+            <p class="eyebrow">Credentials & Certifications</p>
+            <p>LLB, University of Montreal, 2004 · MBTI Certified Practitioner · Certified DISC Practitioner · Executive Coaching, NYU, 2016 · Mental Health First Aid Instructor · Leading Professional Services Firms - Harvard Business School, 2018 · Hogan Certified Coach</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="team-card alternate">
+        <div class="media-frame portrait">
+          <img src="/images/allie-mcfarlane.jpg" alt="Allie McFarlane" />
+        </div>
+        <div>
+          <p class="eyebrow">Practice Manager</p>
+          <h2>Allie McFarlane</h2>
+          <p>Allie McFarlane brings more than a decade of experience supporting and strengthening business operations across the hospitality, private equity, finance, and professional services sectors. Throughout her career, she has developed expertise in operational management, financial administration, technology implementation, website development, marketing, communications, and process improvement, with a focus on creating efficient systems that help organizations grow and operate effectively.</p>
+          <p>As Practice Manager at Mercier Talent Solutions, Allie oversees the firm's operations, ensuring every aspect of the business runs smoothly behind the scenes. She manages client operations, financial management, technology and website initiatives, marketing, and day-to-day business operations, while continually improving internal processes to enhance efficiency, support the firm's growth, and deliver an exceptional client experience.</p>
+          <p>Known for combining strategic thinking with a hands-on approach, Allie enjoys solving complex operational challenges and building practical solutions that improve the way people work. She is passionate about creating organized, scalable processes that allow teams to focus on delivering meaningful results for clients.</p>
+          <p>Outside of her professional work, Allie is actively involved in animal welfare, regularly volunteering at a local animal shelter. Her commitment to compassion, responsibility, and service extends beyond the workplace and reflects the values she brings to everything she does.</p>
+          <div class="meta-row">
+            <a href="mailto:allie@merciertalentsolutions.com">allie@merciertalentsolutions.com</a>
+            <a href="tel:3472549298">(347) 254-9298</a>
+            <a href="https://www.linkedin.com/">LinkedIn</a>
+          </div>
+          <div class="credentials">
+            <p class="eyebrow">Credentials & Certifications</p>
+            <p>B.A. Business Management, University of Huddersfield · Commissioned Notary Public</p>
+          </div>
+        </div>
+      </article>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .page {
-    max-width: 860px;
+  .about-hero {
+    background: var(--color-white);
+  }
+
+  .hero-grid,
+  .team-card {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .firm-card {
+    border-top: 1px solid var(--color-line);
+    padding-top: 1.4rem;
   }
 
   h1 {
@@ -30,5 +98,52 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   p:not(.eyebrow) {
     color: var(--color-muted);
     font-size: 1.12rem;
+  }
+
+  h2 {
+    margin: 0.35rem 0 0.9rem;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(1.9rem, 4vw, 3.4rem);
+    font-weight: 500;
+    line-height: 1.05;
+  }
+
+  .team-band {
+    background: var(--color-paper);
+  }
+
+  .team-list {
+    display: grid;
+    gap: clamp(2.5rem, 7vw, 6rem);
+  }
+
+  .team-card.alternate .portrait {
+    order: 2;
+  }
+
+  .portrait {
+    aspect-ratio: 0.82;
+  }
+
+  .credentials {
+    margin-top: 1.4rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: 1rem;
+  }
+
+  a {
+    color: var(--color-blue-dark);
+  }
+
+  @media (max-width: 820px) {
+    .hero-grid,
+    .team-card {
+      grid-template-columns: 1fr;
+    }
+
+    .team-card.alternate .portrait {
+      order: 0;
+    }
   }
 </style>

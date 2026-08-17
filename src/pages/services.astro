@@ -1,30 +1,98 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { services } from "../data/site";
+import { focusAreas, services, trainingPrograms } from "../data/site";
 ---
 
 <BaseLayout title="Services | Mercier Talent Solutions">
-  <section class="section">
-    <div class="container">
+  <section class="section services-hero">
+    <div class="container hero-grid">
       <div class="section-heading">
         <p class="eyebrow">Services</p>
         <h1>Built for lawyers, designed to last</h1>
         <p>Coaching, assessments, training, and consulting, spanning a wide range of programs and engagements, each grounded in the realities of legal practice.</p>
       </div>
-      <div class="grid service-grid">
-        {services.map((service) => (
-          <article class="card">
-            <p class="eyebrow">{service.eyebrow}</p>
-            <h3>{service.title}</h3>
-            <p>{service.text}</p>
+      <div class="media-frame hero-image">
+        <img src="/images/services-hero.png" alt="Mercier Talent Solutions services visual" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section focus-section">
+    <div class="container focus-grid">
+      <p>We work with associates, partners, practice group leaders, and senior business professionals. Every engagement is tailored to the client's role, goals, and context and built for practical insight and measurable progress. Common focus areas include:</p>
+      <div class="focus-list">
+        {focusAreas.map(([title, text]) => (
+          <article>
+            <h2>{title}</h2>
+            <p>{text}</p>
           </article>
         ))}
       </div>
     </div>
   </section>
+
+  <section class="section">
+    <div class="container service-stack">
+      {services.map((service) => (
+        <article class="service-detail" id={service.title.toLowerCase().replaceAll(" ", "-")}>
+          <div>
+            <span class="service-number">{service.number}</span>
+            <h2>{service.title}</h2>
+            <p class="summary">{service.summary}</p>
+            <p>{service.text}</p>
+          </div>
+          <div class="media-frame service-image">
+            <img src={service.image} alt={service.imageAlt} />
+          </div>
+        </article>
+      ))}
+
+      <section class="training">
+        <p class="eyebrow">Training programs</p>
+        <h2>Focused programs spanning leadership, feedback, performance, productivity, and culture.</h2>
+        <div class="program-groups">
+          {trainingPrograms.map((group) => (
+            <article>
+              <h3>{group.group}</h3>
+              <div class="program-list">
+                {group.items.map(([title, text]) => (
+                  <div>
+                    <h4>{title}</h4>
+                    <p>{text}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="consulting-list">
+        <p class="eyebrow">Consulting</p>
+        <div class="grid">
+          {["Learning & Development Strategy", "Engagement & Retention", "Leadership Development", "Career Paths & Progression", "Feedback & Mentoring Programs"].map((item) => (
+            <article class="card"><h3>{item}</h3></article>
+          ))}
+        </div>
+      </section>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
+  .services-hero {
+    background: var(--color-white);
+  }
+
+  .hero-grid,
+  .focus-grid,
+  .service-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
   h1 {
     margin: 0.4rem 0 0;
     color: var(--color-ink);
@@ -36,5 +104,152 @@ import { services } from "../data/site";
 
   .service-grid {
     margin-top: 2rem;
+  }
+
+  .hero-image {
+    aspect-ratio: 1.22;
+  }
+
+  .focus-section {
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+  }
+
+  .focus-section p {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 1.08rem;
+  }
+
+  .focus-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .focus-list article {
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    padding-top: 1rem;
+  }
+
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .focus-list h2,
+  .training h2 {
+    color: var(--color-white);
+  }
+
+  .focus-list h2 {
+    font-size: 1.5rem;
+  }
+
+  .service-stack {
+    display: grid;
+    gap: clamp(3rem, 8vw, 6rem);
+  }
+
+  .service-detail:nth-child(even) .service-image {
+    order: -1;
+  }
+
+  .service-number {
+    display: block;
+    color: var(--color-blue);
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 0.9;
+  }
+
+  .service-detail h2 {
+    margin: 0.4rem 0 0.75rem;
+    font-size: clamp(2rem, 5vw, 4rem);
+  }
+
+  .summary {
+    color: var(--color-blue-dark);
+    font-size: 1.18rem;
+    font-weight: 700;
+  }
+
+  .service-image {
+    aspect-ratio: 1.28;
+  }
+
+  .training {
+    margin-inline: calc(50% - 50vw);
+    padding: clamp(3rem, 7vw, 6rem) max(1rem, calc((100vw - var(--container)) / 2));
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+  }
+
+  .training > h2 {
+    max-width: 860px;
+    margin: 0.4rem 0 2rem;
+    font-size: clamp(2rem, 4vw, 4rem);
+  }
+
+  .program-groups {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .program-groups article {
+    border-top: 1px solid rgba(255, 255, 255, 0.24);
+    padding-top: 1.2rem;
+  }
+
+  .program-groups h3 {
+    color: var(--color-white);
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+  }
+
+  .program-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .program-list h4 {
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .program-list p {
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .consulting-list h3 {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid,
+    .focus-grid,
+    .service-detail,
+    .program-list {
+      grid-template-columns: 1fr;
+    }
+
+    .service-detail:nth-child(even) .service-image {
+      order: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .focus-list {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
