@@ -32,3 +32,9 @@ Before launch, confirm:
 - Whether the site uses visitor data for targeted advertising.
 - Whether the site collects, uses, or sells personal data for large language model training.
 - Whether any analytics or advertising tools need opt-out controls.
+
+## Admin Editing
+
+The `/admin/` area uses Decap CMS. News & Insights entries can be filtered by category and grouped by category or publication year. White papers can be grouped by publication year.
+
+Production admin publishing still needs GitHub authentication/OAuth connected for `merciertalentsolutions.com`.

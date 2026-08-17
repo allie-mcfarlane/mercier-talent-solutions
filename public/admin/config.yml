@@ -231,6 +231,29 @@ collections:
     slug: "{{slug}}"
     summary: "{{title}} - {{category}} - {{pubDate}}"
     preview_path: "post/{{slug}}"
+    sortable_fields: [title, pubDate, updatedDate, category]
+    view_filters:
+      - label: Insights
+        field: category
+        pattern: Insight
+      - label: Speaking
+        field: category
+        pattern: Speaking
+      - label: White Papers
+        field: category
+        pattern: White Paper
+      - label: Announcements
+        field: category
+        pattern: Announcement
+      - label: News
+        field: category
+        pattern: News
+    view_groups:
+      - label: Category
+        field: category
+      - label: Publication Year
+        field: pubDate
+        pattern: \d{4}
     fields:
       - { label: Title, name: title, widget: string, hint: "Use the exact published headline." }
       - { label: Author, name: author, widget: string, default: Julia Mercier }
@@ -250,6 +273,11 @@ collections:
     slug: "{{slug}}"
     summary: "No. {{number}} - {{title}}"
     preview_path: "whitepapers"
+    sortable_fields: [number, title, date]
+    view_groups:
+      - label: Publication Year
+        field: date
+        pattern: \d{4}
     fields:
       - { label: Title, name: title, widget: string }
       - { label: Number, name: number, widget: string }
