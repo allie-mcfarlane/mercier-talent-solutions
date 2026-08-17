@@ -115,7 +115,6 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     gap: 14px;
     align-items: center;
     color: rgba(255, 255, 255, 0.72);
-    font-size: 15px;
   }
 
   .about-hero .eyebrow::before {
@@ -166,7 +165,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     gap: clamp(2rem, 5vw, 5rem);
     align-items: start;
     border-top: 1px solid var(--color-line);
-    padding-top: clamp(1.2rem, 2vw, 1.65rem);
+    padding-top: clamp(1.5rem, 2.4vw, 2.1rem);
   }
 
   h1 {
@@ -186,7 +185,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   p:not(.eyebrow) {
     color: var(--color-ink);
     font-size: 1rem;
-    line-height: 1.55;
+    line-height: 1.6;
   }
 
   .about-hero p:not(.eyebrow) {
@@ -211,22 +210,22 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .team-list {
     display: grid;
-    gap: clamp(2.4rem, 5vw, 4rem);
+    gap: clamp(3.25rem, 6vw, 5.25rem);
   }
 
   .portrait {
     width: min(100%, 286px);
-    aspect-ratio: 1;
+    aspect-ratio: 1729 / 1764;
     justify-self: start;
     border-radius: 0;
   }
 
-  .portrait :global(img) {
-    object-position: center 24%;
+  .person-2 .portrait {
+    aspect-ratio: 1111 / 1416;
   }
 
-  .team-copy > .eyebrow {
-    font-size: 15px;
+  .portrait :global(img) {
+    object-position: center;
   }
 
   .firm-card[data-reveal],
@@ -243,16 +242,16 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .credentials {
-    margin-top: 1.2rem;
+    margin-top: 1.55rem;
     border-top: 1px solid var(--color-line);
-    padding-top: 0.95rem;
+    padding-top: 1.15rem;
   }
 
   .credential-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem 0.8rem;
-    margin-top: 1rem;
+    margin-top: 1.1rem;
   }
 
   .credential-list span {
