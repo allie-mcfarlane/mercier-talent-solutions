@@ -109,17 +109,34 @@ const marqueeItems = [
 
   <section class="section approach">
     <div class="container approach-grid">
-      <div class="section-heading">
-        <p class="eyebrow">Our approach</p>
-        <h2>Grounded in the realities of legal practice</h2>
-        <p>Our firm is led by Julia Mercier, a former litigator, executive coach, and seasoned legal talent professional who has designed and implemented firmwide training systems inside global law firms.</p>
+      <div class="approach-copy">
+        <div class="section-heading">
+          <p class="eyebrow">Our approach</p>
+          <h2>Grounded in the realities of legal practice</h2>
+          <p>Our firm is led by Julia Mercier, a former litigator, executive coach, and seasoned legal talent professional who has designed and implemented firmwide training systems inside global law firms.</p>
+        </div>
+        <ul>
+          <li>Practical, rigorous engagements, not generic leadership theory</li>
+          <li>Deep experience inside complex, global legal organizations</li>
+          <li>Insight that translates into action, habits, and systems</li>
+          <li>Measurable progress for individuals, teams, and firms</li>
+        </ul>
       </div>
-      <ul>
-        <li>Practical, rigorous engagements, not generic leadership theory</li>
-        <li>Deep experience inside complex, global legal organizations</li>
-        <li>Insight that translates into action, habits, and systems</li>
-        <li>Measurable progress for individuals, teams, and firms</li>
-      </ul>
+      <div class="chart-wrapper approach-chart" data-approach-chart>
+        <svg viewBox="0 0 900 800" preserveAspectRatio="none" role="img" aria-labelledby="approachChartDescription">
+          <desc id="approachChartDescription">An animated line chart showing upward development over time.</desc>
+          <line class="grid-line" x1="0" y1="200" x2="900" y2="200"></line>
+          <line class="grid-line" x1="0" y1="400" x2="900" y2="400"></line>
+          <line class="grid-line" x1="0" y1="600" x2="900" y2="600"></line>
+          <polyline class="secondary-line" points="50,690 270,545 490,585 710,325 850,215"></polyline>
+          <polyline class="main-line" points="50,615 270,455 490,475 710,220 850,105"></polyline>
+          <circle class="data-point point-1" cx="50" cy="615" r="10"></circle>
+          <circle class="data-point point-2" cx="270" cy="455" r="10"></circle>
+          <circle class="data-point point-3" cx="490" cy="475" r="10"></circle>
+          <circle class="data-point point-4" cx="710" cy="220" r="10"></circle>
+          <circle class="data-point point-5" cx="850" cy="105" r="11"></circle>
+        </svg>
+      </div>
     </div>
   </section>
 
@@ -373,9 +390,14 @@ const marqueeItems = [
 
   .approach-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+    grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.9fr);
     gap: clamp(2rem, 6vw, 5rem);
-    align-items: start;
+    align-items: center;
+  }
+
+  .approach-copy {
+    display: grid;
+    gap: clamp(1.6rem, 4vw, 2.8rem);
   }
 
   ul {
@@ -390,6 +412,118 @@ const marqueeItems = [
     border-top: 1px solid rgba(255, 255, 255, 0.24);
     padding-top: 1rem;
     color: rgba(255, 255, 255, 0.82);
+  }
+
+  .chart-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 520px;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+    background: #1b2b46;
+  }
+
+  .chart-wrapper svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .grid-line {
+    stroke: #2b3e5d;
+    stroke-width: 2;
+    opacity: 0.9;
+  }
+
+  .secondary-line {
+    fill: none;
+    stroke: #36547f;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.85;
+  }
+
+  .main-line {
+    fill: none;
+    stroke: #f2f0eb;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .data-point {
+    fill: #f2f0eb;
+    stroke: rgba(255, 255, 255, 0.35);
+    stroke-width: 4;
+    opacity: 0;
+    transform: scale(0);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .secondary-line,
+  .main-line {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+  }
+
+  .chart-wrapper.animate .secondary-line {
+    animation: drawSecondary 2.8s ease-out forwards;
+  }
+
+  .chart-wrapper.animate .main-line {
+    animation: drawMain 3.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: 0.2s;
+  }
+
+  .chart-wrapper.animate .data-point {
+    animation: revealPoint 0.55s ease-out forwards;
+  }
+
+  .chart-wrapper.animate .point-1 {
+    animation-delay: 0.45s;
+  }
+
+  .chart-wrapper.animate .point-2 {
+    animation-delay: 1.1s;
+  }
+
+  .chart-wrapper.animate .point-3 {
+    animation-delay: 1.75s;
+  }
+
+  .chart-wrapper.animate .point-4 {
+    animation-delay: 2.4s;
+  }
+
+  .chart-wrapper.animate .point-5 {
+    animation-delay: 3.05s;
+  }
+
+  @keyframes drawSecondary {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes drawMain {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes revealPoint {
+    70% {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .news-band {
@@ -455,6 +589,10 @@ const marqueeItems = [
     .proof article {
       text-align: left;
     }
+
+    .chart-wrapper {
+      min-height: 420px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -474,5 +612,59 @@ const marqueeItems = [
       opacity: 1;
       transform: none;
     }
+
+    .secondary-line,
+    .main-line {
+      stroke-dashoffset: 0;
+    }
+
+    .data-point {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .chart-wrapper.animate .secondary-line,
+    .chart-wrapper.animate .main-line,
+    .chart-wrapper.animate .data-point {
+      animation: none;
+    }
   }
 </style>
+
+<script>
+  const chartWrapper = document.querySelector("[data-approach-chart]");
+
+  if (chartWrapper) {
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let animationStarted = false;
+
+    const startChartAnimation = () => {
+      if (animationStarted) {
+        return;
+      }
+
+      animationStarted = true;
+      requestAnimationFrame(() => {
+        chartWrapper.classList.add("animate");
+      });
+    };
+
+    if (motionQuery.matches || !("IntersectionObserver" in window)) {
+      startChartAnimation();
+    } else {
+      const chartObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              startChartAnimation();
+              chartObserver.disconnect();
+            }
+          });
+        },
+        { threshold: 0.35 },
+      );
+
+      chartObserver.observe(chartWrapper);
+    }
+  }
+</script>
