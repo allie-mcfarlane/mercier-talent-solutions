@@ -83,7 +83,7 @@ const modifiedIso = modifiedTime instanceof Date ? modifiedTime.toISOString() : 
 
       if (!motionQuery.matches && "IntersectionObserver" in window) {
         const revealItems = document.querySelectorAll(
-          ".hero-copy, .section-heading, .card, .news-card, .media-frame, .service-detail, .team-card",
+          ".hero-copy, .section-heading, .firm-card, .card, .news-card, .media-frame, .service-detail, .team-card",
         );
         const observer = new IntersectionObserver(
           (entries) => {
