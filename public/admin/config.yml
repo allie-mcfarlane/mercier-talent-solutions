@@ -72,6 +72,67 @@ collections:
             fields:
               - { label: Eyebrow, name: eyebrow, widget: string }
               - { label: Title, name: title, widget: string }
+      - name: about
+        label: About Page
+        file: src/content/pages/about.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Intro Text, name: lede, widget: text }
+          - label: Firm Panel
+            name: firm
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Text, name: text, widget: text }
+          - label: Team
+            name: team
+            widget: list
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Name, name: name, widget: string }
+              - { label: Image, name: image, widget: image }
+              - { label: Image Alt Text, name: imageAlt, widget: string }
+              - { label: Bio Paragraphs, name: paragraphs, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+              - { label: Email, name: email, widget: string }
+              - { label: Phone, name: phone, widget: string }
+              - { label: LinkedIn, name: linkedin, widget: string }
+              - { label: Credentials Eyebrow, name: credentialsEyebrow, widget: string }
+              - { label: Credentials, name: credentials, widget: text }
+      - name: news-page
+        label: News Page
+        file: src/content/pages/news.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Intro Paragraphs, name: paragraphs, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+      - name: whitepapers-page
+        label: White Papers Page
+        file: src/content/pages/whitepapers.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Intro Text, name: lede, widget: text }
+      - name: contact
+        label: Contact Page
+        file: src/content/pages/contact.md
+        fields:
+          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Title Accent, name: titleAccent, widget: string }
+          - label: Direct Contacts
+            name: contacts
+            widget: list
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string, required: false }
+              - { label: Name, name: name, widget: string }
+              - { label: Email, name: email, widget: string }
+              - { label: Phone, name: phone, widget: string }
+              - { label: LinkedIn, name: linkedin, widget: string, required: false }
   - name: posts
     label: News & Insights
     folder: src/content/posts

@@ -1,7 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 
+type WhitePapersPageData = {
+  eyebrow: string;
+  title: string;
+  titleAccent: string;
+  lede: string;
+};
+
+const whitePapersPage = await getEntry("pages", "whitepapers");
+if (!whitePapersPage) {
+  throw new Error("White papers page content is missing.");
+}
+
+const whitePapersPageData = whitePapersPage.data as WhitePapersPageData;
 const papers = (await getCollection("white-papers")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
@@ -9,9 +22,9 @@ const papers = (await getCollection("white-papers")).sort((a, b) => b.data.date.
   <section class="section">
     <div class="container">
       <div class="section-heading">
-        <p class="eyebrow">White Papers</p>
-        <h1>Thought leadership for firms that take development <em>seriously</em></h1>
-        <p>In-depth papers on the systems, habits, and structures that shape how lawyers grow, written for firm leadership, talent teams, and practice leaders.</p>
+        <p class="eyebrow">{whitePapersPageData.eyebrow}</p>
+        <h1>{whitePapersPageData.title} <em>{whitePapersPageData.titleAccent}</em></h1>
+        <p>{whitePapersPageData.lede}</p>
       </div>
       <div class="papers">
         {papers.map((paper) => (

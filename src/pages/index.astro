@@ -4,6 +4,19 @@ import ResponsiveImage from "../components/ResponsiveImage.astro";
 import { getCollection, getEntry } from "astro:content";
 import { services, site } from "../data/site";
 
+type HomeData = {
+  eyebrow: string;
+  title: string;
+  titleAccent: string;
+  lede: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta: { label: string; href: string };
+  proof: { title: string; text: string }[];
+  marqueeItems: string[];
+  approach: { eyebrow: string; title: string; text: string; items: string[] };
+  news: { eyebrow: string; title: string };
+};
+
 const home = await getEntry("pages", "home");
 if (!home) {
   throw new Error("Home page content is missing.");
@@ -14,7 +27,7 @@ const recentPosts = (await getCollection("posts"))
   .slice(0, 8);
 
 const homeServices = [services[0], services[2], services[1], services[3]];
-const homeData = home.data;
+const homeData = home.data as HomeData;
 ---
 
 <BaseLayout title="Home | Mercier Talent Solutions" description={site.description} image="/images/optimized/waiting-area-1400.jpg">

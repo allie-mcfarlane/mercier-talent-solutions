@@ -2,7 +2,21 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Turnstile from "../components/Turnstile.astro";
 import { site } from "../data/site";
+import { getEntry } from "astro:content";
 
+type ContactData = {
+  eyebrow: string;
+  title: string;
+  titleAccent: string;
+  contacts: { name: string; email: string; phone: string; linkedin?: string }[];
+};
+
+const contact = await getEntry("pages", "contact");
+if (!contact || !contact.data.contacts) {
+  throw new Error("Contact page content is missing.");
+}
+
+const contactData = contact.data as ContactData;
 const formEndpoint = `https://formsubmit.co/${site.email}`;
 ---
 
@@ -10,11 +24,12 @@ const formEndpoint = `https://formsubmit.co/${site.email}`;
   <section class="section">
     <div class="container contact-grid">
       <div>
-        <p class="eyebrow">Contact us</p>
-        <h1>Let's do our best work <em>together</em></h1>
+        <p class="eyebrow">{contactData.eyebrow}</p>
+        <h1>{contactData.title} <em>{contactData.titleAccent}</em></h1>
         <div class="direct">
-          <p><strong>Julia Mercier</strong><br /><a href="mailto:julia@merciertalentsolutions.com">julia@merciertalentsolutions.com</a><br />(917) 808-5668</p>
-          <p><strong>Allie McFarlane</strong><br /><a href="mailto:allie@merciertalentsolutions.com">allie@merciertalentsolutions.com</a><br />(347) 254-9298</p>
+          {contactData.contacts.map((person) => (
+            <p><strong>{person.name}</strong><br /><a href={`mailto:${person.email}`}>{person.email}</a><br />{person.phone}</p>
+          ))}
         </div>
       </div>
       <form action={formEndpoint} method="POST">

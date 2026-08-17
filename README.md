@@ -21,7 +21,7 @@ Included so far:
 - Markdown-backed News & Insights and White Paper collections
 - Static post detail routes for current Wix feed entries with migrated article bodies
 - Decap admin configuration for posts and white papers
-- CMS-editable homepage content under `/admin/` → Site Pages → Home Page
+- CMS-editable Home, About, News, White Papers, and Contact page content under `/admin/` → Site Pages
 - Responsive optimized image derivatives in `public/images/optimized`
 - Contact and privacy forms wired with honeypots and Cloudflare Turnstile-ready markup
 - Canonical, Open Graph, Twitter card, robots, sitemap, and redirect groundwork
@@ -45,7 +45,7 @@ The admin area lives at `/admin/` and is configured with Decap CMS.
 
 - News & Insights posts are Markdown files in `src/content/posts`.
 - White papers are Markdown files in `src/content/white-papers`.
-- Homepage copy is editable in `src/content/pages/home.md`.
+- Main page copy is editable in `src/content/pages`.
 - Uploaded images and documents go through the CMS media library.
 - `publish_mode: editorial_workflow` keeps draft/review/publish stages available.
 - Publishing through the CMS commits to `main`; the production deployment should rebuild automatically from GitHub once deployment is connected.

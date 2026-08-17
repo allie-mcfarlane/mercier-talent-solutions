@@ -29,35 +29,80 @@ const whitePapers = defineCollection({
 
 const pages = defineCollection({
   schema: z.object({
-    eyebrow: z.string(),
-    title: z.string(),
-    titleAccent: z.string(),
-    lede: z.string(),
-    primaryCta: z.object({
-      label: z.string(),
-      href: z.string(),
-    }),
-    secondaryCta: z.object({
-      label: z.string(),
-      href: z.string(),
-    }),
-    proof: z.array(
-      z.object({
+    eyebrow: z.string().optional(),
+    title: z.string().optional(),
+    titleAccent: z.string().optional(),
+    lede: z.string().optional(),
+    primaryCta: z
+      .object({
+        label: z.string(),
+        href: z.string(),
+      })
+      .optional(),
+    secondaryCta: z
+      .object({
+        label: z.string(),
+        href: z.string(),
+      })
+      .optional(),
+    proof: z
+      .array(
+        z.object({
+          title: z.string(),
+          text: z.string(),
+        }),
+      )
+      .optional(),
+    marqueeItems: z.array(z.string()).optional(),
+    approach: z
+      .object({
+        eyebrow: z.string(),
         title: z.string(),
         text: z.string(),
-      }),
-    ),
-    marqueeItems: z.array(z.string()),
-    approach: z.object({
-      eyebrow: z.string(),
-      title: z.string(),
-      text: z.string(),
-      items: z.array(z.string()),
-    }),
-    news: z.object({
-      eyebrow: z.string(),
-      title: z.string(),
-    }),
+        items: z.array(z.string()),
+      })
+      .optional(),
+    news: z
+      .object({
+        eyebrow: z.string(),
+        title: z.string(),
+      })
+      .optional(),
+    firm: z
+      .object({
+        eyebrow: z.string(),
+        title: z.string(),
+        text: z.string(),
+      })
+      .optional(),
+    team: z
+      .array(
+        z.object({
+          eyebrow: z.string(),
+          name: z.string(),
+          image: z.string(),
+          imageAlt: z.string(),
+          paragraphs: z.array(z.string()),
+          email: z.string(),
+          phone: z.string(),
+          linkedin: z.string(),
+          credentialsEyebrow: z.string(),
+          credentials: z.string(),
+        }),
+      )
+      .optional(),
+    paragraphs: z.array(z.string()).optional(),
+    contacts: z
+      .array(
+        z.object({
+          eyebrow: z.string().optional(),
+          name: z.string(),
+          email: z.string(),
+          phone: z.string(),
+          linkedin: z.string().optional(),
+        }),
+      )
+      .optional(),
   }),
 });
 

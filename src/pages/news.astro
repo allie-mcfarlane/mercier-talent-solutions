@@ -1,8 +1,21 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
-import { getCollection } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 
+type NewsPageData = {
+  eyebrow: string;
+  title: string;
+  titleAccent: string;
+  paragraphs: string[];
+};
+
+const newsPage = await getEntry("pages", "news");
+if (!newsPage || !newsPage.data.paragraphs) {
+  throw new Error("News page content is missing.");
+}
+
+const newsPageData = newsPage.data as NewsPageData;
 const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
@@ -10,10 +23,9 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.value
   <section class="section news-hero">
     <div class="container hero-grid">
       <div class="section-heading">
-        <p class="eyebrow">News & Insights</p>
-        <h1>Thinking on modern legal <em>practice</em></h1>
-        <p>Explore our latest thinking on lawyer development, leadership, and the changing legal profession, alongside updates from conferences, presentations, and other speaking engagements. These articles and event highlights share practical ideas, emerging perspectives, and lessons drawn from our work with lawyers, firm leaders, talent professionals, and practice leaders.</p>
-        <p>Together, they offer timely insight into the challenges shaping law firms today and the approaches that can help strengthen leadership, collaboration, professional growth, and long-term performance.</p>
+        <p class="eyebrow">{newsPageData.eyebrow}</p>
+        <h1>{newsPageData.title} <em>{newsPageData.titleAccent}</em></h1>
+        {newsPageData.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
       </div>
       <div class="media-frame hero-image">
         <ResponsiveImage src="/images/news-hero.png" alt="News and insights visual" sizes="(min-width: 900px) 38vw, 100vw" eager />
