@@ -41,7 +41,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 >
   <section class="section about-hero">
     <div class="container about-hero-inner">
-      <div>
+      <div class="about-hero-copy">
         <p class="eyebrow">{aboutData.eyebrow}</p>
         <h1>{aboutData.title} <em>{aboutData.titleAccent}</em></h1>
         <p>{aboutData.lede}</p>
@@ -56,11 +56,11 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   <section class="section firm-band">
     <div class="container">
       <div class="firm-card">
-        <div>
+        <div class="firm-kicker">
           <p class="eyebrow">{aboutData.firm.eyebrow}</p>
           <h2>{aboutData.firm.title}</h2>
         </div>
-        <p>{aboutData.firm.text}</p>
+        <p class="firm-text">{aboutData.firm.text}</p>
       </div>
     </div>
   </section>
@@ -97,8 +97,9 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 <style>
   .about-hero {
     position: relative;
-    min-height: 576px;
+    min-height: clamp(500px, 55vw, 620px);
     overflow: hidden;
+    padding: 0;
     background: var(--color-blue-dark);
     color: var(--color-white);
   }
@@ -106,8 +107,13 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   .about-hero-inner {
     position: relative;
     display: grid;
-    min-height: 456px;
+    min-height: clamp(420px, 48vw, 520px);
     align-items: center;
+  }
+
+  .about-hero-copy {
+    max-width: 860px;
+    padding-top: clamp(1.25rem, 4vw, 3.75rem);
   }
 
   .about-hero .eyebrow {
@@ -150,13 +156,13 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .firm-band {
     background: var(--color-white);
-    padding: clamp(6rem, 9.5vw, 9rem) 0;
+    padding: clamp(5.25rem, 8vw, 7.5rem) 0;
   }
 
   .team-card {
     display: grid;
-    grid-template-columns: minmax(220px, 286px) minmax(0, 1fr);
-    gap: clamp(3.5rem, 6.2vw, 6rem);
+    grid-template-columns: minmax(220px, 286px) minmax(0, 780px);
+    gap: clamp(3.75rem, 6.4vw, 6.5rem);
     align-items: start;
   }
 
@@ -165,6 +171,16 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     grid-template-columns: minmax(260px, 0.45fr) minmax(320px, 0.55fr);
     gap: clamp(3rem, 6vw, 6.25rem);
     align-items: center;
+    max-width: 1120px;
+    margin-inline: auto;
+  }
+
+  .firm-kicker {
+    max-width: 470px;
+  }
+
+  .firm-text {
+    max-width: 640px;
   }
 
   h1 {
@@ -205,12 +221,12 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .team-band {
     background: var(--color-paper);
-    padding: clamp(6.2rem, 9.5vw, 9rem) 0 clamp(7.4rem, 11vw, 10.5rem);
+    padding: clamp(5.6rem, 8.4vw, 8rem) 0 clamp(7rem, 10vw, 9.8rem);
   }
 
   .team-list {
     display: grid;
-    gap: clamp(6rem, 9vw, 8.75rem);
+    gap: clamp(6.5rem, 9vw, 9rem);
   }
 
   .firm-card .eyebrow {
@@ -262,6 +278,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     aspect-ratio: 1729 / 1764;
     justify-self: start;
     border-radius: 0;
+    box-shadow: 0 24px 70px rgba(23, 37, 62, 0.1);
   }
 
   .person-1 .portrait {
@@ -283,12 +300,34 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   .firm-card[data-reveal],
   .team-card[data-reveal] {
     opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 760ms var(--ease-soft), transform 760ms var(--ease-soft);
+    transform: translateY(24px);
+    transition: opacity 900ms var(--ease-soft), transform 900ms var(--ease-soft);
   }
 
   .firm-card[data-reveal].is-visible,
   .team-card[data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .firm-card[data-reveal] .firm-kicker,
+  .firm-card[data-reveal] .firm-text,
+  .team-card[data-reveal] .portrait,
+  .team-card[data-reveal] .team-copy {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 860ms var(--ease-soft), transform 860ms var(--ease-soft);
+  }
+
+  .firm-card[data-reveal] .firm-text,
+  .team-card[data-reveal] .team-copy {
+    transition-delay: 120ms;
+  }
+
+  .firm-card[data-reveal].is-visible .firm-kicker,
+  .firm-card[data-reveal].is-visible .firm-text,
+  .team-card[data-reveal].is-visible .portrait,
+  .team-card[data-reveal].is-visible .team-copy {
     opacity: 1;
     transform: translateY(0);
   }
@@ -323,6 +362,89 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     .firm-card,
     .team-card {
       grid-template-columns: 1fr;
+    }
+
+    .about-hero {
+      min-height: 520px;
+    }
+
+    .team-card {
+      gap: 2rem;
+    }
+
+    .portrait {
+      width: min(100%, 320px);
+    }
+  }
+
+  .about-hero-copy {
+    animation: aboutHeroIn 900ms var(--ease-soft) both;
+  }
+
+  .about-rings {
+    animation: ringsFloat 12s ease-in-out infinite;
+  }
+
+  .about-rings span {
+    animation: ringsBreathe 8s ease-in-out infinite;
+  }
+
+  .about-rings span:last-child {
+    animation-delay: 1.3s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-hero-copy,
+    .about-rings,
+    .about-rings span {
+      animation: none;
+    }
+
+    .firm-card[data-reveal],
+    .team-card[data-reveal],
+    .firm-card[data-reveal] .firm-kicker,
+    .firm-card[data-reveal] .firm-text,
+    .team-card[data-reveal] .portrait,
+    .team-card[data-reveal] .team-copy {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @keyframes aboutHeroIn {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes ringsFloat {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    50% {
+      transform: translate3d(-18px, -12px, 0);
+    }
+  }
+
+  @keyframes ringsBreathe {
+    0%,
+    100% {
+      opacity: 0.75;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.025);
     }
   }
 </style>
