@@ -56,7 +56,7 @@ services:
     title: Consulting
     text: Talent strategies that help firms attract, develop, and retain top legal talent in an increasingly competitive and demanding environment.
     summary: Talent strategies that support performance, engagement, and long-term growth, informed by firsthand experience designing development systems inside complex legal organizations.
-    detail: Talent strategies that support performance, engagement, and long-term growth, informed by firsthand experience designing development systems inside complex legal organizations.
+    detail: Talent strategies that support performance, engagement, and long-term growth, informed by firsthand experience designing development systems inside complex legal organizations. We partner with firm leadership, talent teams, and practice leaders.
     image: /images/lobby-lounge-glass-offices.png
     imageAlt: Consulting visual from Mercier Talent Solutions
 training:
@@ -104,9 +104,14 @@ training:
 consulting:
   eyebrow: Consulting
   items:
-    - Learning & Development Strategy
-    - Engagement & Retention
-    - Leadership Development
-    - Career Paths & Progression
-    - Feedback & Mentoring Programs
+    - title: Learning & Development Strategy
+      text: Firmwide talent development systems.
+    - title: Engagement & Retention
+      text: Keeping top talent invested long-term.
+    - title: Leadership Development
+      text: Strategy and program design at every level.
+    - title: Career Paths & Progression
+      text: Clear expectations and growth frameworks.
+    - title: Feedback & Mentoring Programs
+      text: Cultures of candor and accountability.
 ---

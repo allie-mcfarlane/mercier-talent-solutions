@@ -23,8 +23,9 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   <section class="section">
     <div class="container">
       <div class="section-heading">
-        <h1>{whitePapersPageData.title} <em>{whitePapersPageData.titleAccent}</em></h1>
         <p>{whitePapersPageData.lede}</p>
+        <h1>{whitePapersPageData.title} <em>{whitePapersPageData.titleAccent}</em></h1>
+        <p class="eyebrow">{whitePapersPageData.eyebrow}</p>
       </div>
       <div class="papers">
         {papers.map((paper) => (
@@ -49,7 +50,7 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
 
 <style>
   h1 {
-    margin: 0 0 1.4rem;
+    margin: 1.15rem 0 0;
     color: var(--color-ink);
     font-family: var(--font-heading);
     font-size: var(--page-title-size);
@@ -61,6 +62,21 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
     display: grid;
     gap: clamp(1.25rem, 2.5vw, 1.75rem);
     margin-top: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .section-heading {
+    max-width: 680px;
+    gap: 0;
+  }
+
+  .section-heading > p:not(.eyebrow) {
+    color: var(--color-ink);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .section-heading .eyebrow {
+    margin-top: 1.35rem;
   }
 
   .paper {
@@ -111,6 +127,7 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   .paper-content-panel p {
     max-width: 720px;
     margin: 0;
+    color: var(--color-ink);
   }
 
   .subtitle {

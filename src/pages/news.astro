@@ -31,6 +31,11 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
       <div class="media-frame hero-image">
         <ResponsiveImage src="/images/news-hero.png" alt="News and insights visual" sizes="(min-width: 900px) 38vw, 100vw" eager />
       </div>
+      <div class="news-shapes" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </section>
 
@@ -55,10 +60,14 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
 
 <style>
   .news-hero {
-    background: var(--color-white);
+    position: relative;
+    overflow: hidden;
+    padding-bottom: clamp(6rem, 11vw, 9rem);
+    background: var(--color-blue-dark);
   }
 
   .hero-grid {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(300px, 0.78fr);
     gap: clamp(2.5rem, 6vw, 4.75rem);
@@ -66,16 +75,76 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   }
 
   .hero-image {
+    margin-bottom: clamp(-10rem, -11vw, -6rem);
     aspect-ratio: 1.18;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .news-hero .eyebrow {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .news-hero .eyebrow::before {
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.5);
+    content: "";
+  }
+
+  .news-hero .section-heading {
+    z-index: 1;
+    padding-top: clamp(2rem, 4vw, 3rem);
   }
 
   h1 {
     margin: 0.4rem 0 0;
-    color: var(--color-ink);
+    color: var(--color-white);
     font-family: var(--font-heading);
     font-size: var(--page-title-size);
     font-weight: 700;
     line-height: 1;
+  }
+
+  .news-hero h1 em {
+    color: var(--color-blue);
+  }
+
+  .news-hero p:not(.eyebrow) {
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .news-shapes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .news-shapes span {
+    position: absolute;
+    width: 150px;
+    aspect-ratio: 1;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+  }
+
+  .news-shapes span:nth-child(1) {
+    right: 6%;
+    top: 0;
+  }
+
+  .news-shapes span:nth-child(2) {
+    right: -2%;
+    bottom: 4%;
+  }
+
+  .news-shapes span:nth-child(3) {
+    right: 14%;
+    bottom: -8%;
   }
 
   .posts {
@@ -121,6 +190,10 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
     .hero-grid,
     .posts {
       grid-template-columns: 1fr;
+    }
+
+    .hero-image {
+      margin-bottom: 0;
     }
   }
 </style>

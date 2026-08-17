@@ -161,7 +161,15 @@ const pages = defineCollection({
     consulting: z
       .object({
         eyebrow: z.string(),
-        items: z.array(z.string()),
+        items: z.array(
+          z.union([
+            z.string(),
+            z.object({
+              title: z.string(),
+              text: z.string(),
+            }),
+          ]),
+        ),
       })
       .optional(),
   }),

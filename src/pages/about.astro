@@ -39,12 +39,21 @@ const aboutData = about.data as AboutData;
   image="/images/optimized/julia-mercier-1400.jpg"
 >
   <section class="section about-hero">
-    <div class="container hero-grid">
+    <div class="container about-hero-inner">
       <div>
         <p class="eyebrow">{aboutData.eyebrow}</p>
         <h1>{aboutData.title} <em>{aboutData.titleAccent}</em></h1>
         <p>{aboutData.lede}</p>
       </div>
+      <div class="about-rings" aria-hidden="true">
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section firm-band">
+    <div class="container">
       <div class="firm-card">
         <p class="eyebrow">{aboutData.firm.eyebrow}</p>
         <h2>{aboutData.firm.title}</h2>
@@ -82,41 +91,107 @@ const aboutData = about.data as AboutData;
 
 <style>
   .about-hero {
+    position: relative;
+    min-height: 576px;
+    overflow: hidden;
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+  }
+
+  .about-hero-inner {
+    position: relative;
+    display: grid;
+    min-height: 456px;
+    align-items: center;
+  }
+
+  .about-hero .eyebrow {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .about-hero .eyebrow::before {
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.62);
+    content: "";
+  }
+
+  .about-rings {
+    position: absolute;
+    right: -200px;
+    bottom: -280px;
+    width: 720px;
+    height: 520px;
+    pointer-events: none;
+  }
+
+  .about-rings span {
+    position: absolute;
+    border: 1px solid rgba(233, 231, 226, 0.22);
+    border-radius: 50%;
+  }
+
+  .about-rings span:first-child {
+    inset: 20px 70px 70px 20px;
+  }
+
+  .about-rings span:last-child {
+    inset: 130px 0 0 170px;
+  }
+
+  .firm-band {
     background: var(--color-white);
   }
 
-  .hero-grid,
   .team-card {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
-    gap: clamp(2.5rem, 6vw, 4.75rem);
+    grid-template-columns: minmax(220px, 256px) minmax(0, 1fr);
+    gap: clamp(1.75rem, 4vw, 3.25rem);
     align-items: start;
   }
 
   .firm-card {
+    max-width: 760px;
     border-top: 1px solid var(--color-line);
     padding-top: 1.65rem;
   }
 
   h1 {
     margin: 0.4rem 0 1.4rem;
-    color: var(--color-ink);
+    max-width: 850px;
+    color: var(--color-white);
     font-family: var(--font-heading);
     font-size: var(--page-title-size);
     font-weight: 700;
     line-height: 1;
   }
 
+  .about-hero h1 em {
+    color: var(--color-blue);
+  }
+
   p:not(.eyebrow) {
-    color: var(--color-muted);
-    font-size: 1.12rem;
+    color: var(--color-ink);
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .about-hero p:not(.eyebrow) {
+    max-width: 760px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 16px;
+    line-height: 1.55;
   }
 
   h2 {
     margin: 0.35rem 0 0.9rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
-    font-size: clamp(1.9rem, 4vw, 3.4rem);
+    font-size: clamp(1.75rem, 3.5vw, 3rem);
     font-weight: 700;
     line-height: 1.05;
   }
@@ -127,7 +202,7 @@ const aboutData = about.data as AboutData;
 
   .team-list {
     display: grid;
-    gap: clamp(3.25rem, 7vw, 6.25rem);
+    gap: clamp(2.25rem, 4.5vw, 3.65rem);
   }
 
   .team-card.alternate .portrait {
@@ -135,13 +210,16 @@ const aboutData = about.data as AboutData;
   }
 
   .portrait {
-    aspect-ratio: 0.82;
+    width: min(100%, 256px);
+    aspect-ratio: 256 / 314;
+    justify-self: start;
+    border-radius: 0;
   }
 
   .credentials {
-    margin-top: 1.65rem;
+    margin-top: 1.2rem;
     border-top: 1px solid var(--color-line);
-    padding-top: 1.15rem;
+    padding-top: 0.95rem;
   }
 
   a {
@@ -149,7 +227,6 @@ const aboutData = about.data as AboutData;
   }
 
   @media (max-width: 820px) {
-    .hero-grid,
     .team-card {
       grid-template-columns: 1fr;
     }
