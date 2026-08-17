@@ -571,25 +571,22 @@ const stats = [
   }
 
   .approach {
-    min-height: 523px;
-    padding: 0;
+    padding: clamp(3.75rem, 6vw, 5.25rem) 0;
     background: var(--color-white);
     color: var(--color-text);
   }
 
   .approach-grid {
     display: grid;
-    min-height: 523px;
     grid-template-columns: minmax(0, 671px) minmax(380px, 1fr);
     gap: clamp(2rem, 5vw, 3.5rem);
-    align-items: stretch;
+    align-items: center;
   }
 
   .approach-copy {
     display: grid;
-    align-content: start;
+    align-content: center;
     gap: 28px;
-    padding-top: 48px;
   }
 
   .approach .section-heading {
@@ -648,10 +645,11 @@ const stats = [
 
   .chart-wrapper {
     display: flex;
-    width: 100%;
-    min-height: 523px;
+    width: min(100%, 470px);
+    aspect-ratio: 1;
     align-items: stretch;
     justify-content: stretch;
+    justify-self: center;
     overflow: hidden;
     background: #1b2b46;
   }
@@ -862,10 +860,6 @@ const stats = [
       border-left: 0;
     }
 
-    .chart-wrapper {
-      min-height: 420px;
-    }
-
     .services-preview {
       padding: clamp(4rem, 12vw, 6rem) 0;
     }
@@ -889,6 +883,10 @@ const stats = [
 
     .approach-copy {
       padding-top: 0;
+    }
+
+    .chart-wrapper {
+      width: min(100%, 420px);
     }
 
     .news-band {
