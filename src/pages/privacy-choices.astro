@@ -10,7 +10,7 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
     <div class="container privacy-grid">
       <div>
         <p class="eyebrow">Privacy Choices</p>
-        <h1>Opt out of targeted advertising data use</h1>
+        <h1>Opt out of targeted advertising data <em>use</em></h1>
         <p>
           Use this page to opt out of data collection or use for targeted advertising purposes. This page is
           included so visitors have a clear, visible privacy choice.
@@ -59,9 +59,9 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
   h1 {
     margin: 0.4rem 0 1.2rem;
     color: var(--color-ink);
-    font-family: var(--font-serif);
-    font-size: clamp(2.6rem, 6vw, 5.4rem);
-    font-weight: 500;
+    font-family: var(--font-heading);
+    font-size: var(--page-title-size);
+    font-weight: 700;
     line-height: 1;
   }
 
@@ -82,8 +82,9 @@ const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
   label {
     display: grid;
     gap: 0.35rem;
-    color: var(--color-blue-dark);
-    font-size: 0.78rem;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 14px;
     font-weight: 800;
     letter-spacing: 0;
   }

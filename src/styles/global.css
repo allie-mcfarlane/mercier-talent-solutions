@@ -1,5 +1,5 @@
 :root {
-  --color-ink: #17253e;
+  --color-ink: #000000;
   --color-text: #2b3036;
   --color-muted: #66707c;
   --color-paper: #f5f5f3;
@@ -9,7 +9,11 @@
   --color-blue-dark: #1a2b46;
   --color-blue-soft: #e8edf4;
   --font-serif: "Playfair Display", Georgia, serif;
-  --font-sans: Manrope, Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: Sora, Manrope, Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-label: Manrope, Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Proxima Nova", "proxima-nova", Manrope, Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: var(--font-body);
+  --page-title-size: 27px;
   --container: 1180px;
   --radius: 8px;
   --shadow: 0 18px 50px rgba(23, 37, 62, 0.09);
@@ -65,8 +69,9 @@ img {
 
 .eyebrow {
   color: var(--color-blue);
+  font-family: var(--font-label);
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -89,6 +94,7 @@ img {
   padding: 0.78rem 1.2rem;
   background: var(--color-blue-dark);
   color: var(--color-white);
+  font-family: var(--font-body);
   font-weight: 700;
   text-decoration: none;
   transition: transform 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
@@ -100,7 +106,12 @@ img {
   border-radius: 0;
   padding: 0;
   background: transparent;
-  color: var(--color-blue-dark);
+  color: var(--color-blue);
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
 .button.secondary {
@@ -126,10 +137,30 @@ img {
 .section-heading h2 {
   margin: 0.4rem 0 0;
   color: var(--color-ink);
-  font-family: var(--font-serif);
-  font-size: clamp(2rem, 4vw, 4rem);
-  font-weight: 500;
+  font-family: var(--font-heading);
+  font-size: var(--page-title-size);
+  font-weight: 700;
   line-height: 1.05;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--color-ink);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+h1 em,
+h2 em,
+h3 em,
+h4 em,
+.page-title-accent {
+  color: var(--color-blue);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 700;
 }
 
 .section-heading p:not(.eyebrow) {
@@ -162,9 +193,9 @@ img {
 .card h3 {
   margin: 0.45rem 0 0.55rem;
   color: var(--color-ink);
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: 1.55rem;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .card p {

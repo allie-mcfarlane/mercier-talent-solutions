@@ -12,6 +12,9 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+const titleMatch = post.data.title.trim().match(/^(.*\S)\s+(\S+)$/);
+const titleStart = titleMatch?.[1] ?? "";
+const titleEnd = titleMatch?.[2] ?? post.data.title;
 ---
 
 <BaseLayout title={`${post.data.title} | Mercier Talent Solutions`} description={post.data.seoDescription ?? post.data.excerpt}>
@@ -20,7 +23,7 @@ const { Content } = await post.render();
       <a class="back-link" href="/news/">Back to News & Insights</a>
       <header>
         <span class="pill">{post.data.category}</span>
-        <h1>{post.data.title}</h1>
+        <h1>{titleStart && `${titleStart} `}<em>{titleEnd}</em></h1>
         <p class="dek">{post.data.excerpt}</p>
         <div class="meta-row">
           <span>Julia Mercier</span>
@@ -52,9 +55,9 @@ const { Content } = await post.render();
   h1 {
     margin: 0.5rem 0 1rem;
     color: var(--color-ink);
-    font-family: var(--font-serif);
-    font-size: clamp(2.4rem, 6vw, 5rem);
-    font-weight: 500;
+    font-family: var(--font-heading);
+    font-size: var(--page-title-size);
+    font-weight: 700;
     line-height: 1;
   }
 
@@ -80,8 +83,8 @@ const { Content } = await post.render();
   .article-body :global(h4) {
     margin: 2rem 0 0.8rem;
     color: var(--color-ink);
-    font-family: var(--font-serif);
-    font-weight: 500;
+    font-family: var(--font-heading);
+    font-weight: 700;
     line-height: 1.08;
   }
 
@@ -110,7 +113,7 @@ const { Content } = await post.render();
     border-left: 3px solid var(--color-blue);
     padding: 0.2rem 0 0.2rem 1.2rem;
     color: var(--color-blue-dark);
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: clamp(1.25rem, 2.2vw, 1.65rem);
     line-height: 1.35;
   }

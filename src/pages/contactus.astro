@@ -7,7 +7,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="container contact-grid">
       <div>
         <p class="eyebrow">Contact us</p>
-        <h1>Let's do our best work together</h1>
+        <h1>Let's do our best work <em>together</em></h1>
         <div class="direct">
           <p><strong>Julia Mercier</strong><br /><a href="mailto:julia@merciertalentsolutions.com">julia@merciertalentsolutions.com</a><br />(917) 808-5668</p>
           <p><strong>Allie McFarlane</strong><br /><a href="mailto:allie@merciertalentsolutions.com">allie@merciertalentsolutions.com</a><br />(347) 254-9298</p>
@@ -42,9 +42,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   h1 {
     margin: 0.4rem 0 1.4rem;
     color: var(--color-ink);
-    font-family: var(--font-serif);
-    font-size: clamp(2.8rem, 7vw, 6rem);
-    font-weight: 500;
+    font-family: var(--font-heading);
+    font-size: var(--page-title-size);
+    font-weight: 700;
     line-height: 1;
   }
 
@@ -64,8 +64,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   label {
     display: grid;
     gap: 0.35rem;
-    color: var(--color-blue-dark);
-    font-size: 0.78rem;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 14px;
     font-weight: 800;
     letter-spacing: 0;
   }
