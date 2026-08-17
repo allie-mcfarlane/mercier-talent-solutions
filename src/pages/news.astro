@@ -17,6 +17,7 @@ if (!newsPage || !newsPage.data.paragraphs) {
 
 const newsPageData = newsPage.data as NewsPageData;
 const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
 ---
 
 <BaseLayout title="News & Insights | Mercier Talent Solutions" description={newsPageData.paragraphs[0]} image="/images/optimized/news-hero-1400.jpg">
@@ -25,7 +26,7 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.value
       <div class="section-heading">
         <p class="eyebrow">{newsPageData.eyebrow}</p>
         <h1>{newsPageData.title} <em>{newsPageData.titleAccent}</em></h1>
-        {newsPageData.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        <p>{newsPageData.paragraphs.join(" ")}</p>
       </div>
       <div class="media-frame hero-image">
         <ResponsiveImage src="/images/news-hero.png" alt="News and insights visual" sizes="(min-width: 900px) 38vw, 100vw" eager />
@@ -42,7 +43,7 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.value
             <h2>{post.data.title}</h2>
             <p>{post.data.excerpt}</p>
             <span class="meta-row">
-              Julia Mercier · {post.data.pubDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+              Julia Mercier · {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}
             </span>
           </a>
         ))}

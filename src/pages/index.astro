@@ -36,6 +36,7 @@ const recentPosts = (await getCollection("posts"))
 const serviceItems = servicesPage.data.services as ServiceItem[];
 const homeServices = [serviceItems[0], serviceItems[2], serviceItems[1], serviceItems[3]];
 const homeData = home.data as HomeData;
+const dateFormat = { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
 ---
 
 <BaseLayout title="Home | Mercier Talent Solutions" description={site.description} image="/images/optimized/waiting-area-1400.jpg">
@@ -162,7 +163,7 @@ const homeData = home.data as HomeData;
             <span class="pill">{post.data.category}</span>
             <h3>{post.data.title}</h3>
             <p>{post.data.excerpt}</p>
-            <span class="meta-row">Julia Mercier · {post.data.pubDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+            <span class="meta-row">Julia Mercier · {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}</span>
           </a>
         ))}
       </div>

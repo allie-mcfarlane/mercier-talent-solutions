@@ -15,6 +15,7 @@ const { Content } = await post.render();
 const titleMatch = post.data.title.trim().match(/^(.*\S)\s+(\S+)$/);
 const titleStart = titleMatch?.[1] ?? "";
 const titleEnd = titleMatch?.[2] ?? post.data.title;
+const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
 ---
 
 <BaseLayout
@@ -36,7 +37,7 @@ const titleEnd = titleMatch?.[2] ?? post.data.title;
         <div class="meta-row">
           <span>Julia Mercier</span>
           <time datetime={post.data.pubDate.toISOString()}>
-            {post.data.pubDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+            {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}
           </time>
         </div>
       </header>

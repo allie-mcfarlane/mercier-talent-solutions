@@ -10,5 +10,5 @@ contacts:
   - name: Allie McFarlane
     email: allie@merciertalentsolutions.com
     phone: (347) 254-9298
-    linkedin: https://www.linkedin.com/
+    linkedin: https://www.linkedin.com/in/allieemcfarlane/?isSelfProfile=false
 ---

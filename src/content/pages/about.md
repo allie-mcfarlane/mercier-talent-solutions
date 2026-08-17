@@ -32,7 +32,7 @@ team:
       - Outside of her professional work, Allie is actively involved in animal welfare, regularly volunteering at a local animal shelter. Her commitment to compassion, responsibility, and service extends beyond the workplace and reflects the values she brings to everything she does.
     email: allie@merciertalentsolutions.com
     phone: (347) 254-9298
-    linkedin: https://www.linkedin.com/
+    linkedin: https://www.linkedin.com/in/allieemcfarlane/?isSelfProfile=false
     credentialsEyebrow: Credentials & Certifications
     credentials: B.A. Business Management, University of Huddersfield · Commissioned Notary Public
 ---

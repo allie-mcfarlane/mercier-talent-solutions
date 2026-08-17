@@ -60,6 +60,14 @@ const servicesData = servicesPage.data as ServicesData;
     </div>
   </section>
 
+  <nav class="service-strip" aria-label="Service sections">
+    <div class="container service-strip-inner">
+      {servicesData.services.map((service) => (
+        <a href={`#${service.title.toLowerCase().replaceAll(" ", "-")}`}>{service.title}</a>
+      ))}
+    </div>
+  </nav>
+
   <section class="section focus-section">
     <div class="container focus-grid">
       <p>{servicesData.focusIntro}</p>
@@ -161,6 +169,40 @@ const servicesData = servicesPage.data as ServicesData;
 
   .hero-image {
     aspect-ratio: 1.22;
+  }
+
+  .service-strip {
+    background: var(--color-blue-dark);
+  }
+
+  .service-strip-inner {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .service-strip a {
+    display: flex;
+    min-height: 86px;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--color-white);
+    font-family: var(--font-label);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .service-strip a:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .service-strip a:hover,
+  .service-strip a:focus-visible {
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .focus-section {
@@ -313,8 +355,17 @@ const servicesData = servicesPage.data as ServicesData;
     .hero-grid,
     .focus-grid,
     .service-detail,
-    .program-list {
+    .program-list,
+    .service-strip-inner {
       grid-template-columns: 1fr;
+    }
+
+    .service-strip a,
+    .service-strip a:last-child {
+      min-height: 64px;
+      border-right: 0;
+      border-left: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
     }
 
     .service-detail:nth-child(even) .service-image {

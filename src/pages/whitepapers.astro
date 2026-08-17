@@ -16,26 +16,29 @@ if (!whitePapersPage) {
 
 const whitePapersPageData = whitePapersPage.data as WhitePapersPageData;
 const papers = (await getCollection("white-papers")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
 ---
 
 <BaseLayout title="White Papers | Mercier Talent Solutions" description={whitePapersPageData.lede}>
   <section class="section">
     <div class="container">
       <div class="section-heading">
-        <p class="eyebrow">{whitePapersPageData.eyebrow}</p>
         <h1>{whitePapersPageData.title} <em>{whitePapersPageData.titleAccent}</em></h1>
         <p>{whitePapersPageData.lede}</p>
       </div>
       <div class="papers">
         {papers.map((paper) => (
-          <article class="card paper">
-            <p class="eyebrow">WHITE PAPER No. {paper.data.number}</p>
-            <h2>{paper.data.title}</h2>
-            <p class="subtitle">{paper.data.description}</p>
-            <p>{paper.body}</p>
-            <div class="paper-actions">
+          <article class="paper">
+            <div class="paper-title-panel">
+              <p>MERCIER TALENT SOLUTIONS</p>
+              <p>WHITE PAPER No. {paper.data.number}</p>
+              <h2>{paper.data.title}</h2>
+            </div>
+            <div class="paper-content-panel">
+              <p class="paper-date">{paper.data.date.toLocaleDateString("en-US", dateFormat)}</p>
+              <p class="subtitle">{paper.data.description}</p>
+              <p>{paper.body}</p>
               {paper.data.document && <a class="button" href={paper.data.document}>Download the Paper</a>}
-              <span class="meta-row">{paper.data.date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
             </div>
           </article>
         ))}
@@ -46,7 +49,7 @@ const papers = (await getCollection("white-papers")).sort((a, b) => b.data.date.
 
 <style>
   h1 {
-    margin: 0.4rem 0 0;
+    margin: 0 0 1.4rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
     font-size: var(--page-title-size);
@@ -56,41 +59,86 @@ const papers = (await getCollection("white-papers")).sort((a, b) => b.data.date.
 
   .papers {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 2rem;
+    gap: 1.5rem;
+    margin-top: clamp(2.5rem, 6vw, 4.5rem);
   }
 
   .paper {
     display: grid;
-    gap: 0.8rem;
+    grid-template-columns: minmax(220px, 0.36fr) minmax(0, 0.64fr);
+    min-height: 300px;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: var(--color-white);
   }
 
-  h2 {
-    margin: 0.4rem 0 0.6rem;
-    color: var(--color-ink);
+  .paper-title-panel {
+    display: grid;
+    align-content: space-between;
+    min-height: 300px;
+    padding: clamp(1.2rem, 3vw, 2.2rem);
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+  }
+
+  .paper-title-panel p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .paper-title-panel h2 {
+    max-width: 280px;
+    margin: 2rem 0 0;
+    color: var(--color-white);
     font-family: var(--font-heading);
-    font-size: clamp(1.7rem, 3vw, 2.7rem);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
     font-weight: 700;
+    line-height: 1.08;
+  }
+
+  .paper-content-panel {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    padding: clamp(1.4rem, 4vw, 3rem);
+  }
+
+  .paper-content-panel p {
+    max-width: 720px;
+    margin: 0;
   }
 
   .subtitle {
     color: var(--color-blue-dark);
-    font-family: var(--font-heading);
+    font-family: var(--font-serif);
+    font-style: italic;
     font-weight: 800;
   }
 
-  .paper-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 0.4rem;
+  .paper-date {
+    color: var(--color-blue-dark);
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .paper-content-panel .button {
+    width: fit-content;
   }
 
   @media (max-width: 760px) {
-    .papers {
+    .paper {
       grid-template-columns: 1fr;
+    }
+
+    .paper-title-panel {
+      min-height: 220px;
     }
   }
 </style>
