@@ -150,12 +150,13 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .firm-band {
     background: var(--color-white);
+    padding: clamp(5.2rem, 8.5vw, 8rem) 0;
   }
 
   .team-card {
     display: grid;
     grid-template-columns: minmax(220px, 286px) minmax(0, 1fr);
-    gap: clamp(2.4rem, 5vw, 4.75rem);
+    gap: clamp(3rem, 5.6vw, 5.4rem);
     align-items: start;
   }
 
@@ -163,9 +164,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     display: grid;
     grid-template-columns: minmax(260px, 0.45fr) minmax(320px, 0.55fr);
     gap: clamp(2rem, 5vw, 5rem);
-    align-items: start;
-    border-top: 1px solid var(--color-line);
-    padding-top: clamp(1.5rem, 2.4vw, 2.1rem);
+    align-items: center;
   }
 
   h1 {
@@ -184,7 +183,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   p:not(.eyebrow) {
     color: var(--color-ink);
-    font-size: 1rem;
+    font-size: 16px;
     line-height: 1.6;
   }
 
@@ -206,11 +205,35 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .team-band {
     background: var(--color-paper);
+    padding: clamp(5.3rem, 8.8vw, 8.3rem) 0;
   }
 
   .team-list {
     display: grid;
-    gap: clamp(3.25rem, 6vw, 5.25rem);
+    gap: clamp(5rem, 8vw, 7.5rem);
+  }
+
+  .firm-card .eyebrow {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    letter-spacing: 6px;
+  }
+
+  .firm-card .eyebrow::before {
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: var(--color-blue);
+    content: "";
+  }
+
+  .team-copy > .eyebrow {
+    letter-spacing: 6px;
+  }
+
+  .team-copy > .eyebrow + h2 {
+    margin-top: 0.75rem;
   }
 
   .portrait {
