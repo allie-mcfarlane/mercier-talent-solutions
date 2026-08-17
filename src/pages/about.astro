@@ -195,12 +195,12 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   h2 {
-    margin: 0.35rem 0 0.9rem;
+    margin: 0.55rem 0 1.25rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
     font-size: clamp(1.75rem, 3.5vw, 3rem);
     font-weight: 700;
-    line-height: 1.05;
+    line-height: 1.12;
   }
 
   .team-band {
@@ -228,16 +228,20 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
     content: "";
   }
 
+  .firm-card .eyebrow + h2 {
+    margin-top: 1.05rem;
+  }
+
   .team-copy > .eyebrow {
     letter-spacing: 6px;
   }
 
   .team-copy > .eyebrow + h2 {
-    margin-top: 0.75rem;
+    margin-top: 1.05rem;
   }
 
   .team-copy > h2 {
-    margin-bottom: 1.45rem;
+    margin-bottom: 1.65rem;
   }
 
   .team-copy > p:not(.eyebrow) {
