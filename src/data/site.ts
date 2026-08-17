@@ -28,7 +28,7 @@ export const services = [
     title: "Executive Coaching",
     text: "A focused, individualized approach for lawyers and senior professionals who want to lead with greater clarity and impact. Our coaching is practical, rigorous, and grounded in the realities of legal practice.",
     summary: "Focused, individualized coaching for lawyers who want to lead with greater clarity and impact.",
-    image: "/images/coaching.png",
+    image: "/images/executive-office.png",
     imageAlt: "Executive coaching visual from Mercier Talent Solutions",
   },
   {
@@ -37,7 +37,7 @@ export const services = [
     title: "Assessments",
     text: "360-degree feedback, DISC, and Hogan assessments that reveal how professionals are perceived, how they operate under pressure, and how their styles affect clients and colleagues.",
     summary: "Deepening self-awareness and turning insight into action.",
-    image: "/images/assessments.png",
+    image: "/images/conference-nook.png",
     imageAlt: "Assessment visual from Mercier Talent Solutions",
   },
   {
@@ -47,7 +47,7 @@ export const services = [
     text: "Signature programs that build the skills lawyers need to lead, communicate, and perform in high-pressure environments. Our training is practical, relevant, and immediately applicable.",
     summary:
       "Bespoke training programs designed for lawyers operating in demanding, high-stakes environments.",
-    image: "/images/training.png",
+    image: "/images/training-room.png",
     imageAlt: "Training visual from Mercier Talent Solutions",
   },
   {
@@ -57,7 +57,7 @@ export const services = [
     text: "Talent strategies that help firms attract, develop, and retain top legal talent in an increasingly competitive and demanding environment.",
     summary:
       "Talent strategies that support performance, engagement, and long-term growth, informed by firsthand experience designing development systems inside complex legal organizations.",
-    image: "/images/consulting.png",
+    image: "/images/lobby-lounge-glass-offices.png",
     imageAlt: "Consulting visual from Mercier Talent Solutions",
   },
 ];
