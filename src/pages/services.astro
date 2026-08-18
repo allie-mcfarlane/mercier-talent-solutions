@@ -23,35 +23,77 @@ type ServicesData = {
   heroImage: string;
   heroImageAlt: string;
   focusIntro: string;
-  focusAreas: { title: string; text: string }[];
+  focusAreas: {
+    title: string;
+    text: string;
+  }[];
   services: ServiceItem[];
   training: {
     eyebrow: string;
     title: string;
-    groups: { group: string; items: { title: string; text: string }[] }[];
+    groups: {
+      group: string;
+      items: {
+        title: string;
+        text: string;
+      }[];
+    }[];
   };
-  consulting: { eyebrow: string; items: ({ title: string; text: string } | string)[] };
+  consulting: {
+    eyebrow: string;
+    items: ({ title: string; text: string } | string)[];
+  };
 };
 
 const servicesPage = await getEntry("pages", "services");
-if (!servicesPage || !servicesPage.data.services || !servicesPage.data.focusAreas || !servicesPage.data.training || !servicesPage.data.consulting) {
+
+if (
+  !servicesPage ||
+  !servicesPage.data.services ||
+  !servicesPage.data.focusAreas ||
+  !servicesPage.data.training ||
+  !servicesPage.data.consulting
+) {
   throw new Error("Services page content is missing.");
 }
 
 const servicesData = servicesPage.data as ServicesData;
-const [coaching, assessments, trainingService, consultingService] = servicesData.services;
-const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
+
+const [
+  coaching,
+  assessments,
+  trainingService,
+  consultingService,
+] = servicesData.services;
+
+const slugify = (value: string) =>
+  value.toLowerCase().replaceAll(" ", "-");
 ---
 
-<BaseLayout title="Services | Mercier Talent Solutions" description={servicesData.lede} image="/images/optimized/services-hero-1400.jpg">
+<BaseLayout
+  title="Services | Mercier Talent Solutions"
+  description={servicesData.lede}
+  image="/images/optimized/services-hero-1400.jpg"
+>
+  <!-- HERO -->
   <section class="services-hero">
     <div class="container services-hero-grid">
       <div class="section-heading hero-copy" data-reveal>
         <p class="eyebrow">{servicesData.eyebrow}</p>
-        <h1><span>{servicesData.title}</span> <em>{servicesData.titleAccent}</em></h1>
+
+        <h1>
+          <span>{servicesData.title}</span>
+          <em>{servicesData.titleAccent}</em>
+        </h1>
+
         <p>{servicesData.lede}</p>
       </div>
-      <div class="media-frame hero-image" data-reveal>
+
+      <div
+        class="media-frame hero-image motion-image"
+        data-reveal
+        data-parallax
+      >
         <ResponsiveImage
           src={servicesData.heroImage}
           alt={servicesData.heroImageAlt}
@@ -59,168 +101,411 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
           eager
         />
       </div>
-      <div class="hero-rings" aria-hidden="true">
-        <span></span>
-        <span></span>
-      </div>
     </div>
   </section>
 
+  <!-- SERVICE NAVIGATION -->
   <nav class="service-strip" aria-label="Service sections">
     <div class="container service-strip-inner">
-      {servicesData.services.map((service) => <a href={`#${slugify(service.title)}`}>{service.title}</a>)}
+      {
+        servicesData.services.map((service) => (
+          <a href={`#${slugify(service.title)}`}>
+            {service.title}
+          </a>
+        ))
+      }
     </div>
   </nav>
 
-  <section class="section service-overview">
-    <div class="container overview-grid">
-      <p data-reveal>{servicesData.focusIntro}</p>
-      <div class="focus-list" data-reveal>
-        {servicesData.focusAreas.map(({ title, text }) => (
-          <article>
-            <h3>{title}</h3>
-            <p>{text}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
+  <!-- 01 EXECUTIVE COACHING -->
+  <section
+    class="section service-section coaching-section"
+    id={slugify(coaching.title)}
+  >
+    <div class="container section-heading-anchor" data-reveal>
+      <div class="service-heading-block">
+        <p
+          class="service-number"
+          data-number={coaching.number}
+        >
+          {coaching.number}
+        </p>
 
-  <section class="section service-section coaching-section" id={slugify(coaching.title)}>
-    <div class="container coaching-grid">
-      <div class="service-lead" data-reveal>
-        <p class="service-number" data-number={coaching.number}>{coaching.number}</p>
         <h2>{coaching.title}</h2>
-        <p>{coaching.summary}</p>
       </div>
-      <div class="media-frame service-image coaching-image" data-reveal>
-        <ResponsiveImage src={coaching.image} alt={coaching.imageAlt} sizes="(min-width: 900px) 40vw, 100vw" />
+    </div>
+
+    <div class="container coaching-layout">
+      <div class="coaching-copy-stack" data-reveal>
+        <p class="service-summary">
+          {coaching.summary}
+        </p>
+
+        <p class="service-detail-copy">
+          {servicesData.focusIntro}
+        </p>
+      </div>
+
+      <div
+        class="media-frame service-image coaching-image motion-image"
+        data-reveal
+        data-parallax
+      >
+        <!-- 01 intentionally uses the former Consulting image -->
+        <ResponsiveImage
+          src={consultingService.image}
+          alt={consultingService.imageAlt}
+          sizes="(min-width: 1500px) 42vw, (min-width: 981px) 46vw, 100vw"
+        />
+      </div>
+
+      <div
+        class="coaching-focus"
+        data-reveal
+        data-stagger-group
+      >
+        <div class="focus-list">
+          {
+            servicesData.focusAreas.map(({ title, text }) => (
+              <article>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))
+          }
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section service-section split-section shaded" id={slugify(assessments.title)}>
-    <div class="container split-grid">
-      <div class="service-lead" data-reveal>
-        <p class="service-number" data-number={assessments.number}>{assessments.number}</p>
+  <!-- 02 ASSESSMENTS -->
+  <section
+    class="section service-section split-section shaded"
+    id={slugify(assessments.title)}
+  >
+    <div class="container section-heading-anchor" data-reveal>
+      <div class="service-heading-block">
+        <p
+          class="service-number"
+          data-number={assessments.number}
+        >
+          {assessments.number}
+        </p>
+
         <h2>{assessments.title}</h2>
-        <div class="media-frame service-image tall-image">
-          <ResponsiveImage src={assessments.image} alt={assessments.imageAlt} sizes="(min-width: 900px) 38vw, 100vw" />
+      </div>
+    </div>
+
+    <div class="container assessment-layout">
+      <p
+        class="assessment-intro service-detail-copy"
+        data-reveal
+      >
+        {assessments.detail}
+      </p>
+
+      <div
+        class="media-frame service-image assessment-image motion-image"
+        data-reveal
+        data-parallax
+      >
+        <ResponsiveImage
+          src="/images/assessments.png"
+          alt={assessments.imageAlt}
+          sizes="(min-width: 981px) 40vw, 100vw"
+        />
+      </div>
+
+      {
+        assessments.highlights && (
+          <div
+            class="assessment-accordion"
+            data-reveal
+          >
+            <div class="accordion-list">
+              {assessments.highlights.map(
+                ({ title, text }, index) => (
+                  <details open={index === 0}>
+                    <summary>
+                      <span>{title}</span>
+                      <b aria-hidden="true"></b>
+                    </summary>
+
+                    <p>{text}</p>
+                  </details>
+                ),
+              )}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- 03 TRAINING -->
+  <section
+    class="section service-section training-section"
+    id={slugify(trainingService.title)}
+  >
+    <div class="container training-top-layout">
+      <div
+        class="training-text-column"
+        data-reveal
+      >
+        <div class="service-heading-block">
+          <p
+            class="service-number"
+            data-number={trainingService.number}
+          >
+            {trainingService.number}
+          </p>
+
+          <h2>{trainingService.title}</h2>
+        </div>
+
+        <div class="training-copy">
+          <p class="service-summary">
+            {trainingService.summary} {trainingService.detail}
+          </p>
         </div>
       </div>
-      <div class="service-copy assessment-copy" data-reveal>
-        <p>{assessments.detail}</p>
-        {assessments.highlights && (
-          <div class="accordion-list">
-            {assessments.highlights.map(({ title, text }, index) => (
-              <details open={index === 0}>
-                <summary>
+
+      <div
+        class="media-frame service-image training-image motion-image"
+        data-reveal
+        data-parallax
+      >
+        <ResponsiveImage
+          src={trainingService.image}
+          alt={trainingService.imageAlt}
+          sizes="(min-width: 1500px) 28vw, (min-width: 981px) 32vw, 100vw"
+        />
+      </div>
+    </div>
+
+    <div
+      class="container program-groups"
+      data-reveal
+      data-stagger-group
+    >
+      {
+        servicesData.training.groups.map((group) => (
+          <article>
+            <h3>{group.group}</h3>
+
+            <div class="program-list">
+              {group.items.map(({ title, text }) => (
+                <div class="program-item">
                   <span>{title}</span>
-                  <b aria-hidden="true"></b>
-                </summary>
-                <p>{text}</p>
-              </details>
-            ))}
-          </div>
-        )}
-      </div>
+                  <p>{text}</p>
+                </div>
+              ))}
+            </div>
+          </article>
+        ))
+      }
     </div>
   </section>
 
-  <section class="section service-section training-section" id={slugify(trainingService.title)}>
-    <div class="container training-grid">
-      <div class="service-lead" data-reveal>
-        <p class="service-number" data-number={trainingService.number}>{trainingService.number}</p>
-        <h2>{trainingService.title}</h2>
-        <p>{trainingService.summary} {trainingService.detail}</p>
-      </div>
-      <div class="media-frame service-image training-image" data-reveal>
-        <ResponsiveImage src={trainingService.image} alt={trainingService.imageAlt} sizes="(min-width: 900px) 36vw, 100vw" />
-      </div>
-    </div>
-    <div class="container program-groups" data-reveal>
-      {servicesData.training.groups.map((group) => (
-        <article>
-          <h3>{group.group}</h3>
-          <div class="program-list">
-            {group.items.map(({ title, text }) => (
-              <div>
-                <span>{title}</span>
-                <p>{text}</p>
-              </div>
-            ))}
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
+  <!-- 04 CONSULTING -->
+  <section
+    class="section service-section consulting-section shaded"
+    id={slugify(consultingService.title)}
+  >
+    <div class="container section-heading-anchor" data-reveal>
+      <div class="service-heading-block">
+        <p
+          class="service-number"
+          data-number={consultingService.number}
+        >
+          {consultingService.number}
+        </p>
 
-  <section class="section service-section consulting-section shaded" id={slugify(consultingService.title)}>
-    <div class="container consulting-grid">
-      <div class="service-lead" data-reveal>
-        <p class="service-number" data-number={consultingService.number}>{consultingService.number}</p>
         <h2>{consultingService.title}</h2>
-        <div class="media-frame service-image">
-          <ResponsiveImage src={consultingService.image} alt={consultingService.imageAlt} sizes="(min-width: 900px) 42vw, 100vw" />
-        </div>
       </div>
-      <div class="consulting-copy" data-reveal>
-        <p>{consultingService.detail}</p>
-        <div class="consulting-list">
-          {servicesData.consulting.items.map((item) => (
+    </div>
+
+    <div class="container consulting-feature">
+      <p
+        class="consulting-intro service-detail-copy"
+        data-reveal
+      >
+        {consultingService.detail}
+      </p>
+
+      <div
+        class="media-frame service-image consulting-image motion-image"
+        data-reveal
+        data-parallax
+      >
+        <!-- 04 intentionally uses the former Coaching image -->
+        <ResponsiveImage
+          src={coaching.image}
+          alt={coaching.imageAlt}
+          sizes="(min-width: 981px) 46vw, 100vw"
+        />
+      </div>
+
+      <div
+        class="consulting-list"
+        data-reveal
+        data-stagger-group
+      >
+        {
+          servicesData.consulting.items.map((item) => (
             <article>
-              <h3>{typeof item === "string" ? item : item.title}</h3>
-              {typeof item !== "string" && <p>{item.text}</p>}
+              <h3>
+                {typeof item === "string" ? item : item.title}
+              </h3>
+
+              {typeof item !== "string" && (
+                <p>{item.text}</p>
+              )}
             </article>
-          ))}
-        </div>
+          ))
+        }
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <script is:inline>
-  document.querySelectorAll(".accordion-list summary").forEach((summary) => {
-    summary.addEventListener("click", () => {
-      const scrollLeft = window.scrollX;
-      const scrollTop = window.scrollY;
-      const restoreScroll = () => window.scrollTo(scrollLeft, scrollTop);
+  document
+    .querySelectorAll(".accordion-list summary")
+    .forEach((summary) => {
+      summary.addEventListener("click", () => {
+        const scrollLeft = window.scrollX;
+        const scrollTop = window.scrollY;
 
-      requestAnimationFrame(restoreScroll);
-      setTimeout(restoreScroll, 0);
-      setTimeout(restoreScroll, 80);
+        const restoreScroll = () =>
+          window.scrollTo(scrollLeft, scrollTop);
+
+        requestAnimationFrame(restoreScroll);
+        setTimeout(restoreScroll, 0);
+        setTimeout(restoreScroll, 80);
+      });
     });
+
+  const revealItems = Array.from(
+    document.querySelectorAll(
+      "[data-reveal], [data-stagger-group]",
+    ),
+  );
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  );
+
+  revealItems.forEach((item, index) => {
+    item.style.setProperty(
+      "--service-reveal-delay",
+      `${Math.min(index % 2, 1) * 90}ms`,
+    );
   });
 
-  const serviceRevealItems = Array.from(document.querySelectorAll("[data-reveal]"));
-  const serviceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  serviceRevealItems.forEach((item, index) => {
-    item.style.setProperty("--service-reveal-delay", `${Math.min(index % 2, 1) * 90}ms`);
-  });
-
-  if (serviceMotionQuery.matches || !("IntersectionObserver" in window)) {
-    serviceRevealItems.forEach((item) => item.classList.add("is-visible"));
+  if (
+    reduceMotion.matches ||
+    !("IntersectionObserver" in window)
+  ) {
+    revealItems.forEach((item) =>
+      item.classList.add("is-visible"),
+    );
   } else {
-    const serviceRevealObserver = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
+          if (!entry.isIntersecting) return;
 
           entry.target.classList.add("is-visible");
-          serviceRevealObserver.unobserve(entry.target);
+          observer.unobserve(entry.target);
         });
       },
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.14 },
+      {
+        rootMargin: "0px 0px -10% 0px",
+        threshold: 0.12,
+      },
     );
 
-    serviceRevealItems.forEach((item) => serviceRevealObserver.observe(item));
+    revealItems.forEach((item) =>
+      observer.observe(item),
+    );
+  }
+
+  const parallaxItems = Array.from(
+    document.querySelectorAll("[data-parallax]"),
+  );
+
+  const serviceStrip =
+    document.querySelector(".service-strip");
+
+  if (!reduceMotion.matches) {
+    let ticking = false;
+
+    const updateScrollMotion = () => {
+      const viewportCenter =
+        window.innerHeight / 2;
+
+      parallaxItems.forEach((item) => {
+        const rect =
+          item.getBoundingClientRect();
+
+        const itemCenter =
+          rect.top + rect.height / 2;
+
+        const distance =
+          itemCenter - viewportCenter;
+
+        const offset = Math.max(
+          -14,
+          Math.min(14, distance * -0.025),
+        );
+
+        item.style.setProperty(
+          "--parallax-y",
+          `${offset}px`,
+        );
+      });
+
+      if (serviceStrip) {
+        serviceStrip.classList.toggle(
+          "is-scrolled",
+          window.scrollY > 120,
+        );
+      }
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+
+      ticking = true;
+
+      requestAnimationFrame(
+        updateScrollMotion,
+      );
+    };
+
+    window.addEventListener(
+      "scroll",
+      onScroll,
+      { passive: true },
+    );
+
+    window.addEventListener(
+      "resize",
+      onScroll,
+    );
+
+    updateScrollMotion();
   }
 </script>
 
 <style>
+  /* ---------------------------------
+     HERO
+  ---------------------------------- */
+
   .services-hero {
     position: relative;
     overflow: hidden;
@@ -232,16 +517,23 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     display: grid;
     max-width: none;
     min-height: clamp(340px, 28vw, 460px);
-    grid-template-columns: minmax(320px, 0.82fr) minmax(360px, 0.92fr);
+    grid-template-columns:
+      minmax(320px, 0.82fr)
+      minmax(360px, 0.92fr);
     gap: clamp(2rem, 3.6vw, 4.5rem);
     align-items: center;
-    padding-block: clamp(2.35rem, 3.4vw, 3.8rem);
+    padding-block:
+      clamp(2.35rem, 3.4vw, 3.8rem);
   }
 
   .hero-copy {
     position: relative;
     z-index: 2;
     max-width: 760px;
+  }
+
+  .hero-copy .eyebrow {
+    margin-bottom: 1.8rem;
   }
 
   h1 {
@@ -262,55 +554,64 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     font-weight: 700;
   }
 
+  .hero-copy > p:last-child {
+    margin-top: 1.5rem;
+    color: var(--color-ink);
+    font-size: var(--paragraph-size);
+    line-height: 1.58;
+  }
+
   .hero-image {
     position: relative;
     z-index: 1;
     width: min(100%, 560px);
     justify-self: center;
     aspect-ratio: 1.28;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
+    overflow: hidden;
+    border: 1px solid
+      rgba(255, 255, 255, 0.92);
+    outline: 1px solid
+      rgba(255, 255, 255, 0.58);
+    outline-offset: -12px;
+    background: #fff;
   }
 
-  .hero-image::after {
-    position: absolute;
-    inset: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.74);
-    content: "";
-    pointer-events: none;
-  }
 
-  .hero-rings {
-    display: none;
-  }
-
-  .hero-rings span {
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgba(69, 98, 142, 0.28);
-    border-radius: 50%;
-  }
-
-  .hero-rings span + span {
-    inset: 15%;
-  }
+  /* ---------------------------------
+     SERVICE NAV
+  ---------------------------------- */
 
   .service-strip {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     background: var(--color-blue-dark);
+    transition:
+      box-shadow 320ms var(--ease-soft),
+      background-color 320ms
+        var(--ease-soft);
+  }
+
+  .service-strip.is-scrolled {
+    box-shadow:
+      0 10px 30px rgba(23, 37, 62, 0.16);
   }
 
   .service-strip-inner {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
   }
 
   .service-strip a {
+    position: relative;
     display: flex;
     min-height: 86px;
+    overflow: hidden;
     align-items: center;
     justify-content: center;
-    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    border-left: 1px solid
+      rgba(255, 255, 255, 0.18);
     color: var(--color-white);
     font-family: var(--font-label);
     font-size: 14px;
@@ -319,110 +620,89 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
-    transition: background-color 260ms var(--ease-soft), color 260ms var(--ease-soft);
+    transition:
+      background-color 260ms
+        var(--ease-soft),
+      color 260ms var(--ease-soft);
   }
 
   .service-strip a:last-child {
-    border-right: 1px solid rgba(255, 255, 255, 0.18);
+    border-right: 1px solid
+      rgba(255, 255, 255, 0.18);
   }
 
   .service-strip a:hover,
   .service-strip a:focus-visible {
-    background: rgba(255, 255, 255, 0.08);
+    background:
+      rgba(255, 255, 255, 0.08);
   }
 
-  .service-overview {
-    background: var(--color-white);
-    border-bottom: 1px solid var(--color-line);
-    padding-block: clamp(2.2rem, 3vw, 3.65rem);
+  .service-strip a::after {
+    position: absolute;
+    bottom: 17px;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background:
+      rgba(255, 255, 255, 0.72);
+    content: "";
+    transform: translateX(-50%);
+    transition:
+      width 320ms var(--ease-soft);
   }
 
-  .overview-grid {
-    display: grid;
-    max-width: none;
-    grid-template-columns: minmax(330px, 0.56fr) minmax(520px, 1fr);
-    gap: clamp(2.4rem, 4.2vw, 5rem);
-    align-items: start;
+  .service-strip a:hover::after,
+  .service-strip a:focus-visible::after {
+    width: 34%;
   }
+
+
+  /* ---------------------------------
+     SHARED SERVICE STYLING
+  ---------------------------------- */
 
   .service-section {
     overflow: hidden;
     background: var(--color-white);
-    padding-block: clamp(2.35rem, 3.8vw, 4.25rem);
+    padding-block:
+      clamp(3.15rem, 4.5vw, 4.75rem);
   }
 
   .service-section.shaded {
     background: #ececec;
   }
 
-  .coaching-grid,
-  .service-intro-grid,
-  .split-grid,
-  .training-grid,
-  .consulting-grid {
+  .section-heading-anchor {
+    display: block;
+    margin-bottom:
+      clamp(0.95rem, 1.35vw, 1.35rem);
+  }
+
+  .service-heading-block {
     display: grid;
-    max-width: none;
-    grid-template-columns: minmax(320px, 0.9fr) minmax(420px, 1fr);
-    gap: clamp(2.2rem, 3.6vw, 4.8rem);
-    align-items: start;
-  }
-
-  .service-lead,
-  .service-copy,
-  .focus-panel,
-  .consulting-copy,
-  .consulting-list {
-    max-width: min(100%, 720px);
-  }
-
-  .service-lead {
-    display: grid;
-    gap: clamp(0.7rem, 1.25vw, 1.15rem);
-  }
-
-  @media (min-width: 981px) {
-    .service-lead {
-      position: sticky;
-      top: 112px;
-      align-self: start;
-    }
+    min-height: 0;
+    align-content: start;
+    gap: 0.72rem;
   }
 
   .service-number {
-    position: relative;
-    z-index: 0;
+    position: static;
     width: fit-content;
     margin: 0;
-    color: var(--color-white);
+    color: #8498ba;
     font-family: var(--font-serif);
-    font-size: clamp(3.8rem, 5.1vw, 5.35rem);
+    font-size:
+      clamp(3.55rem, 4.4vw, 4.8rem);
     font-weight: 700;
-    letter-spacing: 0;
-    line-height: 0.94;
-    text-shadow: 3px 2px 0 rgba(69, 98, 142, 0.86);
-    -webkit-text-stroke: 1px var(--color-blue);
+    letter-spacing: -0.045em;
+    line-height: 0.88;
+    text-shadow: none;
+    -webkit-text-stroke: 0;
   }
 
   .service-number::after {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    color: transparent;
-    content: attr(data-number);
-    transform: translate(2.5px, 1.5px);
-    -webkit-text-stroke: 1px rgba(69, 98, 142, 0.8);
-  }
-
-  @supports not (-webkit-text-stroke: 1px #000) {
-    .service-number {
-      color: var(--color-white);
-      text-shadow:
-        1px 0 0 var(--color-blue),
-        -1px 0 0 var(--color-blue),
-        0 1px 0 var(--color-blue),
-        0 -1px 0 var(--color-blue),
-        4px 3px 0 rgba(69, 98, 142, 0.82);
-    }
+    display: none;
+    content: none;
   }
 
   h2,
@@ -434,13 +714,10 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     line-height: 1.1;
   }
 
-  h2 {
-    max-width: 720px;
+  .service-heading-block h2 {
+    margin: 0;
     font-size: 20px;
-  }
-
-  h3 {
-    font-size: clamp(1.15rem, 1.8vw, 1.55rem);
+    line-height: 1.2;
   }
 
   p {
@@ -450,93 +727,142 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     line-height: 1.58;
   }
 
-  .summary {
+  .service-summary,
+  .service-detail-copy {
+    margin: 0;
     color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-weight: 700;
+    font-size: var(--paragraph-size);
+    line-height: 1.55;
   }
 
-  .service-copy {
-    display: grid;
-    gap: clamp(1.1rem, 2vw, 1.75rem);
-    padding-top: clamp(5.2rem, 6.8vw, 7.5rem);
-  }
+
+  /* ---------------------------------
+     IMAGE TREATMENT
+  ---------------------------------- */
 
   .service-image {
-    width: min(100%, 520px);
-    aspect-ratio: 1.35;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
+    position: relative;
     overflow: hidden;
+    border: 1px solid
+      rgba(255, 255, 255, 0.95);
+    outline: 1px solid
+      rgba(255, 255, 255, 0.62);
+    outline-offset: -11px;
+    background: #fff;
+  }
+
+  .motion-image {
+    --parallax-y: 0px;
+  }
+
+  .motion-image :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform:
+      translate3d(
+        0,
+        var(--parallax-y),
+        0
+      )
+      scale(1.035);
+    transition:
+      transform 220ms linear,
+      filter 700ms var(--ease-soft);
+    will-change: transform;
+  }
+
+  .motion-image:hover :global(img) {
+    transform:
+      translate3d(
+        0,
+        var(--parallax-y),
+        0
+      )
+      scale(1.055);
+  }
+
+
+  /* ---------------------------------
+     01 EXECUTIVE COACHING
+  ---------------------------------- */
+
+  .coaching-section {
+    padding-top:
+      clamp(3rem, 4.2vw, 4.25rem);
+  }
+
+  .coaching-layout {
+    display: grid;
+    grid-template-columns:
+      minmax(280px, 0.68fr)
+      minmax(430px, 1.12fr);
+    grid-template-areas:
+      "copy image"
+      "focus focus";
+    gap:
+      clamp(1.5rem, 2.4vw, 2.5rem)
+      clamp(3rem, 5vw, 6rem);
+    align-items: start;
+  }
+
+  .coaching-copy-stack {
+    grid-area: copy;
+    display: grid;
+    max-width: none;
+    gap: 1.15rem;
+  }
+
+  .coaching-copy-stack
+    .service-summary,
+  .coaching-copy-stack
+    .service-detail-copy {
+    max-width: 660px;
   }
 
   .coaching-image {
-    width: min(100%, 580px);
-    justify-self: center;
+    grid-area: image;
+    width: min(100%, 760px);
+    max-width: 760px;
+    justify-self: end;
+    aspect-ratio: 1.58;
   }
 
-  .service-image :global(img),
-  .hero-image :global(img) {
-    transition: transform 900ms var(--ease-soft), filter 900ms var(--ease-soft);
-  }
-
-  .service-lead.is-visible .service-image :global(img),
-  .hero-image.is-visible :global(img) {
-    transform: scale(1.01);
-  }
-
-  .service-image:hover :global(img),
-  .hero-image:hover :global(img) {
-    transform: scale(1.035);
-  }
-
-  .tall-image,
-  .training-image {
-    aspect-ratio: 1.28;
-  }
-
-  .training-grid .service-lead {
-    max-width: min(100%, 790px);
-  }
-
-  .training-grid .training-image {
-    width: min(100%, 520px);
-    justify-self: start;
-  }
-
-  .split-grid .service-image {
-    align-self: start;
-  }
-
-  .assessment-copy {
-    min-height: 0;
-  }
-
-  .focus-panel {
-    display: grid;
-    gap: clamp(2rem, 4vw, 3.5rem);
-    padding-top: clamp(5.4rem, 5.8vw, 6.4rem);
+  .coaching-focus {
+    grid-area: focus;
+    width: 100%;
+    margin-top:
+      clamp(0.2rem, 0.6vw, 0.6rem);
   }
 
   .focus-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0;
-    border-top: 1px solid var(--color-line);
-    border-left: 1px solid var(--color-line);
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+    width: 100%;
+    border-top: 1px solid
+      var(--color-line);
+    border-left: 1px solid
+      var(--color-line);
   }
 
   .focus-list article {
     display: grid;
-    min-height: 148px;
+    min-height: 138px;
     align-content: start;
     gap: 0.55rem;
-    border-right: 1px solid var(--color-line);
-    border-bottom: 1px solid var(--color-line);
-    padding: clamp(1.1rem, 2vw, 1.55rem);
-    background: rgba(255, 255, 255, 0.48);
-    transition: background-color 260ms var(--ease-soft), transform 260ms var(--ease-soft);
+    border-right: 1px solid
+      var(--color-line);
+    border-bottom: 1px solid
+      var(--color-line);
+    padding:
+      clamp(1.05rem, 1.55vw, 1.35rem);
+    background:
+      rgba(255, 255, 255, 0.48);
+    transition:
+      background-color 260ms
+        var(--ease-soft),
+      transform 260ms var(--ease-soft);
   }
 
   .focus-list article:hover {
@@ -544,28 +870,66 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     transform: translateY(-3px);
   }
 
-  .focus-list h3,
-  .accordion-list summary,
-  .program-groups h3,
-  .consulting-list h3 {
+  .focus-list h3 {
     font-size: 16px;
-    text-transform: none;
+  }
+
+
+  /* ---------------------------------
+     02 ASSESSMENTS
+  ---------------------------------- */
+
+  .assessment-layout {
+    display: grid;
+    grid-template-columns:
+      minmax(360px, 0.9fr)
+      minmax(0, 1.1fr);
+    grid-template-areas:
+      "intro intro"
+      "image accordion";
+    column-gap:
+      clamp(2.8rem, 4.5vw, 5.2rem);
+    row-gap:
+      clamp(1.35rem, 2.1vw, 2rem);
+    align-items: start;
+  }
+
+  .assessment-intro {
+    grid-area: intro;
+    max-width: 1100px;
+  }
+
+  .assessment-image {
+    grid-area: image;
+    width: min(100%, 620px);
+    justify-self: start;
+    aspect-ratio: 1.45;
+  }
+
+  .assessment-accordion {
+    grid-area: accordion;
+    min-width: 0;
   }
 
   .accordion-list {
     display: grid;
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--color-line);
+    margin: 0;
+    border-top: 1px solid
+      var(--color-line);
   }
 
   .accordion-list details {
-    border-bottom: 1px solid var(--color-line);
+    border-bottom: 1px solid
+      var(--color-line);
     padding: 1.05rem 0;
-    transition: background-color 260ms var(--ease-soft);
+    transition:
+      background-color 260ms
+        var(--ease-soft);
   }
 
   .accordion-list details:hover {
-    background: rgba(255, 255, 255, 0.34);
+    background:
+      rgba(255, 255, 255, 0.34);
   }
 
   .accordion-list summary {
@@ -577,10 +941,12 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     gap: 1rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
+    font-size: 16px;
     font-weight: 700;
   }
 
-  .accordion-list summary::-webkit-details-marker {
+  .accordion-list
+    summary::-webkit-details-marker {
     display: none;
   }
 
@@ -589,7 +955,9 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     content: "+";
   }
 
-  .accordion-list details[open] b::before {
+  .accordion-list
+    details[open]
+    b::before {
     content: "-";
   }
 
@@ -597,45 +965,103 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     margin-top: 0.8rem;
   }
 
+
+  /* ---------------------------------
+     03 TRAINING
+  ---------------------------------- */
+
   .training-section {
     display: grid;
-    gap: clamp(2rem, 3.4vw, 3rem);
+    gap: 0;
+  }
+
+  .training-top-layout {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(320px, 0.46fr);
+    gap:
+      clamp(2.3rem, 4vw, 4.6rem);
+    align-items: start;
+  }
+
+  .training-text-column {
+    display: grid;
+    max-width: 980px;
+    align-content: start;
+    gap:
+      clamp(1.05rem, 1.45vw, 1.4rem);
+  }
+
+  .training-copy {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+
+  .training-copy .service-summary {
+    max-width: 980px;
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .training-image {
+    width:
+      clamp(320px, 24vw, 520px);
+    max-width: 520px;
+    justify-self: end;
+    align-self: start;
+    aspect-ratio: 1.18;
+    margin: 0;
   }
 
   .program-groups {
     display: grid;
     gap: 0;
     max-width: none;
-    border-top: 1px solid var(--color-line);
+    margin-top:
+      clamp(2.4rem, 3.4vw, 3.4rem);
+    border-top: 1px solid
+      var(--color-line);
   }
 
   .program-groups article {
     display: grid;
-    grid-template-columns: minmax(220px, 0.58fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 4vw, 4rem);
-    border-bottom: 1px solid var(--color-line);
-    padding: clamp(1.1rem, 2.2vw, 1.55rem) 0;
+    grid-template-columns:
+      minmax(220px, 0.58fr)
+      minmax(0, 1fr);
+    gap:
+      clamp(1.5rem, 4vw, 4rem);
+    border-bottom: 1px solid
+      var(--color-line);
+    padding:
+      clamp(1.1rem, 2.2vw, 1.55rem)
+      0;
+  }
+
+  .program-groups h3 {
+    font-size: 16px;
   }
 
   .program-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem clamp(1.25rem, 3vw, 2.35rem);
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+    gap:
+      0.75rem
+      clamp(1.25rem, 3vw, 2.35rem);
   }
 
-  .program-list div {
+  .program-item {
     position: relative;
     display: grid;
     gap: 0.35rem;
     padding-left: 1.35rem;
-    transition: color 260ms var(--ease-soft), transform 260ms var(--ease-soft);
+    transition:
+      transform 280ms var(--ease-soft);
   }
 
-  .program-list div:hover {
-    transform: translateX(4px);
-  }
-
-  .program-list div::before {
+  .program-item::before {
     position: absolute;
     top: 0.62em;
     left: 0;
@@ -646,7 +1072,11 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     transform: rotate(45deg);
   }
 
-  .program-list span {
+  .program-item:hover {
+    transform: translateX(4px);
+  }
+
+  .program-item span {
     color: var(--color-ink);
     font-family: var(--font-heading);
     font-size: var(--paragraph-size);
@@ -654,77 +1084,262 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     line-height: 1.45;
   }
 
-  .program-list p {
-    color: var(--color-ink);
+  .program-item p {
     font-size: var(--paragraph-size);
     line-height: 1.54;
   }
 
-  .consulting-copy {
+
+  /* ---------------------------------
+     04 CONSULTING
+  ---------------------------------- */
+
+  .consulting-feature {
     display: grid;
-    gap: clamp(1.55rem, 3vw, 2.55rem);
-    padding-top: clamp(5.2rem, 6.8vw, 7.5rem);
+    grid-template-columns:
+      minmax(420px, 0.95fr)
+      minmax(0, 1.05fr);
+    grid-template-areas:
+      "intro intro"
+      "image list";
+    gap:
+      clamp(1.4rem, 2.2vw, 2.1rem)
+      clamp(3rem, 5vw, 6rem);
+    align-items: start;
+  }
+
+  .consulting-intro {
+    grid-area: intro;
+    max-width: 1100px;
+  }
+
+  .consulting-image {
+    grid-area: image;
+    width: 100%;
+    max-width: none;
+    aspect-ratio: 1.5;
   }
 
   .consulting-list {
+    grid-area: list;
     display: grid;
-    border-top: 1px solid var(--color-line);
+    align-self: start;
+    border-top: 1px solid
+      var(--color-line);
   }
 
   .consulting-list article {
     display: grid;
-    grid-template-columns: minmax(190px, 0.5fr) minmax(0, 1fr);
-    gap: clamp(1.2rem, 3vw, 2rem);
-    border-bottom: 1px solid var(--color-line);
+    grid-template-columns:
+      minmax(190px, 0.5fr)
+      minmax(0, 1fr);
+    gap:
+      clamp(1.2rem, 3vw, 2rem);
+    border-bottom: 1px solid
+      var(--color-line);
     padding: 1.35rem 0;
-    transition: padding-left 260ms var(--ease-soft), background-color 260ms var(--ease-soft);
+    transition:
+      padding-left 260ms
+        var(--ease-soft),
+      background-color 260ms
+        var(--ease-soft);
   }
 
   .consulting-list article:hover {
     padding-left: 0.4rem;
-    background: rgba(255, 255, 255, 0.28);
+    background:
+      rgba(255, 255, 255, 0.28);
   }
 
-  .services-hero [data-reveal],
-  .service-section [data-reveal] {
-    transition-delay: var(--service-reveal-delay, 0ms);
+  .consulting-list h3 {
+    font-size: 16px;
   }
 
-  .services-hero [data-reveal]:not(.is-visible),
-  .service-section [data-reveal]:not(.is-visible) {
+
+  /* ---------------------------------
+     MOTION
+  ---------------------------------- */
+
+  [data-reveal] {
     opacity: 0;
+    transform:
+      translate3d(0, 24px, 0);
+    transition:
+      opacity 820ms var(--ease-soft),
+      transform 940ms var(--ease-soft);
+    transition-delay:
+      var(
+        --service-reveal-delay,
+        0ms
+      );
+    will-change:
+      opacity,
+      transform;
   }
 
-  .service-lead[data-reveal]:not(.is-visible) {
-    transform: translate3d(-18px, 18px, 0);
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 
-  .hero-image[data-reveal]:not(.is-visible),
-  .service-copy[data-reveal]:not(.is-visible),
-  .focus-panel[data-reveal]:not(.is-visible),
-  .consulting-copy[data-reveal]:not(.is-visible) {
-    transform: translate3d(18px, 18px, 0);
+  .hero-copy[data-reveal] {
+    transform:
+      translate3d(-18px, 22px, 0);
   }
 
-  .program-groups[data-reveal]:not(.is-visible) {
-    transform: translateY(18px);
+  .hero-image[data-reveal] {
+    transform:
+      translate3d(18px, 22px, 0);
   }
+
+  .hero-copy[data-reveal].is-visible,
+  .hero-image[data-reveal].is-visible {
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  [data-stagger-group] article,
+  [data-stagger-group]
+    .program-item {
+    opacity: 0;
+    transform:
+      translate3d(0, 16px, 0);
+    transition:
+      opacity 620ms var(--ease-soft),
+      transform 760ms var(--ease-soft);
+  }
+
+  [data-stagger-group].is-visible
+    article,
+  [data-stagger-group].is-visible
+    .program-item {
+    opacity: 1;
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  [data-stagger-group].is-visible
+    article:nth-child(1),
+  [data-stagger-group].is-visible
+    .program-item:nth-child(1) {
+    transition-delay: 60ms;
+  }
+
+  [data-stagger-group].is-visible
+    article:nth-child(2),
+  [data-stagger-group].is-visible
+    .program-item:nth-child(2) {
+    transition-delay: 120ms;
+  }
+
+  [data-stagger-group].is-visible
+    article:nth-child(3),
+  [data-stagger-group].is-visible
+    .program-item:nth-child(3) {
+    transition-delay: 180ms;
+  }
+
+  [data-stagger-group].is-visible
+    article:nth-child(4),
+  [data-stagger-group].is-visible
+    .program-item:nth-child(4) {
+    transition-delay: 240ms;
+  }
+
+  [data-stagger-group].is-visible
+    article:nth-child(5),
+  [data-stagger-group].is-visible
+    .program-item:nth-child(5) {
+    transition-delay: 300ms;
+  }
+
+  [data-stagger-group].is-visible
+    article:nth-child(6),
+  [data-stagger-group].is-visible
+    .program-item:nth-child(6) {
+    transition-delay: 360ms;
+  }
+
+
+  /* ---------------------------------
+     EXTRA-WIDE
+  ---------------------------------- */
+
+  @media (min-width: 1500px) {
+    .coaching-image {
+      width: min(100%, 720px);
+      max-width: 720px;
+    }
+
+    .training-top-layout {
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(400px, 0.5fr);
+    }
+
+    .training-image {
+      width:
+        clamp(400px, 25vw, 560px);
+      max-width: 560px;
+    }
+  }
+
+
+  /* ---------------------------------
+     MEDIUM DESKTOP
+  ---------------------------------- */
+
+  @media (max-width: 1100px) {
+    .coaching-layout {
+      gap:
+        clamp(1.5rem, 2.5vw, 2.5rem)
+        clamp(2rem, 3.5vw, 3.5rem);
+    }
+
+    .focus-list {
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    }
+
+    .assessment-layout,
+    .consulting-feature {
+      column-gap:
+        clamp(2rem, 3.5vw, 3.5rem);
+    }
+
+    .training-top-layout {
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(280px, 0.4fr);
+      gap:
+        clamp(2rem, 3vw, 3rem);
+    }
+
+    .training-image {
+      width: min(100%, 360px);
+      max-width: 360px;
+    }
+
+    .coaching-image {
+      width: 100%;
+      max-width: none;
+    }
+  }
+
+
+  /* ---------------------------------
+     TABLET
+  ---------------------------------- */
 
   @media (max-width: 980px) {
     .services-hero-grid,
-    .overview-grid,
-    .coaching-grid,
-    .service-intro-grid,
-    .split-grid,
-    .training-grid,
-    .consulting-grid,
+    .coaching-layout,
+    .assessment-layout,
+    .training-top-layout,
+    .consulting-feature,
     .program-groups article,
     .consulting-list article {
       grid-template-columns: 1fr;
-    }
-
-    .service-strip-inner {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .services-hero-grid {
@@ -732,20 +1347,68 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     }
 
     .hero-image {
+      width: 100%;
       aspect-ratio: 1.45;
     }
 
-    .service-copy,
-    .focus-panel,
-    .consulting-copy {
-      padding-top: 0;
+    .service-strip {
+      position: static;
     }
 
-    .service-image,
-    .hero-image {
+    .service-strip-inner {
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    }
+
+    .coaching-layout {
+      grid-template-areas:
+        "copy"
+        "image"
+        "focus";
+    }
+
+    .coaching-image {
+      width: 100%;
+      max-width: none;
+      justify-self: start;
+    }
+
+    .assessment-layout {
+      grid-template-areas:
+        "intro"
+        "image"
+        "accordion";
+    }
+
+    .assessment-image {
+      width: 100%;
+      max-width: none;
+      justify-self: start;
+    }
+
+    .training-image {
+      width: 100%;
+      max-width: none;
+      justify-self: start;
+      aspect-ratio: 1.4;
+    }
+
+    .consulting-feature {
+      grid-template-areas:
+        "intro"
+        "image"
+        "list";
+    }
+
+    .consulting-image {
       width: 100%;
     }
   }
+
+
+  /* ---------------------------------
+     MOBILE
+  ---------------------------------- */
 
   @media (max-width: 640px) {
     .focus-list,
@@ -759,15 +1422,34 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
       min-height: 62px;
       border-right: 0;
       border-left: 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-top: 1px solid
+        rgba(255, 255, 255, 0.18);
     }
   }
 
+
+  /* ---------------------------------
+     REDUCED MOTION
+  ---------------------------------- */
+
   @media (prefers-reduced-motion: reduce) {
-    .service-image :global(img),
-    .hero-image :global(img) {
+    [data-reveal],
+    [data-stagger-group] article,
+    [data-stagger-group]
+      .program-item {
+      opacity: 1 !important;
       transform: none !important;
-      transition: none;
+      transition: none !important;
+    }
+
+    .motion-image :global(img) {
+      transform: none !important;
+      transition: none !important;
+    }
+
+    .service-strip,
+    .service-strip a::after {
+      transition: none !important;
     }
   }
 </style>
