@@ -502,6 +502,8 @@ const slugify = (value: string) =>
 </script>
 
 <style>
+  @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+
   /* ---------------------------------
      HERO
   ---------------------------------- */
@@ -606,17 +608,16 @@ const slugify = (value: string) =>
   .service-strip a {
     position: relative;
     display: flex;
-    min-height: 86px;
+    min-height: 44px;
     overflow: hidden;
     align-items: center;
     justify-content: center;
-    border-left: 1px solid
-      rgba(255, 255, 255, 0.18);
+    border: 0;
     color: var(--color-white);
-    font-family: var(--font-label);
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    font-family: "Manrope", sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
@@ -627,8 +628,7 @@ const slugify = (value: string) =>
   }
 
   .service-strip a:last-child {
-    border-right: 1px solid
-      rgba(255, 255, 255, 0.18);
+    border: 0;
   }
 
   .service-strip a:hover,
@@ -638,22 +638,8 @@ const slugify = (value: string) =>
   }
 
   .service-strip a::after {
-    position: absolute;
-    bottom: 17px;
-    left: 50%;
-    width: 0;
-    height: 1px;
-    background:
-      rgba(255, 255, 255, 0.72);
-    content: "";
-    transform: translateX(-50%);
-    transition:
-      width 320ms var(--ease-soft);
-  }
-
-  .service-strip a:hover::after,
-  .service-strip a:focus-visible::after {
-    width: 34%;
+    display: none;
+    content: none;
   }
 
 
@@ -675,29 +661,51 @@ const slugify = (value: string) =>
   .section-heading-anchor {
     display: block;
     margin-bottom:
-      clamp(0.95rem, 1.35vw, 1.35rem);
+      clamp(1.8rem, 2.5vw, 2.4rem);
   }
 
   .service-heading-block {
     display: grid;
     min-height: 0;
     align-content: start;
-    gap: 0.72rem;
+    gap: 1.35rem;
   }
 
   .service-number {
-    position: static;
+    position: relative;
+    isolation: isolate;
+    display: block;
     width: fit-content;
     margin: 0;
-    color: #8498ba;
-    font-family: var(--font-serif);
+    color: #55739e;
+    font-family: "Manrope", sans-serif;
     font-size:
-      clamp(3.55rem, 4.4vw, 4.8rem);
-    font-weight: 700;
-    letter-spacing: -0.045em;
-    line-height: 0.88;
+      clamp(4rem, 4.55vw, 4.65rem);
+    font-style: normal;
+    font-weight: 180;
+    letter-spacing: -0.06em;
+    line-height: 0.82;
     text-shadow: none;
+    transform: scaleX(0.94);
+    transform-origin: left center;
     -webkit-text-stroke: 0;
+  }
+
+  .service-number::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    display: block;
+    color: #b9c9df;
+    content: attr(data-number);
+    font-family: "Manrope", sans-serif;
+    font-size: 1em;
+    font-style: normal;
+    font-weight: 450;
+    letter-spacing: inherit;
+    line-height: inherit;
+    transform: none;
+    pointer-events: none;
   }
 
   .service-number::after {
@@ -795,21 +803,22 @@ const slugify = (value: string) =>
   .coaching-layout {
     display: grid;
     grid-template-columns:
-      minmax(280px, 0.68fr)
-      minmax(430px, 1.12fr);
+      minmax(300px, 0.58fr)
+      minmax(520px, 1.12fr);
     grid-template-areas:
-      "copy image"
-      "focus focus";
-    gap:
-      clamp(1.5rem, 2.4vw, 2.5rem)
-      clamp(3rem, 5vw, 6rem);
+      "copy focus"
+      "image focus";
+    column-gap:
+      clamp(3rem, 5vw, 5.5rem);
+    row-gap:
+      clamp(1.6rem, 2.3vw, 2.2rem);
     align-items: start;
   }
 
   .coaching-copy-stack {
     grid-area: copy;
     display: grid;
-    max-width: none;
+    max-width: 520px;
     gap: 1.15rem;
   }
 
@@ -817,28 +826,30 @@ const slugify = (value: string) =>
     .service-summary,
   .coaching-copy-stack
     .service-detail-copy {
-    max-width: 660px;
+    max-width: 520px;
   }
 
   .coaching-image {
     grid-area: image;
-    width: min(100%, 760px);
-    max-width: 760px;
-    justify-self: end;
+    width: min(100%, 430px);
+    max-width: 430px;
+    justify-self: start;
+    align-self: start;
     aspect-ratio: 1.58;
+    margin: 0;
   }
 
   .coaching-focus {
     grid-area: focus;
     width: 100%;
-    margin-top:
-      clamp(0.2rem, 0.6vw, 0.6rem);
+    margin: 0;
+    align-self: start;
   }
 
   .focus-list {
     display: grid;
     grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+      repeat(2, minmax(0, 1fr));
     width: 100%;
     border-top: 1px solid
       var(--color-line);
@@ -990,7 +1001,7 @@ const slugify = (value: string) =>
     max-width: 980px;
     align-content: start;
     gap:
-      clamp(1.05rem, 1.45vw, 1.4rem);
+      clamp(1.15rem, 1.55vw, 1.5rem);
   }
 
   .training-copy {
@@ -1267,8 +1278,8 @@ const slugify = (value: string) =>
 
   @media (min-width: 1500px) {
     .coaching-image {
-      width: min(100%, 720px);
-      max-width: 720px;
+      width: min(100%, 450px);
+      max-width: 450px;
     }
 
     .training-top-layout {
@@ -1291,9 +1302,11 @@ const slugify = (value: string) =>
 
   @media (max-width: 1100px) {
     .coaching-layout {
-      gap:
-        clamp(1.5rem, 2.5vw, 2.5rem)
-        clamp(2rem, 3.5vw, 3.5rem);
+      grid-template-columns:
+        minmax(280px, 0.65fr)
+        minmax(430px, 1fr);
+      column-gap: 2.5rem;
+      row-gap: 1.75rem;
     }
 
     .focus-list {
@@ -1321,8 +1334,8 @@ const slugify = (value: string) =>
     }
 
     .coaching-image {
-      width: 100%;
-      max-width: none;
+      width: min(100%, 390px);
+      max-width: 390px;
     }
   }
 
@@ -1368,8 +1381,8 @@ const slugify = (value: string) =>
     }
 
     .coaching-image {
-      width: 100%;
-      max-width: none;
+      width: min(100%, 460px);
+      max-width: 460px;
       justify-self: start;
     }
 
@@ -1419,11 +1432,9 @@ const slugify = (value: string) =>
 
     .service-strip a,
     .service-strip a:last-child {
-      min-height: 62px;
-      border-right: 0;
-      border-left: 0;
-      border-top: 1px solid
-        rgba(255, 255, 255, 0.18);
+      min-height: 42px;
+      border: 0;
+      font-size: 12px;
     }
   }
 
