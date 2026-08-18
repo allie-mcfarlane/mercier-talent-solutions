@@ -1,158 +1,439 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Turnstile from "../components/Turnstile.astro";
-import { site } from "../data/site";
 import { getEntry } from "astro:content";
 
 type ContactData = {
   eyebrow: string;
   title: string;
   titleAccent: string;
-  contacts: { name: string; email: string; phone: string; linkedin?: string }[];
+  contacts: {
+    name: string;
+    email: string;
+    phone: string;
+    linkedin?: string;
+  }[];
 };
 
 const contact = await getEntry("pages", "contact");
+
 if (!contact || !contact.data.contacts) {
   throw new Error("Contact page content is missing.");
 }
 
 const contactData = contact.data as ContactData;
-const formEndpoint = `https://formsubmit.co/${site.email}`;
-const description = "Contact Mercier Talent Solutions for executive coaching, assessments, training, and consulting for law firms.";
+
+const formEndpoint =
+  "https://formsubmit.co/allie@merciertalentsolutions.com";
+
+const description =
+  "Contact Mercier Talent Solutions for executive coaching, assessments, training, and consulting for law firms.";
 ---
 
-<BaseLayout title="Contact Us | Mercier Talent Solutions" description={description} image="/images/optimized/contact-hero-1400.jpg">
-  <section class="section contact-hero">
-    <div class="container contact-grid">
-      <div>
+<BaseLayout
+  title="Contact Us | Mercier Talent Solutions"
+  description={description}
+  image="/images/optimized/contact-hero-1400.jpg"
+>
+  <section class="contact-hero">
+    <div class="hero-inner">
+      <div class="hero-copy reveal">
         <p class="eyebrow">{contactData.eyebrow}</p>
-        <h1>{contactData.title} <em>{contactData.titleAccent}</em></h1>
+
+        <h1>
+          <span class="title-line">Let's do our best work</span>
+          <span class="title-line">
+            <em>{contactData.titleAccent}</em>
+          </span>
+        </h1>
+
+        <p class="hero-lede">
+          We partner with law firms and legal professionals on coaching,
+          assessments, training, and consulting engagements designed around
+          the realities of legal practice.
+        </p>
       </div>
-      <div class="media-frame contact-image">
-        <img src="/images/contact-hero.png" alt="Modern office lounge and reception area" loading="eager" decoding="async" />
-      </div>
-    </div>
-    <div class="container contact-main">
-      <div>
-        <p class="eyebrow">Direct contact</p>
-        <div class="direct">
-          {contactData.contacts.map((person, index) => (
-            <div class="contact-person">
-              <p class="eyebrow">{index === 0 ? "Principal" : "Practice Manager"}</p>
-              <p>
-                <strong>{person.name}</strong><br />
-                <a href={`mailto:${person.email}`}>{person.email}</a><br />
-                <a href={`tel:${person.phone.replaceAll(/[^\d+]/g, "")}`}>{person.phone}</a><br />
-                {person.linkedin && <a href={person.linkedin}>LinkedIn</a>}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div class="form-wrap">
-        <form action={formEndpoint} method="POST">
-          <h2>Contact us</h2>
-          <input type="hidden" name="_subject" value="Mercier Talent Solutions Contact Form" />
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="form_name" value="Contact Us" />
-          <input type="hidden" name="browser_privacy_signal" value="none" />
-          <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
-          <label>FIRST NAME <input type="text" name="first_name" /></label>
-          <label>LAST NAME <input type="text" name="last_name" /></label>
-          <label>EMAIL* <input type="email" name="email" required /></label>
-          <label>
-            I'M INTERESTED IN
-            <select name="interest">
-              <option value=""></option>
-              <option>Executive Coaching</option>
-              <option>Assessments</option>
-              <option>Training</option>
-              <option>Consulting</option>
-              <option>White Papers</option>
-              <option>Other</option>
-            </select>
-          </label>
-          <label>MESSAGE <textarea name="message" rows="6"></textarea></label>
-          <Turnstile />
-          <button class="button" type="submit">Submit</button>
-        </form>
+
+      <div class="hero-media reveal">
+        <img
+          src="/images/contact-hero.png"
+          alt=""
+          loading="eager"
+          decoding="async"
+        />
       </div>
     </div>
   </section>
+
+  <div class="scroll-spacer" aria-hidden="true"></div>
+
+  <div class="contact-stage">
+    <section class="contact-section">
+      <div class="contact-grid">
+        <div class="direct-panel reveal">
+          <p class="eyebrow">Direct contact</p>
+
+          <h2>Start a conversation.</h2>
+
+          <div class="direct-list">
+            {
+              contactData.contacts.map((person, index) => {
+                const isJulia = person.name === "Julia Mercier";
+                const isAllie = person.name === "Allie McFarlane";
+
+                const linkedin = isJulia
+                  ? "https://www.linkedin.com/in/juliamercier/"
+                  : isAllie
+                    ? "https://www.linkedin.com/in/allieemcfarlane/"
+                    : person.linkedin;
+
+                return (
+                  <div class="contact-person">
+                    <p class="person-role">
+                      {index === 0 ? "Principal" : "Practice Manager"}
+                    </p>
+
+                    <strong>{person.name}</strong>
+
+                    <a href={`mailto:${person.email}`}>
+                      {person.email}
+                    </a>
+
+                    <a
+                      href={`tel:${person.phone.replaceAll(/[^\d+]/g, "")}`}
+                    >
+                      {person.phone}
+                    </a>
+
+                    {
+                      linkedin && (
+                        <a
+                          href={linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          LinkedIn
+                        </a>
+                      )
+                    }
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+
+        <div class="form-card reveal">
+          <div class="form-heading">
+            <h2>Contact us</h2>
+          </div>
+
+          <form action={formEndpoint} method="POST">
+            <input
+              type="hidden"
+              name="_subject"
+              value="Mercier Talent Solutions Contact Form"
+            />
+
+            <input
+              type="hidden"
+              name="_template"
+              value="table"
+            />
+
+            <input
+              type="hidden"
+              name="_captcha"
+              value="false"
+            />
+
+            <input
+              type="hidden"
+              name="_cc"
+              value="julia@merciertalentsolutions.com"
+            />
+
+            <input
+              type="hidden"
+              name="form_name"
+              value="Contact Us"
+            />
+
+            <input
+              type="hidden"
+              name="browser_privacy_signal"
+              value="none"
+            />
+
+            <input
+              class="honeypot"
+              type="text"
+              name="_honey"
+              tabindex="-1"
+              autocomplete="off"
+            />
+
+            <div class="form-grid">
+              <label>
+                FIRST NAME
+                <input
+                  type="text"
+                  name="first_name"
+                  autocomplete="given-name"
+                />
+              </label>
+
+              <label>
+                LAST NAME
+                <input
+                  type="text"
+                  name="last_name"
+                  autocomplete="family-name"
+                />
+              </label>
+
+              <label class="full">
+                EMAIL*
+                <input
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  required
+                />
+              </label>
+
+              <label class="full">
+                I'M INTERESTED IN
+
+                <select name="interest">
+                  <option value=""></option>
+                  <option>Executive Coaching</option>
+                  <option>Assessments</option>
+                  <option>Training</option>
+                  <option>Consulting</option>
+                  <option>White Papers</option>
+                  <option>Other</option>
+                </select>
+              </label>
+
+              <label class="full">
+                MESSAGE
+                <textarea
+                  name="message"
+                  rows="6"
+                ></textarea>
+              </label>
+
+              <div class="full turnstile-wrap">
+                <Turnstile />
+              </div>
+
+              <button
+                class="button submit-button full"
+                type="submit"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
   .contact-hero {
-    background: #e7e6e0;
+    position: sticky;
+    top: 82px;
+    z-index: 1;
+    overflow: hidden;
+    background: #f3f1ec;
+  }
+
+  .hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns:
+      minmax(560px, 0.98fr)
+      minmax(0, 1.02fr);
+    width: 100%;
+    min-height: calc(100vh - 82px + 110px);
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+    align-self: center;
+    padding:
+      clamp(5rem, 9vw, 8rem)
+      clamp(5.5rem, 8vw, 9rem)
+      clamp(6rem, 10vw, 9rem)
+      var(--page-gutter);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    margin: 0;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 5.2px;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+
+  .eyebrow::before {
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: currentColor;
+    content: "";
+  }
+
+  h1 {
+    margin: 1.7rem 0 1.6rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: clamp(2.7rem, 3.45vw, 3.9rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.07;
+  }
+
+  .title-line {
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;
+  }
+
+  h1 em {
+    color: var(--color-blue);
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+
+  .hero-lede {
+    max-width: 470px;
+    margin: 0;
+    color: #000;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .hero-media {
+    position: relative;
+    align-self: center;
+    justify-self: end;
+    width: min(94%, 680px);
+    aspect-ratio: 1;
+    min-height: 0;
+    margin-right: clamp(1rem, 2.5vw, 3rem);
+    overflow: visible;
+  }
+
+  .hero-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .scroll-spacer {
+    position: relative;
+    z-index: 0;
+    height: clamp(70px, 10vh, 130px);
+    background: transparent;
+  }
+
+  .contact-stage {
+    position: relative;
+    z-index: 10;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  .contact-section {
+    position: relative;
+    z-index: 10;
+    min-height: auto;
+    padding:
+      clamp(4.5rem, 7vw, 6.75rem)
+      var(--page-gutter);
+    border-radius: 24px 24px 0 0;
+    background: #fff;
+    box-shadow:
+      0 -22px 55px
+      rgba(20, 28, 38, 0.11);
   }
 
   .contact-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.86fr) minmax(380px, 1fr);
-    gap: clamp(2.5rem, 6vw, 4.75rem);
-    align-items: center;
+    grid-template-columns:
+      minmax(300px, 0.72fr)
+      minmax(0, 1.28fr);
+    gap: clamp(4rem, 7vw, 7rem);
+    align-items: start;
+    width: 100%;
   }
 
-  h1 {
-    margin: 1.6rem 0 0;
+  .direct-panel {
+    padding-top: 0.4rem;
+  }
+
+  .direct-panel h2 {
+    max-width: 9ch;
+    margin: 1.35rem 0 0;
     color: var(--color-ink);
     font-family: var(--font-heading);
-    font-size: var(--page-title-size);
+    font-size: clamp(2rem, 2.8vw, 2.85rem);
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.1;
   }
 
-  .contact-hero .eyebrow {
-    display: inline-flex;
-    gap: 14px;
-    align-items: center;
-  }
-
-  .contact-hero .eyebrow::before,
-  .contact-main > div > .eyebrow::before {
-    display: inline-block;
-    width: 16px;
-    height: 1px;
-    background: var(--color-blue);
-    content: "";
-  }
-
-  .contact-main > div > .eyebrow {
-    display: inline-flex;
-    gap: 14px;
-    align-items: center;
-  }
-
-  .contact-main {
+  .direct-list {
     display: grid;
-    grid-template-columns: minmax(300px, 0.74fr) minmax(440px, 0.86fr);
-    gap: clamp(2.5rem, 6vw, 5.5rem);
-    max-width: var(--content-wide);
-    margin-top: clamp(3.5rem, 7vw, 5rem);
-    margin-inline: auto;
-    align-items: start;
+    gap: 2.2rem;
+    margin-top: 2.4rem;
   }
 
-  .direct {
+  .contact-person {
     display: grid;
-    gap: clamp(2.3rem, 5vw, 3.3rem);
-    margin-top: clamp(2rem, 4vw, 3rem);
-    color: var(--color-muted);
+    justify-items: start;
+    padding-top: 1.15rem;
+    border-top: 1px solid var(--color-line);
   }
 
-  .contact-person p:not(.eyebrow) {
-    margin: 0.4rem 0 0;
+  .person-role {
+    margin: 0 0 0.55rem;
+    color: var(--color-blue);
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
 
   .contact-person strong {
-    color: var(--color-ink);
+    display: block;
+    margin-bottom: 0.45rem;
+    color: #000;
     font-family: var(--font-heading);
-    font-size: 1.22rem;
+    font-size: 1.1rem;
   }
 
   .contact-person a {
-    color: var(--color-muted);
+    color: #5f6670;
+    font-size: 16px;
+    line-height: 1.75;
     text-decoration: none;
   }
 
@@ -162,59 +443,87 @@ const description = "Contact Mercier Talent Solutions for executive coaching, as
     text-decoration: underline;
   }
 
-  .contact-image {
-    aspect-ratio: 1.42;
+  .form-card {
+    padding: clamp(2rem, 3.4vw, 3.35rem);
+    border: 1px solid #e4e0d8;
+    background: #f3f1ec;
+    box-shadow:
+      0 18px 55px
+      rgba(29, 35, 42, 0.07);
   }
 
-  .form-wrap {
-    display: grid;
-    justify-items: stretch;
+  .form-heading {
+    margin-bottom: 2rem;
   }
 
-  form {
-    display: grid;
-    width: 100%;
-    gap: 1.1rem;
-    border: 1px solid var(--color-line);
-    border-radius: 0;
-    background: transparent;
-    padding: 0;
-  }
-
-  form h2 {
-    margin: 0 0 0.5rem;
+  .form-card h2 {
+    margin: 0;
     color: var(--color-ink);
     font-family: var(--font-heading);
-    font-size: clamp(1.75rem, 3vw, 2.4rem);
+    font-size: clamp(2rem, 2.8vw, 2.7rem);
+    font-weight: 700;
     line-height: 1.1;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+    gap: 1.2rem 1.4rem;
+  }
+
+  .full {
+    grid-column: 1 / -1;
   }
 
   label {
     display: grid;
-    gap: 0.35rem;
+    gap: 0.48rem;
     color: var(--color-blue);
     font-family: var(--font-label);
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
   }
 
   input,
   select,
   textarea {
     width: 100%;
-    border: 1px solid var(--color-line);
+    border: 0;
+    border-bottom: 1px solid #bdb8ae;
     border-radius: 0;
-    padding: 0.85rem;
-    background: var(--color-white);
+    background: rgba(255, 255, 255, 0.58);
+    padding: 0.92rem 0.35rem;
+    color: #000;
     font: inherit;
+    font-size: 16px;
+    transition:
+      border-color 180ms ease,
+      background 180ms ease;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--color-blue);
+    outline: none;
+    background: #fff;
   }
 
   textarea {
+    min-height: 140px;
     resize: vertical;
   }
 
-  button {
+  .turnstile-wrap {
+    min-width: 0;
+  }
+
+  .submit-button {
+    width: max-content;
+    min-width: 142px;
+    min-height: 44px;
     border: 0;
     cursor: pointer;
   }
@@ -223,13 +532,149 @@ const description = "Contact Mercier Talent Solutions for executive coaching, as
     display: none;
   }
 
-  @media (max-width: 800px) {
-    .contact-grid,
-    .contact-main,
-    .form-wrap,
-    .direct {
+  @media (min-width: 1700px) {
+    .hero-inner {
+      min-height: calc(100vh - 82px + 130px);
+    }
+
+    .hero-media {
+      width: min(88%, 650px);
+    }
+  }
+
+  @media (max-width: 1150px) {
+    .hero-inner {
+      grid-template-columns:
+        minmax(520px, 0.98fr)
+        minmax(0, 1.02fr);
+    }
+
+    h1 {
+      font-size: clamp(2.65rem, 4vw, 3.65rem);
+    }
+
+    .hero-copy {
+      padding-right: clamp(3.5rem, 6vw, 6rem);
+    }
+
+    .contact-grid {
+      gap: 3.5rem;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .contact-hero {
+      position: relative;
+      top: auto;
+    }
+
+    .hero-inner {
       grid-template-columns: 1fr;
-      justify-items: stretch;
+      min-height: 0;
+    }
+
+    .hero-media {
+      order: 1;
+      justify-self: center;
+      width: min(90vw, 560px);
+      aspect-ratio: 1;
+      margin: 2rem auto 0;
+    }
+
+    .hero-copy {
+      order: 2;
+      width: auto;
+      padding:
+        3.75rem
+        var(--page-gutter)
+        4.75rem;
+    }
+
+    .title-line {
+      white-space: normal;
+    }
+
+    .scroll-spacer {
+      display: none;
+    }
+
+    .contact-stage {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+
+    .contact-section {
+      position: relative;
+      min-height: auto;
+      display: block;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
+    }
+
+    .direct-panel h2 {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-media {
+      width: min(92vw, 390px);
+      aspect-ratio: 1;
+      margin-top: 1.5rem;
+    }
+
+    .hero-copy {
+      padding:
+        2.8rem
+        1rem
+        3.25rem;
+    }
+
+    h1 {
+      margin-top: 1.35rem;
+      font-size: clamp(2.35rem, 11vw, 3.2rem);
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      letter-spacing: 4.2px;
+    }
+
+    .hero-lede {
+      font-size: 16px;
+    }
+
+    .contact-section {
+      padding: 3.5rem 1rem;
+    }
+
+    .form-card {
+      padding: 1.4rem;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .form-grid > * {
+      grid-column: 1;
+    }
+
+    .contact-person a {
+      overflow-wrap: anywhere;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-hero {
+      position: relative;
+      top: auto;
     }
   }
 </style>
