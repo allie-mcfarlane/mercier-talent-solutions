@@ -10,154 +10,646 @@ type WhitePapersPageData = {
 };
 
 const whitePapersPage = await getEntry("pages", "whitepapers");
+
 if (!whitePapersPage) {
   throw new Error("White papers page content is missing.");
 }
 
 const whitePapersPageData = whitePapersPage.data as WhitePapersPageData;
-const papers = (await getCollection("white-papers")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
+
+const papers = (await getCollection("white-papers")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const dateFormat = {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+} as const;
 ---
 
-<BaseLayout title="White Papers | Mercier Talent Solutions" description={whitePapersPageData.lede}>
-  <section class="section">
-    <div class="container">
-      <div class="section-heading">
-        <p>{whitePapersPageData.lede}</p>
-        <h1>{whitePapersPageData.title} <em>{whitePapersPageData.titleAccent}</em></h1>
-        <p class="eyebrow">{whitePapersPageData.eyebrow}</p>
-      </div>
-      <div class="papers">
-        {papers.map((paper) => (
-          <article class="paper">
-            <div class="paper-title-panel">
-              <p>MERCIER TALENT SOLUTIONS</p>
-              <p>WHITE PAPER No. {paper.data.number}</p>
+<BaseLayout
+  title="White Papers | Mercier Talent Solutions"
+  description={whitePapersPageData.lede}
+>
+  <section class="wp-page">
+    <!-- PAGE INTRO -->
+    <div class="wp-intro title-reveal">
+      <p class="wp-eyebrow">
+        {whitePapersPageData.eyebrow}
+      </p>
+
+      <h1>
+        <span class="title-line">
+          Thought leadership for firms that
+        </span>
+
+        <span class="title-line title-line-two">
+          take <em>development seriously</em>
+        </span>
+      </h1>
+
+      <p class="wp-lede">
+        {whitePapersPageData.lede}
+      </p>
+    </div>
+
+    <!-- CMS GENERATED WHITE PAPERS -->
+    <div class="wp-list">
+      {
+        papers.map((paper) => (
+          <article class="wp-card reveal">
+            <div class="wp-cover">
+              <div class="wp-cover-meta">
+                <p>Mercier Talent Solutions</p>
+
+                <p>
+                  White Paper No. {paper.data.number}
+                </p>
+              </div>
+
               <h2>{paper.data.title}</h2>
+
+              <div
+                class="wp-circles"
+                aria-hidden="true"
+              >
+                <span class="circle circle-a"></span>
+                <span class="circle circle-b"></span>
+              </div>
             </div>
-            <div class="paper-content-panel">
-              <p class="paper-date">{paper.data.date.toLocaleDateString("en-US", dateFormat)}</p>
-              <p class="subtitle">{paper.data.description}</p>
-              <p>{paper.body}</p>
-              {paper.data.document && <a class="button" href={paper.data.document}>Download the Paper</a>}
+
+            <div class="wp-content">
+              <time
+                datetime={paper.data.date.toISOString()}
+              >
+                {paper.data.date.toLocaleDateString(
+                  "en-US",
+                  dateFormat,
+                )}
+              </time>
+
+              <div class="wp-copy">
+                <h3>{paper.data.title}</h3>
+
+                <p class="wp-subtitle">
+                  {paper.data.description}
+                </p>
+
+                <p class="wp-body">
+                  {paper.body}
+                </p>
+              </div>
+
+              {
+                paper.data.document && (
+                  <a
+                    class="wp-button"
+                    href={paper.data.document}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Download the Paper
+                  </a>
+                )
+              }
             </div>
           </article>
-        ))}
-      </div>
+        ))
+      }
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  h1 {
-    margin: 1.15rem 0 0;
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: var(--page-title-size);
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .papers {
-    display: grid;
-    gap: clamp(1.25rem, 2.5vw, 1.75rem);
-    margin-top: clamp(2.5rem, 6vw, 4.5rem);
-  }
-
-  .section-heading {
-    max-width: var(--reading-width);
-    gap: 0;
-  }
-
-  .section-heading > p:not(.eyebrow) {
-    color: var(--color-ink);
-    font-size: var(--paragraph-size);
-    line-height: 1.55;
-  }
-
-  .section-heading .eyebrow {
-    margin-top: 1.35rem;
-  }
-
-  .paper {
-    display: grid;
-    grid-template-columns: minmax(280px, 0.38fr) minmax(0, 0.62fr);
-    max-width: var(--content-wide);
-    min-height: 300px;
-    margin-inline: auto;
-    overflow: hidden;
-    border: 1px solid var(--color-line);
+  .wp-page {
+    width: 100%;
+    padding:
+      0
+      0
+      clamp(5.5rem, 8vw, 7.5rem);
     background: var(--color-white);
   }
 
-  .paper-title-panel {
+  /* INTRO */
+
+  .wp-intro {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding:
+      clamp(4.4rem, 6.8vw, 6rem)
+      var(--page-gutter)
+      0;
+  }
+
+  .wp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin:
+      0
+      0
+      clamp(2rem, 2.7vw, 2.45rem);
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 7px;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .wp-eyebrow::before {
+    width: 16px;
+    height: 1px;
+    flex: 0 0 16px;
+    background: var(--color-blue);
+    content: "";
+  }
+
+  .wp-intro h1 {
+    max-width: none;
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size:
+      clamp(
+        2.55rem,
+        3.25vw,
+        4.1rem
+      );
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .title-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .wp-intro h1 em {
+    color: var(--color-blue);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .wp-lede {
+    max-width: 760px;
+    margin:
+      clamp(1.9rem, 2.5vw, 2.35rem)
+      0
+      0;
+    color: var(--color-ink);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  /* WHITE PAPER REPEATER */
+
+  .wp-list {
     display: grid;
-    align-content: space-between;
-    min-height: 300px;
-    padding: clamp(1.35rem, 3vw, 2.35rem);
+    gap: clamp(
+      0.5rem,
+      0.8vw,
+      0.8rem
+    );
+    width: 100%;
+    max-width: none;
+    margin:
+      clamp(3rem, 4.5vw, 4.2rem)
+      0
+      0;
+    padding:
+      0
+      var(--page-gutter);
+  }
+
+  .wp-card {
+    position: relative;
+    display: grid;
+    grid-template-columns:
+      minmax(330px, 34vw)
+      minmax(0, 1fr);
+    width: 100%;
+    min-height:
+      clamp(
+        300px,
+        23vw,
+        390px
+      );
+    border:
+      1px
+      solid
+      var(--color-line);
+    background: var(--color-white);
+    box-shadow:
+      clamp(16px, 2vw, 30px)
+      0
+      0
+      rgba(0, 0, 0, 0.045),
+      0
+      1px
+      2px
+      rgba(0, 0, 0, 0.14);
+  }
+
+  /* LEFT COVER */
+
+  .wp-cover {
+    position: relative;
+    min-height: 100%;
+    overflow: hidden;
+    padding:
+      clamp(
+        1.7rem,
+        2.7vw,
+        2.7rem
+      );
     background: var(--color-blue-dark);
     color: var(--color-white);
   }
 
-  .paper-title-panel p {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.78);
+  .wp-cover-meta p {
+    margin: 0 0 0.55rem;
+    color:
+      rgba(
+        255,
+        255,
+        255,
+        0.82
+      );
     font-family: var(--font-label);
     font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    line-height: 1.2;
     text-transform: uppercase;
   }
 
-  .paper-title-panel h2 {
-    max-width: 460px;
-    margin: 2rem 0 0;
+  .wp-cover h2 {
+    position: absolute;
+    left:
+      clamp(
+        1.7rem,
+        2.7vw,
+        2.7rem
+      );
+    bottom:
+      clamp(
+        2rem,
+        3vw,
+        3rem
+      );
+    z-index: 2;
+    max-width: 78%;
+    margin: 0;
     color: var(--color-white);
     font-family: var(--font-heading);
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-size:
+      clamp(
+        1.75rem,
+        2.25vw,
+        2.7rem
+      );
     font-weight: 700;
-    line-height: 1.08;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
   }
 
-  .paper-content-panel {
+  /* DECORATIVE CIRCLES */
+
+  .wp-circles {
+    position: absolute;
+    right:
+      clamp(
+        0.5rem,
+        1.3vw,
+        1.4rem
+      );
+    bottom:
+      clamp(
+        -3.2rem,
+        -2vw,
+        -1.5rem
+      );
+    width:
+      clamp(
+        180px,
+        18vw,
+        280px
+      );
+    height:
+      clamp(
+        120px,
+        13vw,
+        205px
+      );
+    pointer-events: none;
+  }
+
+  .wp-circles .circle {
+    position: absolute;
+    border:
+      1px
+      solid
+      rgba(
+        255,
+        255,
+        255,
+        0.34
+      );
+    border-radius: 50%;
+  }
+
+  .wp-circles .circle-a {
+    left: 0;
+    bottom: -12%;
+    width: 60%;
+    aspect-ratio: 1;
+  }
+
+  .wp-circles .circle-b {
+    top: 0;
+    right: 0;
+    width: 49%;
+    aspect-ratio: 1;
+  }
+
+  /* RIGHT CONTENT */
+
+  .wp-content {
+    position: relative;
     display: grid;
-    align-content: center;
-    gap: 1.15rem;
-    padding: clamp(1.55rem, 4vw, 3.15rem);
+    grid-template-rows:
+      auto
+      1fr
+      auto;
+    min-height: 100%;
+    padding:
+      clamp(
+        2rem,
+        3.2vw,
+        3.4rem
+      )
+      clamp(
+        2rem,
+        4vw,
+        4.5rem
+      )
+      clamp(
+        1.5rem,
+        2.4vw,
+        2.6rem
+      );
+    background: var(--color-white);
   }
 
-  .paper-content-panel p {
-    max-width: 860px;
+  .wp-content time {
+    justify-self: end;
     margin: 0;
-    color: var(--color-ink);
-  }
-
-  .subtitle {
-    color: var(--color-blue-dark);
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 800;
-  }
-
-  .paper-date {
-    color: var(--color-blue-dark);
+    color: var(--color-blue);
     font-family: var(--font-label);
     font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    font-weight: 500;
+    letter-spacing: 5px;
+    line-height: 1.2;
   }
 
-  .paper-content-panel .button {
-    width: fit-content;
+  .wp-copy {
+    align-self: center;
+    max-width: 1000px;
   }
 
-  @media (max-width: 760px) {
-    .paper {
-      grid-template-columns: 1fr;
+  .wp-copy h3 {
+    margin:
+      0
+      0
+      0.75rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size:
+      clamp(
+        1.25rem,
+        1.6vw,
+        1.55rem
+      );
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .wp-subtitle {
+    margin:
+      0
+      0
+      1rem;
+    color: var(--color-blue-dark);
+    font-family: var(--font-serif);
+    font-size: 16px;
+    font-style: normal;
+    line-height: 1.45;
+  }
+
+  .wp-body {
+    max-width: 1000px;
+    margin: 0;
+    color: var(--color-ink);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  /* DOWNLOAD BUTTON */
+
+  .wp-button {
+    display: inline-flex;
+    min-width: 164px;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;
+    align-self: end;
+    margin-top: 1.25rem;
+    border:
+      1px
+      solid
+      var(--color-blue-dark);
+    border-radius: 0;
+    padding:
+      0.62rem
+      1.25rem;
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+      transform
+      260ms
+      var(--ease-smooth),
+      background
+      260ms
+      var(--ease-smooth),
+      border-color
+      260ms
+      var(--ease-smooth);
+  }
+
+  .wp-button:hover,
+  .wp-button:focus-visible {
+    transform: translateY(-1px);
+    border-color: var(--color-blue);
+    background: var(--color-blue);
+  }
+
+  /* TITLE LOAD ANIMATION */
+
+  .title-reveal .wp-eyebrow,
+  .title-reveal h1,
+  .title-reveal .wp-lede {
+    opacity: 0;
+    transform: translateY(18px);
+    animation:
+      wpTitleIn
+      0.9s
+      var(--ease-soft)
+      forwards;
+  }
+
+  .title-reveal h1 {
+    animation-delay: 0.12s;
+  }
+
+  .title-reveal .wp-lede {
+    animation-delay: 0.24s;
+  }
+
+  @keyframes wpTitleIn {
+    0% {
+      opacity: 0;
+      transform: translateY(18px);
     }
 
-    .paper-title-panel {
-      min-height: 220px;
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* LARGE DESKTOPS */
+
+  @media (min-width: 1600px) {
+    .wp-card {
+      grid-template-columns:
+        minmax(430px, 31vw)
+        minmax(0, 1fr);
+      min-height: 430px;
+    }
+
+    .wp-cover h2 {
+      font-size:
+        clamp(
+          2.3rem,
+          2.35vw,
+          3.15rem
+        );
+    }
+
+    .wp-content {
+      padding:
+        clamp(
+          2.7rem,
+          3.4vw,
+          4rem
+        )
+        clamp(
+          3rem,
+          4.4vw,
+          5.4rem
+        )
+        clamp(
+          2rem,
+          2.8vw,
+          3rem
+        );
+    }
+  }
+
+  /* TABLET */
+
+  @media (max-width: 1100px) {
+    .wp-card {
+      grid-template-columns:
+        minmax(300px, 38vw)
+        minmax(0, 1fr);
+      min-height: 320px;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .title-line {
+      white-space: normal;
+    }
+
+    .wp-card {
+      grid-template-columns: 1fr;
+      box-shadow:
+        12px
+        12px
+        0
+        rgba(0, 0, 0, 0.04);
+    }
+
+    .wp-cover {
+      min-height: 280px;
+    }
+
+    .wp-content {
+      min-height: 340px;
+    }
+
+    .wp-content time {
+      justify-self: start;
+    }
+  }
+
+  /* MOBILE */
+
+  @media (max-width: 620px) {
+    .wp-intro {
+      padding-top: 3.6rem;
+    }
+
+    .wp-list {
+      margin-top: 2.6rem;
+    }
+
+    .wp-cover,
+    .wp-content {
+      padding:
+        1.7rem
+        1.4rem;
+    }
+
+    .wp-cover h2 {
+      left: 1.4rem;
+      bottom: 1.7rem;
+    }
+  }
+
+  /* ACCESSIBILITY */
+
+  @media (prefers-reduced-motion: reduce) {
+    .title-reveal .wp-eyebrow,
+    .title-reveal h1,
+    .title-reveal .wp-lede {
+      opacity: 1;
+      transform: none;
+      animation: none;
     }
   }
 </style>
