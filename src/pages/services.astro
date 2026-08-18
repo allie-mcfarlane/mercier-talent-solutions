@@ -46,12 +46,12 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
 <BaseLayout title="Services | Mercier Talent Solutions" description={servicesData.lede} image="/images/optimized/services-hero-1400.jpg">
   <section class="services-hero">
     <div class="container services-hero-grid">
-      <div class="section-heading hero-copy">
+      <div class="section-heading hero-copy" data-reveal>
         <p class="eyebrow">{servicesData.eyebrow}</p>
         <h1><span>{servicesData.title}</span> <em>{servicesData.titleAccent}</em></h1>
         <p>{servicesData.lede}</p>
       </div>
-      <div class="media-frame hero-image">
+      <div class="media-frame hero-image" data-reveal>
         <ResponsiveImage
           src={servicesData.heroImage}
           alt={servicesData.heroImageAlt}
@@ -72,39 +72,43 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     </div>
   </nav>
 
+  <section class="section service-overview">
+    <div class="container overview-grid">
+      <p data-reveal>{servicesData.focusIntro}</p>
+      <div class="focus-list" data-reveal>
+        {servicesData.focusAreas.map(({ title, text }) => (
+          <article>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="section service-section coaching-section" id={slugify(coaching.title)}>
-    <div class="container service-intro-grid">
-      <div class="service-lead">
-        <p class="service-number">{coaching.number}</p>
+    <div class="container coaching-grid">
+      <div class="service-lead" data-reveal>
+        <p class="service-number" data-number={coaching.number}>{coaching.number}</p>
         <h2>{coaching.title}</h2>
         <p>{coaching.summary}</p>
-        <div class="media-frame service-image">
-          <ResponsiveImage src={coaching.image} alt={coaching.imageAlt} sizes="(min-width: 900px) 36vw, 100vw" />
-        </div>
       </div>
-      <div class="focus-panel">
-        <p>{servicesData.focusIntro}</p>
-        <div class="focus-list">
-          {servicesData.focusAreas.map(({ title, text }) => (
-            <article>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
-        </div>
+      <div class="media-frame service-image coaching-image" data-reveal>
+        <ResponsiveImage src={coaching.image} alt={coaching.imageAlt} sizes="(min-width: 900px) 40vw, 100vw" />
       </div>
     </div>
   </section>
 
   <section class="section service-section split-section shaded" id={slugify(assessments.title)}>
     <div class="container split-grid">
-      <div class="media-frame service-image tall-image">
-        <ResponsiveImage src={assessments.image} alt={assessments.imageAlt} sizes="(min-width: 900px) 38vw, 100vw" />
-      </div>
-      <div class="service-copy">
-        <p class="service-number">{assessments.number}</p>
+      <div class="service-lead" data-reveal>
+        <p class="service-number" data-number={assessments.number}>{assessments.number}</p>
         <h2>{assessments.title}</h2>
-        <p class="summary">{assessments.summary}</p>
+        <div class="media-frame service-image tall-image">
+          <ResponsiveImage src={assessments.image} alt={assessments.imageAlt} sizes="(min-width: 900px) 38vw, 100vw" />
+        </div>
+      </div>
+      <div class="service-copy assessment-copy" data-reveal>
         <p>{assessments.detail}</p>
         {assessments.highlights && (
           <div class="accordion-list">
@@ -125,24 +129,24 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
 
   <section class="section service-section training-section" id={slugify(trainingService.title)}>
     <div class="container training-grid">
-      <div class="service-copy">
-        <p class="service-number">{trainingService.number}</p>
+      <div class="service-lead" data-reveal>
+        <p class="service-number" data-number={trainingService.number}>{trainingService.number}</p>
         <h2>{trainingService.title}</h2>
-        <p class="summary">{trainingService.summary}</p>
-        <p>{trainingService.detail}</p>
+        <p>{trainingService.summary} {trainingService.detail}</p>
       </div>
-      <div class="media-frame service-image training-image">
-        <ResponsiveImage src={trainingService.image} alt={trainingService.imageAlt} sizes="(min-width: 900px) 42vw, 100vw" />
+      <div class="media-frame service-image training-image" data-reveal>
+        <ResponsiveImage src={trainingService.image} alt={trainingService.imageAlt} sizes="(min-width: 900px) 36vw, 100vw" />
       </div>
     </div>
-    <div class="container program-groups">
+    <div class="container program-groups" data-reveal>
       {servicesData.training.groups.map((group) => (
         <article>
           <h3>{group.group}</h3>
           <div class="program-list">
-            {group.items.map(({ title }) => (
+            {group.items.map(({ title, text }) => (
               <div>
                 <span>{title}</span>
+                <p>{text}</p>
               </div>
             ))}
           </div>
@@ -152,26 +156,69 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
   </section>
 
   <section class="section service-section consulting-section shaded" id={slugify(consultingService.title)}>
-    <div class="container consulting-heading">
-      <p class="service-number">{consultingService.number}</p>
-      <h2>{consultingService.title}</h2>
-      <p>{consultingService.detail}</p>
-    </div>
     <div class="container consulting-grid">
-      <div class="media-frame service-image">
-        <ResponsiveImage src={consultingService.image} alt={consultingService.imageAlt} sizes="(min-width: 900px) 42vw, 100vw" />
+      <div class="service-lead" data-reveal>
+        <p class="service-number" data-number={consultingService.number}>{consultingService.number}</p>
+        <h2>{consultingService.title}</h2>
+        <div class="media-frame service-image">
+          <ResponsiveImage src={consultingService.image} alt={consultingService.imageAlt} sizes="(min-width: 900px) 42vw, 100vw" />
+        </div>
       </div>
-      <div class="consulting-list">
-        {servicesData.consulting.items.map((item) => (
-          <article>
-            <h3>{typeof item === "string" ? item : item.title}</h3>
-            {typeof item !== "string" && <p>{item.text}</p>}
-          </article>
-        ))}
+      <div class="consulting-copy" data-reveal>
+        <p>{consultingService.detail}</p>
+        <div class="consulting-list">
+          {servicesData.consulting.items.map((item) => (
+            <article>
+              <h3>{typeof item === "string" ? item : item.title}</h3>
+              {typeof item !== "string" && <p>{item.text}</p>}
+            </article>
+          ))}
+        </div>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<script is:inline>
+  document.querySelectorAll(".accordion-list summary").forEach((summary) => {
+    summary.addEventListener("click", () => {
+      const scrollLeft = window.scrollX;
+      const scrollTop = window.scrollY;
+      const restoreScroll = () => window.scrollTo(scrollLeft, scrollTop);
+
+      requestAnimationFrame(restoreScroll);
+      setTimeout(restoreScroll, 0);
+      setTimeout(restoreScroll, 80);
+    });
+  });
+
+  const serviceRevealItems = Array.from(document.querySelectorAll("[data-reveal]"));
+  const serviceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  serviceRevealItems.forEach((item, index) => {
+    item.style.setProperty("--service-reveal-delay", `${Math.min(index % 2, 1) * 90}ms`);
+  });
+
+  if (serviceMotionQuery.matches || !("IntersectionObserver" in window)) {
+    serviceRevealItems.forEach((item) => item.classList.add("is-visible"));
+  } else {
+    const serviceRevealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          serviceRevealObserver.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.14 },
+    );
+
+    serviceRevealItems.forEach((item) => serviceRevealObserver.observe(item));
+  }
+</script>
 
 <style>
   .services-hero {
@@ -183,11 +230,12 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
   .services-hero-grid {
     position: relative;
     display: grid;
-    min-height: clamp(500px, 45vw, 600px);
-    grid-template-columns: minmax(360px, 0.85fr) minmax(420px, 0.9fr);
-    gap: clamp(3rem, 7vw, 7rem);
+    max-width: none;
+    min-height: clamp(340px, 28vw, 460px);
+    grid-template-columns: minmax(320px, 0.82fr) minmax(360px, 0.92fr);
+    gap: clamp(2rem, 3.6vw, 4.5rem);
     align-items: center;
-    padding-block: clamp(3.35rem, 5.5vw, 5rem);
+    padding-block: clamp(2.35rem, 3.4vw, 3.8rem);
   }
 
   .hero-copy {
@@ -217,6 +265,8 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
   .hero-image {
     position: relative;
     z-index: 1;
+    width: min(100%, 560px);
+    justify-self: center;
     aspect-ratio: 1.28;
     border: 0;
     border-radius: 0;
@@ -232,13 +282,7 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
   }
 
   .hero-rings {
-    position: absolute;
-    right: min(-18vw, -120px);
-    bottom: -32%;
-    z-index: 0;
-    width: min(57vw, 740px);
-    aspect-ratio: 1;
-    pointer-events: none;
+    display: none;
   }
 
   .hero-rings span {
@@ -275,51 +319,110 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
+    transition: background-color 260ms var(--ease-soft), color 260ms var(--ease-soft);
   }
 
   .service-strip a:last-child {
     border-right: 1px solid rgba(255, 255, 255, 0.18);
   }
 
+  .service-strip a:hover,
+  .service-strip a:focus-visible {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .service-overview {
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-line);
+    padding-block: clamp(2.2rem, 3vw, 3.65rem);
+  }
+
+  .overview-grid {
+    display: grid;
+    max-width: none;
+    grid-template-columns: minmax(330px, 0.56fr) minmax(520px, 1fr);
+    gap: clamp(2.4rem, 4.2vw, 5rem);
+    align-items: start;
+  }
+
   .service-section {
     overflow: hidden;
     background: var(--color-white);
+    padding-block: clamp(2.35rem, 3.8vw, 4.25rem);
   }
 
   .service-section.shaded {
     background: #ececec;
   }
 
+  .coaching-grid,
   .service-intro-grid,
   .split-grid,
   .training-grid,
   .consulting-grid {
     display: grid;
-    grid-template-columns: minmax(320px, 0.82fr) minmax(420px, 1fr);
-    gap: clamp(3rem, 7vw, 7.5rem);
-    align-items: center;
+    max-width: none;
+    grid-template-columns: minmax(320px, 0.9fr) minmax(420px, 1fr);
+    gap: clamp(2.2rem, 3.6vw, 4.8rem);
+    align-items: start;
   }
 
   .service-lead,
   .service-copy,
   .focus-panel,
-  .consulting-heading,
+  .consulting-copy,
   .consulting-list {
-    max-width: 760px;
+    max-width: min(100%, 720px);
   }
 
   .service-lead {
     display: grid;
-    gap: clamp(1.3rem, 2.4vw, 2.15rem);
+    gap: clamp(0.7rem, 1.25vw, 1.15rem);
+  }
+
+  @media (min-width: 981px) {
+    .service-lead {
+      position: sticky;
+      top: 112px;
+      align-self: start;
+    }
   }
 
   .service-number {
+    position: relative;
+    z-index: 0;
+    width: fit-content;
     margin: 0;
-    color: var(--color-blue);
-    font-family: var(--font-heading);
-    font-size: clamp(3rem, 7vw, 5.8rem);
+    color: var(--color-white);
+    font-family: var(--font-serif);
+    font-size: clamp(3.8rem, 5.1vw, 5.35rem);
     font-weight: 700;
-    line-height: 0.85;
+    letter-spacing: 0;
+    line-height: 0.94;
+    text-shadow: 3px 2px 0 rgba(69, 98, 142, 0.86);
+    -webkit-text-stroke: 1px var(--color-blue);
+  }
+
+  .service-number::after {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    color: transparent;
+    content: attr(data-number);
+    transform: translate(2.5px, 1.5px);
+    -webkit-text-stroke: 1px rgba(69, 98, 142, 0.8);
+  }
+
+  @supports not (-webkit-text-stroke: 1px #000) {
+    .service-number {
+      color: var(--color-white);
+      text-shadow:
+        1px 0 0 var(--color-blue),
+        -1px 0 0 var(--color-blue),
+        0 1px 0 var(--color-blue),
+        0 -1px 0 var(--color-blue),
+        4px 3px 0 rgba(69, 98, 142, 0.82);
+    }
   }
 
   h2,
@@ -333,7 +436,7 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
 
   h2 {
     max-width: 720px;
-    font-size: clamp(2.15rem, 4.15vw, 4.05rem);
+    font-size: 20px;
   }
 
   h3 {
@@ -356,14 +459,36 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
   .service-copy {
     display: grid;
     gap: clamp(1.1rem, 2vw, 1.75rem);
+    padding-top: clamp(5.2rem, 6.8vw, 7.5rem);
   }
 
   .service-image {
-    width: 100%;
+    width: min(100%, 520px);
     aspect-ratio: 1.35;
     border: 0;
     border-radius: 0;
     box-shadow: none;
+    overflow: hidden;
+  }
+
+  .coaching-image {
+    width: min(100%, 580px);
+    justify-self: center;
+  }
+
+  .service-image :global(img),
+  .hero-image :global(img) {
+    transition: transform 900ms var(--ease-soft), filter 900ms var(--ease-soft);
+  }
+
+  .service-lead.is-visible .service-image :global(img),
+  .hero-image.is-visible :global(img) {
+    transform: scale(1.01);
+  }
+
+  .service-image:hover :global(img),
+  .hero-image:hover :global(img) {
+    transform: scale(1.035);
   }
 
   .tall-image,
@@ -371,9 +496,27 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     aspect-ratio: 1.28;
   }
 
+  .training-grid .service-lead {
+    max-width: min(100%, 790px);
+  }
+
+  .training-grid .training-image {
+    width: min(100%, 520px);
+    justify-self: start;
+  }
+
+  .split-grid .service-image {
+    align-self: start;
+  }
+
+  .assessment-copy {
+    min-height: 0;
+  }
+
   .focus-panel {
     display: grid;
     gap: clamp(2rem, 4vw, 3.5rem);
+    padding-top: clamp(5.4rem, 5.8vw, 6.4rem);
   }
 
   .focus-list {
@@ -393,6 +536,12 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     border-bottom: 1px solid var(--color-line);
     padding: clamp(1.1rem, 2vw, 1.55rem);
     background: rgba(255, 255, 255, 0.48);
+    transition: background-color 260ms var(--ease-soft), transform 260ms var(--ease-soft);
+  }
+
+  .focus-list article:hover {
+    background: var(--color-white);
+    transform: translateY(-3px);
   }
 
   .focus-list h3,
@@ -412,6 +561,11 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
   .accordion-list details {
     border-bottom: 1px solid var(--color-line);
     padding: 1.05rem 0;
+    transition: background-color 260ms var(--ease-soft);
+  }
+
+  .accordion-list details:hover {
+    background: rgba(255, 255, 255, 0.34);
   }
 
   .accordion-list summary {
@@ -445,12 +599,13 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
 
   .training-section {
     display: grid;
-    gap: clamp(3.5rem, 6vw, 5.5rem);
+    gap: clamp(2rem, 3.4vw, 3rem);
   }
 
   .program-groups {
     display: grid;
     gap: 0;
+    max-width: none;
     border-top: 1px solid var(--color-line);
   }
 
@@ -459,7 +614,7 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     grid-template-columns: minmax(220px, 0.58fr) minmax(0, 1fr);
     gap: clamp(1.5rem, 4vw, 4rem);
     border-bottom: 1px solid var(--color-line);
-    padding: clamp(1.45rem, 3vw, 2.05rem) 0;
+    padding: clamp(1.1rem, 2.2vw, 1.55rem) 0;
   }
 
   .program-list {
@@ -470,7 +625,14 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
 
   .program-list div {
     position: relative;
+    display: grid;
+    gap: 0.35rem;
     padding-left: 1.35rem;
+    transition: color 260ms var(--ease-soft), transform 260ms var(--ease-soft);
+  }
+
+  .program-list div:hover {
+    transform: translateX(4px);
   }
 
   .program-list div::before {
@@ -486,14 +648,22 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
 
   .program-list span {
     color: var(--color-ink);
+    font-family: var(--font-heading);
     font-size: var(--paragraph-size);
+    font-weight: 700;
     line-height: 1.45;
   }
 
-  .consulting-heading {
+  .program-list p {
+    color: var(--color-ink);
+    font-size: var(--paragraph-size);
+    line-height: 1.54;
+  }
+
+  .consulting-copy {
     display: grid;
-    gap: clamp(1.2rem, 2.5vw, 2rem);
-    margin-bottom: clamp(3rem, 5vw, 4.5rem);
+    gap: clamp(1.55rem, 3vw, 2.55rem);
+    padding-top: clamp(5.2rem, 6.8vw, 7.5rem);
   }
 
   .consulting-list {
@@ -507,10 +677,43 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
     gap: clamp(1.2rem, 3vw, 2rem);
     border-bottom: 1px solid var(--color-line);
     padding: 1.35rem 0;
+    transition: padding-left 260ms var(--ease-soft), background-color 260ms var(--ease-soft);
+  }
+
+  .consulting-list article:hover {
+    padding-left: 0.4rem;
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .services-hero [data-reveal],
+  .service-section [data-reveal] {
+    transition-delay: var(--service-reveal-delay, 0ms);
+  }
+
+  .services-hero [data-reveal]:not(.is-visible),
+  .service-section [data-reveal]:not(.is-visible) {
+    opacity: 0;
+  }
+
+  .service-lead[data-reveal]:not(.is-visible) {
+    transform: translate3d(-18px, 18px, 0);
+  }
+
+  .hero-image[data-reveal]:not(.is-visible),
+  .service-copy[data-reveal]:not(.is-visible),
+  .focus-panel[data-reveal]:not(.is-visible),
+  .consulting-copy[data-reveal]:not(.is-visible) {
+    transform: translate3d(18px, 18px, 0);
+  }
+
+  .program-groups[data-reveal]:not(.is-visible) {
+    transform: translateY(18px);
   }
 
   @media (max-width: 980px) {
     .services-hero-grid,
+    .overview-grid,
+    .coaching-grid,
     .service-intro-grid,
     .split-grid,
     .training-grid,
@@ -532,8 +735,15 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
       aspect-ratio: 1.45;
     }
 
-    .split-grid .media-frame {
-      order: 2;
+    .service-copy,
+    .focus-panel,
+    .consulting-copy {
+      padding-top: 0;
+    }
+
+    .service-image,
+    .hero-image {
+      width: 100%;
     }
   }
 
@@ -550,6 +760,14 @@ const slugify = (value: string) => value.toLowerCase().replaceAll(" ", "-");
       border-right: 0;
       border-left: 0;
       border-top: 1px solid rgba(255, 255, 255, 0.18);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service-image :global(img),
+    .hero-image :global(img) {
+      transform: none !important;
+      transition: none;
     }
   }
 </style>

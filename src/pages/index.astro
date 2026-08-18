@@ -37,9 +37,9 @@ const recentPosts = (await getCollection("posts"))
   .slice(0, 3);
 const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
 const stats = [
-  { value: "9", suffix: "+", text: "Years of developing lawyers in-house and as a consultant for global firms" },
-  { value: "12", suffix: "+", text: "Coaching, assessment & training offerings" },
-  { value: "9", suffix: "+", text: "Signature training programs for legal teams" },
+  { value: "15", suffix: "+", text: "Years of developing lawyers in-house and as a consultant for global firms" },
+  { value: "20", suffix: "+", text: "Coaching, assessment & training offerings" },
+  { value: "15", suffix: "+", text: "Signature training programs for legal teams" },
 ];
 ---
 
@@ -547,7 +547,7 @@ const stats = [
   }
 
   .services-preview .section-heading {
-    max-width: 543px;
+    max-width: 720px;
     gap: var(--heading-content-gap);
   }
 
@@ -561,19 +561,19 @@ const stats = [
   }
 
   .services-preview .section-heading h2 {
-    width: min(436px, 100%);
+    width: min(620px, 100%);
     font-size: 20px;
     line-height: 1.3;
   }
 
   .services-preview .service-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 35px 24px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
   }
 
   .services-preview .card {
     min-height: 296px;
-    padding: 40px 34px 28px;
+    padding: 38px 30px 30px;
   }
 
   .services-preview .card h3 {
@@ -787,7 +787,7 @@ const stats = [
   }
 
   .news-band .section-heading {
-    max-width: 1202px;
+    max-width: 100%;
     gap: var(--heading-content-gap);
   }
 
@@ -869,6 +869,12 @@ const stats = [
     border-radius: 50%;
     object-fit: cover;
     object-position: center 30%;
+  }
+
+  @media (max-width: 1200px) {
+    .services-preview .service-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 860px) {

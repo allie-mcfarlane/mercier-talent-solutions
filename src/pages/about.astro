@@ -55,7 +55,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   <section class="section firm-band">
     <div class="container">
-      <div class="firm-card">
+      <div class="firm-card" data-reveal>
         <div class="firm-kicker">
           <p class="eyebrow">{aboutData.firm.eyebrow}</p>
           <h2>{aboutData.firm.title}</h2>
@@ -68,7 +68,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   <section class="section team-band">
     <div class="container team-list">
       {aboutData.team.map((person, index) => (
-        <article class={`team-card person-${index + 1}`}>
+        <article class={`team-card person-${index + 1}`} data-reveal>
           <div class="media-frame portrait">
             <ResponsiveImage src={person.image} alt={person.imageAlt} sizes="(min-width: 900px) 38vw, 100vw" />
           </div>
@@ -113,7 +113,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   }
 
   .about-hero-copy {
-    max-width: var(--reading-width);
+    max-width: 1120px;
     padding-top: clamp(1.25rem, 4vw, 3.75rem);
     translate: 0 calc(var(--about-scroll) * 16px);
     transition: translate 80ms linear;
@@ -161,21 +161,22 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .team-card {
     display: grid;
-    grid-template-columns: minmax(240px, 340px) minmax(0, 960px);
+    grid-template-columns: minmax(240px, 340px) minmax(0, 1fr);
     gap: clamp(3.35rem, 5.6vw, 5.75rem);
     align-items: start;
-    justify-content: center;
-    max-width: 1180px;
-    margin-inline: auto;
+    justify-content: start;
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
   }
 
   .firm-card {
     display: grid;
     --firm-scroll: 0;
-    grid-template-columns: minmax(280px, 0.46fr) minmax(360px, 0.54fr);
-    gap: clamp(3rem, 5vw, 4.85rem);
+    grid-template-columns: minmax(340px, 0.44fr) minmax(480px, 0.56fr);
+    gap: clamp(4rem, 8vw, 8rem);
     align-items: center;
-    max-width: 1040px;
+    max-width: 100%;
     min-height: clamp(180px, 15vw, 205px);
     margin-inline: auto;
   }
@@ -237,6 +238,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   .team-list {
     display: grid;
     gap: clamp(5.5rem, 7.4vw, 7.4rem);
+    justify-items: stretch;
   }
 
   .firm-card .eyebrow {
@@ -253,7 +255,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .firm-card h2 {
     max-width: 430px;
-    font-size: clamp(1.9rem, 2.2vw, 2.15rem);
+    font-size: 20px;
     line-height: 1.14;
     margin-bottom: 0;
   }
@@ -273,7 +275,7 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
 
   .team-copy > h2 {
     margin-bottom: var(--heading-content-gap);
-    font-size: clamp(2.2rem, 3.6vw, 3.05rem);
+    font-size: 20px;
     line-height: 1.08;
   }
 
@@ -492,6 +494,27 @@ const credentialItems = (credentials: string) => credentials.split(" · ").map((
   const aboutMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const aboutHero = document.querySelector<HTMLElement>(".about-hero");
   const firmCard = document.querySelector<HTMLElement>(".firm-card");
+  const revealItems = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+
+  if (aboutMotionQuery.matches || !("IntersectionObserver" in window)) {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
+  } else {
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -14% 0px", threshold: 0.16 },
+    );
+
+    revealItems.forEach((item) => revealObserver.observe(item));
+  }
 
   if (!aboutMotionQuery.matches) {
     let aboutTicking = false;

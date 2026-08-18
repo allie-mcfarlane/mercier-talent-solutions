@@ -40,9 +40,9 @@ services:
       - title: 360 Degree Feedback Assessments
         text: Confidential interviews with partners, associates, and colleagues-synthesized into a clear, narrative report on strengths, perception, and the most consequential development opportunities.
       - title: DISC Assessments
-        text: A practical way to understand communication style, working preferences, and interpersonal patterns.
+        text: Practical insight into communication style and behavioral tendencies-how individuals work, collaborate, and respond under pressure.
       - title: Hogan Assessments
-        text: A deeper view into leadership strengths, derailers, and values under pressure.
+        text: Deep insight into personality, values, and potential derailers-how stress shapes behavior, and what drives decision-making in high-pressure environments.
   - eyebrow: 03 - TRAINING
     number: "03"
     title: Training
