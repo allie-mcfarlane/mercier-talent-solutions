@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ResponsiveImage from "../components/ResponsiveImage.astro";
 import { getCollection, getEntry } from "astro:content";
 
 type NewsPageData = {
@@ -11,49 +10,442 @@ type NewsPageData = {
 };
 
 const newsPage = await getEntry("pages", "news");
+
 if (!newsPage || !newsPage.data.paragraphs) {
   throw new Error("News page content is missing.");
 }
 
 const newsPageData = newsPage.data as NewsPageData;
-const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
+
+const posts = (await getCollection("posts")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const [featuredPost, ...remainingPosts] = posts;
+
+const introText = newsPageData.paragraphs.join(" ");
+
+const dateFormat = {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+} as const;
 ---
 
-<BaseLayout title="News & Insights | Mercier Talent Solutions" description={newsPageData.paragraphs[0]} image="/images/optimized/news-hero-1400.jpg">
-  <section class="section news-hero">
-    <div class="container hero-grid">
-      <div class="section-heading">
+<BaseLayout
+  title="News & Insights | Mercier Talent Solutions"
+  description={introText}
+  image="/images/news-insights-office.jpg"
+>
+  <!-- HERO -->
+  <section class="news-hero">
+    <div class="hero-grid">
+      <div class="hero-copy reveal">
         <p class="eyebrow">{newsPageData.eyebrow}</p>
-        <h1>{newsPageData.title} <em>{newsPageData.titleAccent}</em></h1>
-        <p>{newsPageData.paragraphs.join(" ")}</p>
+
+        <h1>
+          <span class="hero-title-line">Thinking on modern</span>
+          <span class="hero-title-line">
+            legal <em>{newsPageData.titleAccent}</em>
+          </span>
+        </h1>
       </div>
-      <div class="media-frame hero-image">
-        <ResponsiveImage src="/images/news-hero.png" alt="News and insights visual" sizes="(min-width: 900px) 38vw, 100vw" eager />
+
+      <span class="shape one" aria-hidden="true"></span>
+      <span class="shape two" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <!-- INTRO IMAGE / COPY -->
+  <section class="news-intro">
+    <div class="news-intro-grid">
+      <div class="intro-copy reveal">
+        <p>{introText}</p>
       </div>
-      <div class="news-shapes" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
+
+      <div class="intro-image reveal">
+        <img
+          src="/images/news-insights-office.jpg"
+          alt="Modern office interior"
+          loading="lazy"
+        />
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="posts">
-        {posts.map((post) => (
-          <a class="card post" href={`/post/${post.slug}/`}>
-            <span class="pill">{post.data.category}</span>
-            <h2>{post.data.title}</h2>
-            <p>{post.data.excerpt}</p>
-            <span class="meta-row news-author">
-              <img src={post.data.image ?? "/images/julia-mercier.jpg"} alt="" loading="lazy" />
-              <span>{post.data.author} · {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}</span>
-            </span>
-          </a>
-        ))}
-      </div>
+  <!-- ARTICLES -->
+  <section class="posts-section">
+    <div class="articles-shell">
+      {
+        featuredPost ? (
+          <>
+            <p class="articles-eyebrow reveal">Featured</p>
+
+            <a
+              class="featured-article reveal"
+              href={`/post/${featuredPost.slug}/`}
+            >
+              <div class="featured-copy">
+                <div class="featured-top">
+                  <span class="pill">{featuredPost.data.category}</span>
+
+                  <time
+                    class="featured-date"
+                    datetime={featuredPost.data.pubDate.toISOString()}
+                  >
+                    {featuredPost.data.pubDate.toLocaleDateString(
+                      "en-US",
+                      dateFormat,
+                    )}
+                  </time>
+                </div>
+
+                <h2>{featuredPost.data.title}</h2>
+
+                <p>{featuredPost.data.excerpt}</p>
+
+                <span class="read-more">
+                  Read more <span aria-hidden="true">→</span>
+                </span>
+              </div>
+
+              <!-- ANIMATED NETWORK -->
+              <div class="network-panel" aria-hidden="true">
+                <div class="network-wrapper" id="featuredNetwork">
+                  <svg
+                    viewBox="0 0 900 800"
+                    preserveAspectRatio="xMidYMid meet"
+                    role="img"
+                    aria-label="Minimal animated network"
+                  >
+                    <!-- BACKGROUND CONNECTIONS -->
+                    <line
+                      class="secondary-line secondary-1"
+                      x1="280"
+                      y1="250"
+                      x2="520"
+                      y2="210"
+                    />
+
+                    <line
+                      class="secondary-line secondary-2"
+                      x1="520"
+                      y1="210"
+                      x2="705"
+                      y2="350"
+                    />
+
+                    <line
+                      class="secondary-line secondary-3"
+                      x1="705"
+                      y1="350"
+                      x2="625"
+                      y2="590"
+                    />
+
+                    <line
+                      class="secondary-line secondary-4"
+                      x1="625"
+                      y1="590"
+                      x2="340"
+                      y2="610"
+                    />
+
+                    <line
+                      class="secondary-line secondary-5"
+                      x1="340"
+                      y1="610"
+                      x2="190"
+                      y2="430"
+                    />
+
+                    <line
+                      class="secondary-line secondary-6"
+                      x1="190"
+                      y1="430"
+                      x2="280"
+                      y2="250"
+                    />
+
+                    <line
+                      class="secondary-line secondary-7"
+                      x1="520"
+                      y1="210"
+                      x2="640"
+                      y2="250"
+                    />
+
+                    <line
+                      class="secondary-line secondary-8"
+                      x1="640"
+                      y1="250"
+                      x2="760"
+                      y2="500"
+                    />
+
+                    <line
+                      class="secondary-line secondary-9"
+                      x1="760"
+                      y1="500"
+                      x2="625"
+                      y2="590"
+                    />
+
+                    <line
+                      class="secondary-line secondary-10"
+                      x1="280"
+                      y1="250"
+                      x2="165"
+                      y2="315"
+                    />
+
+                    <!-- CONNECTIONS FROM CENTER -->
+                    <line
+                      class="main-line main-1"
+                      x1="455"
+                      y1="410"
+                      x2="280"
+                      y2="250"
+                    />
+
+                    <line
+                      class="main-line main-2"
+                      x1="455"
+                      y1="410"
+                      x2="520"
+                      y2="210"
+                    />
+
+                    <line
+                      class="main-line main-3"
+                      x1="455"
+                      y1="410"
+                      x2="705"
+                      y2="350"
+                    />
+
+                    <line
+                      class="main-line main-4"
+                      x1="455"
+                      y1="410"
+                      x2="625"
+                      y2="590"
+                    />
+
+                    <line
+                      class="main-line main-5"
+                      x1="455"
+                      y1="410"
+                      x2="340"
+                      y2="610"
+                    />
+
+                    <line
+                      class="main-line main-6"
+                      x1="455"
+                      y1="410"
+                      x2="190"
+                      y2="430"
+                    />
+
+                    <line
+                      class="main-line main-7"
+                      x1="455"
+                      y1="410"
+                      x2="640"
+                      y2="250"
+                    />
+
+                    <line
+                      class="main-line main-8"
+                      x1="455"
+                      y1="410"
+                      x2="760"
+                      y2="500"
+                    />
+
+                    <line
+                      class="main-line main-9"
+                      x1="455"
+                      y1="410"
+                      x2="165"
+                      y2="315"
+                    />
+
+                    <!-- CENTER -->
+                    <circle
+                      class="center-ring"
+                      cx="455"
+                      cy="410"
+                      r="28"
+                    />
+
+                    <circle
+                      class="node center-node"
+                      cx="455"
+                      cy="410"
+                      r="13"
+                    />
+
+                    <!-- NODES -->
+                    <circle
+                      class="node node-1"
+                      cx="280"
+                      cy="250"
+                      r="9"
+                    />
+
+                    <circle
+                      class="node node-2"
+                      cx="520"
+                      cy="210"
+                      r="7"
+                    />
+
+                    <circle
+                      class="node node-3"
+                      cx="705"
+                      cy="350"
+                      r="9"
+                    />
+
+                    <circle
+                      class="node node-4"
+                      cx="625"
+                      cy="590"
+                      r="8"
+                    />
+
+                    <circle
+                      class="node node-5"
+                      cx="340"
+                      cy="610"
+                      r="7"
+                    />
+
+                    <circle
+                      class="node node-6"
+                      cx="190"
+                      cy="430"
+                      r="7"
+                    />
+
+                    <circle
+                      class="node node-7"
+                      cx="640"
+                      cy="250"
+                      r="6"
+                    />
+
+                    <circle
+                      class="node node-8"
+                      cx="760"
+                      cy="500"
+                      r="6"
+                    />
+
+                    <circle
+                      class="node node-9"
+                      cx="165"
+                      cy="315"
+                      r="6"
+                    />
+
+                    <circle
+                      class="node node-10"
+                      cx="735"
+                      cy="625"
+                      r="5"
+                    />
+
+                    <circle
+                      class="node node-11"
+                      cx="230"
+                      cy="565"
+                      r="5"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            {remainingPosts.length > 0 && (
+              <>
+                <p class="articles-eyebrow other-news-eyebrow reveal">
+                  Other News
+                </p>
+
+                <div class="carousel-shell">
+                  <button
+                    class="carousel-control prev"
+                    type="button"
+                    data-carousel-prev
+                    aria-label="Previous articles"
+                  >
+                    ←
+                  </button>
+
+                  <div
+                    class="article-carousel"
+                    id="articleCarousel"
+                  >
+                    {remainingPosts.map((post) => (
+                      <a
+                        class="article-card reveal"
+                        href={`/post/${post.slug}/`}
+                      >
+                        <div class="card-top">
+                          <span
+                            class={`pill ${
+                              post.data.category === "Speaking"
+                                ? "filled"
+                                : ""
+                            }`}
+                          >
+                            {post.data.category}
+                          </span>
+
+                          <time
+                            class="card-date"
+                            datetime={post.data.pubDate.toISOString()}
+                          >
+                            {post.data.pubDate.toLocaleDateString(
+                              "en-US",
+                              dateFormat,
+                            )}
+                          </time>
+                        </div>
+
+                        <h3>{post.data.title}</h3>
+
+                        <p>{post.data.excerpt}</p>
+
+                        <span class="read-more">
+                          Read more <span aria-hidden="true">→</span>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+
+                  <button
+                    class="carousel-control next"
+                    type="button"
+                    data-carousel-next
+                    aria-label="Next articles"
+                  >
+                    →
+                  </button>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <p class="empty-state">
+            No News & Insights posts are available yet.
+          </p>
+        )
+      }
     </div>
   </section>
 </BaseLayout>
@@ -62,141 +454,1152 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   .news-hero {
     position: relative;
     overflow: hidden;
-    padding-bottom: clamp(6rem, 11vw, 9rem);
+    height: 560px;
+    min-height: 560px;
+    padding: 0;
     background: var(--color-blue-dark);
+    color: var(--color-white);
   }
 
   .hero-grid {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 0.92fr) minmax(380px, 1fr);
-    gap: clamp(2.5rem, 6vw, 4.75rem);
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0 var(--page-gutter);
+    grid-template-columns: minmax(420px, 42vw) minmax(0, 1fr);
     align-items: center;
-  }
-
-  .hero-image {
-    margin-bottom: clamp(-10rem, -11vw, -6rem);
-    aspect-ratio: 1.18;
-    border-radius: 0;
-    box-shadow: none;
   }
 
   .news-hero .eyebrow {
-    display: inline-flex;
-    gap: 14px;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.68);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 5.2px;
   }
 
-  .news-hero .eyebrow::before {
-    display: inline-block;
-    width: 16px;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.5);
-    content: "";
+  .hero-title-line {
+    display: block;
+    white-space: nowrap;
   }
 
-  .news-hero .section-heading {
-    z-index: 1;
-    max-width: var(--reading-width);
-    padding-top: clamp(2rem, 4vw, 3rem);
-  }
-
-  h1 {
-    margin: 0;
+  .hero-copy h1 {
+    max-width: 580px;
+    margin: 1.15rem 0 0;
     color: var(--color-white);
     font-family: var(--font-heading);
-    font-size: var(--page-title-size);
+    font-size: clamp(2.55rem, 3.25vw, 4.1rem);
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
-  .news-hero h1 em {
-    color: var(--color-blue);
+  .hero-copy h1 em {
+    color: #8da0bd;
+    font-family: var(--font-serif);
+    font-style: italic;
   }
 
-  .news-hero p:not(.eyebrow) {
-    color: rgba(255, 255, 255, 0.78);
-  }
-
-  .news-shapes {
+  .shape {
     position: absolute;
-    inset: 0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
     pointer-events: none;
   }
 
-  .news-shapes span {
-    position: absolute;
-    width: 150px;
-    aspect-ratio: 1;
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+  .shape.one {
+    width: 250px;
+    height: 250px;
+    right: 88px;
+    top: 82px;
   }
 
-  .news-shapes span:nth-child(1) {
-    right: 6%;
-    top: 0;
+  .shape.two {
+    width: 155px;
+    height: 155px;
+    right: 235px;
+    top: 205px;
   }
 
-  .news-shapes span:nth-child(2) {
-    right: -2%;
-    bottom: 4%;
+  .news-intro {
+    width: 100%;
+    background: var(--color-white);
+    color: var(--color-ink);
   }
 
-  .news-shapes span:nth-child(3) {
-    right: 14%;
-    bottom: -8%;
-  }
-
-  .posts {
+  .news-intro-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1rem, 2vw, 1.35rem);
-    max-width: var(--content-wide);
-    margin-top: clamp(2rem, 4vw, 3rem);
-    margin-inline: auto;
+    grid-template-columns:
+      minmax(0, 1.55fr)
+      minmax(360px, 0.85fr);
+    width: 100%;
+    min-height: 105px;
+    align-items: stretch;
   }
 
-  .post {
-    text-decoration: none;
+  .intro-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding:
+      0.55rem
+      clamp(1.75rem, 2.5vw, 2.5rem)
+      0.55rem
+      var(--page-gutter);
   }
 
-  .news-author {
-    align-items: center;
-    gap: 0.7rem;
+  .intro-copy p {
+    width: min(100%, 980px);
+    margin: 0;
+    color: var(--color-ink);
+    font-size: 16px;
+    line-height: 1.42;
   }
 
-  .news-author img {
-    width: 34px;
-    height: 34px;
-    flex: 0 0 34px;
-    border-radius: 50%;
+  .intro-image {
+    width: 100%;
+    height: 100%;
+    min-height: 105px;
+    overflow: hidden;
+    clip-path: polygon(
+      6% 0,
+      100% 0,
+      100% 100%,
+      0 100%
+    );
+  }
+
+  .intro-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    object-position: center 30%;
+    object-position: center 78%;
+    transform: scale(1.16);
+    transform-origin: center bottom;
   }
 
-  h2 {
-    margin: 0 0 0.55rem;
+  .posts-section {
+    padding:
+      clamp(4.5rem, 7vw, 7rem)
+      var(--page-gutter);
+    background: var(--color-paper);
+  }
+
+  .articles-shell {
+    width: 100%;
+    margin: 0;
+  }
+
+  .articles-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 1.25rem;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 7px;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .articles-eyebrow::before {
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    flex: 0 0 16px;
+    background: var(--color-blue);
+    content: "";
+  }
+
+  .other-news-eyebrow {
+    margin-top: clamp(2.8rem, 4.5vw, 4rem);
+    margin-bottom: 1.35rem;
+  }
+
+  .featured-article {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1.28fr)
+      minmax(320px, 0.72fr);
+    min-height: 420px;
+    overflow: hidden;
+    background: var(--color-white);
+    color: inherit;
+    text-decoration: none;
+    box-shadow:
+      0 10px 28px
+      rgba(20, 28, 38, 0.035);
+  }
+
+  .featured-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(2.7rem, 4.5vw, 4.3rem);
+  }
+
+  .featured-top,
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .featured-date,
+  .card-date {
+    color: var(--color-muted);
+    font-size: 0.78rem;
+  }
+
+  .featured-copy h2 {
+    max-width: 760px;
+    margin: 1.25rem 0 1rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
-    font-size: clamp(1.5rem, 3vw, 2.4rem);
-    font-weight: 700;
+    font-size: clamp(2.35rem, 3.4vw, 4rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
   }
 
-  @media (max-width: 980px) {
-    .posts {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  .featured-copy p {
+    max-width: 700px;
+    margin: 0;
+    color: var(--color-ink);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: max-content;
+    margin-top: 1.9rem;
+    color: var(--color-blue);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* NETWORK */
+
+  .network-panel {
+    position: relative;
+    min-height: 100%;
+    overflow: hidden;
+    background: var(--color-blue-dark);
+  }
+
+  .network-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    align-items: stretch;
+    justify-content: stretch;
+    background: var(--color-blue-dark);
+  }
+
+  .network-wrapper svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: translateZ(0);
+    contain: paint;
+  }
+
+  .network-wrapper .main-line,
+  .network-wrapper .secondary-line {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    vector-effect: non-scaling-stroke;
+    will-change: opacity, stroke-dashoffset;
+    backface-visibility: hidden;
+  }
+
+  .network-wrapper .main-line {
+    stroke: rgba(242, 240, 235, 0.78);
+    stroke-width: 1.6;
+  }
+
+  .network-wrapper .secondary-line {
+    stroke: rgba(141, 160, 189, 0.28);
+    stroke-width: 1.2;
+    opacity: 0.75;
+  }
+
+  .network-wrapper .node {
+    fill: #f2f0eb;
+    stroke: rgba(255, 255, 255, 0.12);
+    stroke-width: 1.5;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+
+  .network-wrapper .center-ring {
+    fill: none;
+    stroke: rgba(141, 160, 189, 0.42);
+    stroke-width: 1.5;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.5);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+
+  /*
+    Start with the center dot, then let the lines flow
+    outward continuously. Each next dot fades in as its
+    connection reaches it.
+  */
+
+  .network-wrapper.animate .center-node {
+    animation:
+      revealNode
+      0.72s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+  }
+
+  .network-wrapper.animate .center-ring {
+    animation:
+      revealRing
+      1.08s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 0.06s;
+  }
+
+  .network-wrapper.animate .main-1 {
+    animation:
+      drawLine
+      1.48s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 0.22s;
+  }
+
+  .network-wrapper.animate .node-1 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 1.28s;
+  }
+
+  .network-wrapper.animate .main-2 {
+    animation:
+      drawLine
+      1.5s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 0.38s;
+  }
+
+  .network-wrapper.animate .node-2 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 1.44s;
+  }
+
+  .network-wrapper.animate .main-3 {
+    animation:
+      drawLine
+      1.52s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 0.54s;
+  }
+
+  .network-wrapper.animate .node-3 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 1.6s;
+  }
+
+  .network-wrapper.animate .main-4 {
+    animation:
+      drawLine
+      1.54s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 0.7s;
+  }
+
+  .network-wrapper.animate .node-4 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 1.76s;
+  }
+
+  .network-wrapper.animate .main-5 {
+    animation:
+      drawLine
+      1.56s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 0.86s;
+  }
+
+  .network-wrapper.animate .node-5 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 1.92s;
+  }
+
+  .network-wrapper.animate .main-6 {
+    animation:
+      drawLine
+      1.58s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 1.02s;
+  }
+
+  .network-wrapper.animate .node-6 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 2.08s;
+  }
+
+  .network-wrapper.animate .main-7 {
+    animation:
+      drawLine
+      1.6s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 1.18s;
+  }
+
+  .network-wrapper.animate .node-7 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 2.24s;
+  }
+
+  .network-wrapper.animate .main-8 {
+    animation:
+      drawLine
+      1.62s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 1.34s;
+  }
+
+  .network-wrapper.animate .node-8 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 2.4s;
+  }
+
+  .network-wrapper.animate .main-9 {
+    animation:
+      drawLine
+      1.64s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+    animation-delay: 1.5s;
+  }
+
+  .network-wrapper.animate .node-9 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 2.56s;
+  }
+
+  /*
+    Secondary connections start while the primary lines are
+    still moving so the sequence feels continuous rather than
+    like a separate second stage.
+  */
+
+  .network-wrapper.animate .secondary-line {
+    animation:
+      drawSecondary
+      1.78s
+      cubic-bezier(0.32, 0.02, 0.18, 1)
+      forwards;
+  }
+
+  .network-wrapper.animate .secondary-1 {
+    animation-delay: 1.56s;
+  }
+
+  .network-wrapper.animate .secondary-2 {
+    animation-delay: 1.66s;
+  }
+
+  .network-wrapper.animate .secondary-3 {
+    animation-delay: 1.76s;
+  }
+
+  .network-wrapper.animate .secondary-4 {
+    animation-delay: 1.86s;
+  }
+
+  .network-wrapper.animate .secondary-5 {
+    animation-delay: 1.96s;
+  }
+
+  .network-wrapper.animate .secondary-6 {
+    animation-delay: 2.06s;
+  }
+
+  .network-wrapper.animate .secondary-7 {
+    animation-delay: 2.16s;
+  }
+
+  .network-wrapper.animate .secondary-8 {
+    animation-delay: 2.26s;
+  }
+
+  .network-wrapper.animate .secondary-9 {
+    animation-delay: 2.36s;
+  }
+
+  .network-wrapper.animate .secondary-10 {
+    animation-delay: 2.46s;
+  }
+
+  .network-wrapper.animate .node-10 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 2.74s;
+  }
+
+  .network-wrapper.animate .node-11 {
+    animation:
+      revealNode
+      0.62s
+      cubic-bezier(0.22, 0.68, 0.24, 1)
+      forwards;
+    animation-delay: 2.88s;
+  }
+
+  @keyframes drawLine {
+    0% {
+      stroke-dashoffset: 1000;
+      opacity: 0;
+    }
+
+    16% {
+      opacity: 0.18;
+    }
+
+    70% {
+      opacity: 0.76;
+    }
+
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes drawSecondary {
+    0% {
+      stroke-dashoffset: 1000;
+      opacity: 0;
+    }
+
+    18% {
+      opacity: 0.08;
+    }
+
+    72% {
+      opacity: 0.46;
+    }
+
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 0.9;
+    }
+  }
+
+  @keyframes revealNode {
+    0% {
+      opacity: 0;
+      transform: scale(0.86);
+    }
+
+    52% {
+      opacity: 0.52;
+      transform: scale(0.95);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes revealRing {
+    0% {
+      opacity: 0;
+      transform: scale(0.86);
+    }
+
+    100% {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+  }
+
+  /* CAROUSEL */
+
+  .carousel-shell {
+    position: relative;
+    display: grid;
+    grid-template-columns:
+      auto
+      minmax(0, 1fr)
+      auto;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .article-carousel {
+    display: flex;
+    gap: clamp(1.25rem, 2vw, 1.8rem);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.2rem 1rem;
+  }
+
+  .article-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .article-carousel .article-card {
+    flex: 0 0 clamp(320px, 31vw, 460px);
+    scroll-snap-align: start;
+  }
+
+  .carousel-control {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border:
+      1px solid
+      rgba(69, 98, 142, 0.25);
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--color-blue);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      background 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .carousel-control:hover {
+    transform: translateY(-2px);
+    background: #f8f7f4;
+    border-color: rgba(69, 98, 142, 0.5);
+  }
+
+  .carousel-control:disabled {
+    opacity: 0.35;
+    cursor: default;
+    transform: none;
+  }
+
+  .article-card {
+    display: flex;
+    min-height: 430px;
+    flex-direction: column;
+    padding: clamp(2rem, 3vw, 2.6rem);
+    background: var(--color-white);
+    color: inherit;
+    text-decoration: none;
+    box-shadow:
+      0 10px 28px
+      rgba(20, 28, 38, 0.025);
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .article-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 18px 40px
+      rgba(20, 28, 38, 0.07);
+  }
+
+  .article-card h3 {
+    margin: 1.45rem 0 1rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.28;
+  }
+
+  .article-card p {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .article-card .read-more {
+    margin-top: auto;
+    padding-top: 1.8rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 0.4rem 0.68rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-blue);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pill.filled {
+    background: var(--color-blue);
+    border-color: var(--color-blue);
+    color: var(--color-white);
+  }
+
+  .empty-state {
+    margin: 0;
+    color: var(--color-muted);
+  }
+
+  /* RESPONSIVE INTRO IMAGE */
+
+  @media (min-width: 1200px) {
+    .news-intro-grid {
+      min-height: clamp(115px, 8vw, 155px);
+    }
+
+    .intro-image {
+      min-height: clamp(115px, 8vw, 155px);
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .news-intro-grid {
+      min-height: clamp(145px, 9vw, 190px);
+    }
+
+    .intro-image {
+      min-height: clamp(145px, 9vw, 190px);
+    }
+  }
+
+  @media (min-width: 2000px) {
+    .news-intro-grid,
+    .intro-image {
+      min-height: 210px;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .news-intro-grid {
+      grid-template-columns:
+        minmax(0, 1.25fr)
+        minmax(300px, 0.75fr);
+      min-height: 125px;
+    }
+
+    .intro-copy {
+      padding:
+        0.8rem
+        1.5rem
+        0.8rem
+        var(--page-gutter);
+    }
+
+    .intro-image {
+      min-height: 125px;
+    }
+  }
+
+  @media (max-width: 1050px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      padding-left: 0;
+    }
+
+    .hero-copy {
+      padding-left: var(--page-gutter);
+      padding-right: var(--page-gutter);
+    }
+
+    .featured-article {
+      grid-template-columns: 1fr;
+    }
+
+    .network-panel,
+    .network-wrapper {
+      min-height: 300px;
+    }
+  }
+
+  @media (max-width: 1000px) {
+    .article-carousel .article-card {
+      flex-basis: min(76vw, 420px);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .news-hero {
+      height: auto;
+      min-height: 0;
+      padding:
+        clamp(3.75rem, 10vw, 5rem)
+        0
+        clamp(3rem, 8vw, 4rem);
+    }
+
+    .hero-grid {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+
+    .hero-copy h1 {
+      max-width: 580px;
+    }
+
+    .news-intro-grid {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+
+    .intro-copy {
+      padding:
+        1.7rem
+        var(--page-gutter);
+    }
+
+    .intro-image {
+      min-height: 155px;
+      clip-path: none;
+    }
+
+    .intro-image img {
+      object-position: center 76%;
+      transform: scale(1.12);
+      transform-origin: center bottom;
     }
   }
 
   @media (max-width: 760px) {
-    .hero-grid,
-    .posts {
+    .hero-title-line {
+      white-space: normal;
+    }
+
+    .intro-copy {
+      padding: 2.35rem 1rem;
+    }
+
+    .intro-image {
+      min-height: 240px;
+    }
+
+    .posts-section {
+      padding: 3.5rem 1rem;
+    }
+
+    .featured-copy {
+      padding: 2.35rem 1.5rem;
+    }
+
+    .featured-copy h2 {
+      font-size: clamp(2rem, 9vw, 2.8rem);
+    }
+
+    .network-panel,
+    .network-wrapper {
+      min-height: 260px;
+    }
+
+    .article-card {
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .carousel-shell {
       grid-template-columns: 1fr;
     }
 
-    .hero-image {
-      margin-bottom: 0;
+    .article-carousel {
+      padding-right: 1rem;
+    }
+
+    .article-carousel .article-card {
+      flex-basis: 86vw;
+    }
+
+    .carousel-control {
+      display: none;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .featured-article {
+      grid-template-columns: 1fr !important;
+      min-height: 0 !important;
+      height: auto !important;
+      overflow: hidden;
+    }
+
+    .featured-copy {
+      min-height: 0;
+    }
+
+    .network-panel {
+      position: relative !important;
+      width: 100%;
+      min-height: 240px !important;
+      height: 240px !important;
+      overflow: hidden;
+    }
+
+    .network-wrapper {
+      position: relative !important;
+      width: 100%;
+      min-height: 240px !important;
+      height: 240px !important;
+    }
+
+    .network-wrapper svg {
+      width: 100%;
+      height: 100%;
+      max-height: 240px;
+    }
+
+    .posts-section,
+    .articles-shell,
+    .carousel-shell {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .network-wrapper .main-line,
+    .network-wrapper .secondary-line {
+      stroke-dashoffset: 0;
+    }
+
+    .network-wrapper .node {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .network-wrapper .center-ring {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+
+    .network-wrapper.animate * {
+      animation: none !important;
     }
   }
 </style>
+
+<script>
+  const featuredNetwork =
+    document.getElementById("featuredNetwork");
+
+  if (featuredNetwork) {
+    const startNetworkAnimation = () => {
+      if (
+        featuredNetwork.classList.contains("animate")
+      ) {
+        return;
+      }
+
+      requestAnimationFrame(() => {
+        featuredNetwork.classList.add("animate");
+      });
+    };
+
+    if ("IntersectionObserver" in window) {
+      const networkObserver =
+        new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                startNetworkAnimation();
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.35,
+          },
+        );
+
+      networkObserver.observe(featuredNetwork);
+    } else {
+      startNetworkAnimation();
+    }
+  }
+</script>
+
+<script>
+  (() => {
+    const carousel =
+      document.getElementById("articleCarousel");
+
+    const prev =
+      document.querySelector(
+        "[data-carousel-prev]",
+      );
+
+    const next =
+      document.querySelector(
+        "[data-carousel-next]",
+      );
+
+    if (!(carousel instanceof HTMLElement)) {
+      return;
+    }
+
+    if (!(prev instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    if (!(next instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    const cardStep = () => {
+      const card =
+        carousel.querySelector(".article-card");
+
+      if (!(card instanceof HTMLElement)) {
+        return Math.max(
+          320,
+          carousel.clientWidth * 0.8,
+        );
+      }
+
+      const styles =
+        getComputedStyle(carousel);
+
+      const gap =
+        Number.parseFloat(
+          styles.gap ||
+            styles.columnGap ||
+            "0",
+        );
+
+      return (
+        card.getBoundingClientRect().width +
+        gap
+      );
+    };
+
+    const updateButtons = () => {
+      const max = Math.max(
+        0,
+        carousel.scrollWidth -
+          carousel.clientWidth,
+      );
+
+      prev.disabled =
+        carousel.scrollLeft <= 4;
+
+      next.disabled =
+        carousel.scrollLeft >= max - 4;
+    };
+
+    prev.addEventListener(
+      "click",
+      () => {
+        carousel.scrollBy({
+          left: -cardStep(),
+          behavior: "smooth",
+        });
+      },
+    );
+
+    next.addEventListener(
+      "click",
+      () => {
+        carousel.scrollBy({
+          left: cardStep(),
+          behavior: "smooth",
+        });
+      },
+    );
+
+    carousel.addEventListener(
+      "scroll",
+      updateButtons,
+      {
+        passive: true,
+      },
+    );
+
+    window.addEventListener(
+      "resize",
+      updateButtons,
+    );
+
+    requestAnimationFrame(updateButtons);
+
+    setTimeout(
+      updateButtons,
+      250,
+    );
+  })();
+</script>
