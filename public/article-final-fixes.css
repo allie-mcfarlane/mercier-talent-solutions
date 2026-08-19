@@ -12,6 +12,11 @@ main .article-hero .pill {
   margin: 0 !important;
 }
 
+/* Slightly reduce the blog-post title without changing its layout or styling. */
+main .article-hero h1 {
+  font-size: clamp(2.6rem, 4.45vw, 4.25rem) !important;
+}
+
 /* Blog body headings use the eyebrow visual language, without the leading rule. */
 main .article-body h2:not(#references-heading),
 main .article-body h3,
@@ -48,6 +53,10 @@ main .article-body blockquote {
 @media (max-width: 700px) {
   main .article-hero .back-link {
     max-width: calc(100% - 105px) !important;
+  }
+
+  main .article-hero h1 {
+    font-size: clamp(2.3rem, 10vw, 3.15rem) !important;
   }
 
   main .article-body h2:not(#references-heading) {
