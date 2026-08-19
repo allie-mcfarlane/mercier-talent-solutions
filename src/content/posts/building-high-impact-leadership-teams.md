@@ -1,11 +1,21 @@
 ---
 title: "Building High Impact Leadership Teams"
 author: "Julia Mercier"
+authorTitle: "Principal"
+authorImage: "/images/julia-mercier.jpg"
+authorImageAlt: "Julia Mercier"
 pubDate: 2026-05-21
 category: "Insight"
 excerpt: "Building a high-impact leadership team requires more than reaching agreement in the room. This article explores how 360-degree feedback can uncover gaps in communication, alignment, and execution, helping leaders work together more effectively and translate strategic priorities into measurable results."
 image: "/images/julia-mercier.jpg"
 imageAlt: "Writer: Julia Mercier"
+references:
+  - text: "McKinsey & Company. Healthy Organizations Keep Winning, But the Rules Are Changing Fast. McKinsey Organizational Health Index, 2024."
+    url: "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/healthy-organizations-keep-winning-but-the-rules-are-changing-fast"
+  - text: "Wageman, R., Nunes, D.A., Burruss, J.A., & Hackman, J.R. Senior Leadership Teams: What It Takes to Make Them Great. Harvard Business Review Press, 2008."
+    url: "https://store.hbr.org/product/senior-leadership-teams-what-it-takes-to-make-them-great/3366"
+  - text: "Google re:Work. Understand Team Effectiveness."
+    url: "https://rework.withgoogle.com/intl/en/guides/understand-team-effectiveness"
 ---
 
 ### Ensure your Strategic Priorities Translate into Measurable Results
@@ -25,7 +35,3 @@ What happens after the meeting is where it gets complicated. How strategies and 
 > _That’s exactly what 360-degree feedback is designed to surface. How the team is experienced in practice, across the firm and by the stakeholders who matter most. It identifies where leaders are aligned in how they communicate priorities, and where they are not. It makes visible the assumptions leaders are carrying about their own effectiveness that have never been tested against the experience of the people they lead. For most leaders, it’s the first time that gap becomes something they can actually see and do something about._
 
 This matters more now than it ever has. The pace of change in the legal industry, from AI to structural shifts to evolving client expectations, means that misalignment at the top is no longer just an organizational inconvenience. It is a competitive liability. Leadership teams that can close the gap between what they decide and how it gets carried out across the firm will be far better positioned to grow, retain talent, and serve clients well.
-
-1. McKinsey & Company. Healthy Organizations Keep Winning, But the Rules Are Changing Fast. McKinsey Organizational Health Index, 2024. [https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/healthy-organizations-keep-winning-but-the-rules-are-changing-fast](https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/healthy-organizations-keep-winning-but-the-rules-are-changing-fast)
-2. Wageman, R., Nunes, D.A., Burruss, J.A., & Hackman, J.R. Senior Leadership Teams: What It Takes to Make Them Great. Harvard Business Review Press, 2008. [https://store.hbr.org/product/senior-leadership-teams-what-it-takes-to-make-them-great/3366](https://store.hbr.org/product/senior-leadership-teams-what-it-takes-to-make-them-great/3366)
-3. Google re:Work. Understand Team Effectiveness. [https://rework.withgoogle.com/intl/en/guides/understand-team-effectiveness](https://rework.withgoogle.com/intl/en/guides/understand-team-effectiveness)
