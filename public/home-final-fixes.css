@@ -1,6 +1,6 @@
-/* Final homepage fixes. Hero geometry remains intentionally untouched. */
+/* Final homepage fixes. */
 
-/* Keep the approved hero graphic exactly as positioned. */
+/* Keep the bottom endpoint dot visible. */
 main .hero-art-circle-animation .dot-1 {
   fill-opacity: 1 !important;
 }
@@ -10,6 +10,18 @@ main .hero h1 {
   font-size: clamp(3.25rem, 5vw, 5.25rem) !important;
   line-height: 1.03 !important;
   letter-spacing: -0.045em !important;
+}
+
+/* On widescreens, keep the SVG in its native 3:4 proportion so the line and circles do not stretch or crop inside the SVG viewport. */
+@media (min-width: 1500px) {
+  main .hero .hero-art-circle-animation svg {
+    top: -10% !important;
+    right: 15% !important;
+    width: auto !important;
+    height: 126% !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
 }
 
 /* Open up the Our Approach content rhythm without adding extra page height. */
