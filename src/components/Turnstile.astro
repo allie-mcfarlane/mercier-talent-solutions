@@ -1,6 +1,10 @@
 ---
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
-const { action = "contact", endpoint = "/api/contact" } = Astro.props;
+const {
+  action = "contact",
+  endpoint = "/api/contact",
+  successMessage = "Thank you. Your message has been sent.",
+} = Astro.props;
 ---
 
 {
@@ -12,6 +16,7 @@ const { action = "contact", endpoint = "/api/contact" } = Astro.props;
         data-action={action}
         data-mts-turnstile
         data-mts-endpoint={endpoint}
+        data-mts-success={successMessage}
       ></div>
       <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
       <script is:inline>
@@ -37,7 +42,7 @@ const { action = "contact", endpoint = "/api/contact" } = Astro.props;
             note.className = "form-note turnstile-result";
 
             if (sent) {
-              note.textContent = "Thank you. Your message has been sent.";
+              note.textContent = target.getAttribute("data-mts-success") || "Thank you. Your message has been sent.";
               note.setAttribute("role", "status");
             } else if (error === "verification") {
               note.textContent = "Please complete the security check and try again.";
