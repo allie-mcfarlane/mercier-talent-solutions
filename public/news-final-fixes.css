@@ -1,0 +1,65 @@
+/* Final News & Insights consistency fixes. Existing HTML/SVG is unchanged. */
+
+/* Remove the extra page-specific vertical buffer while keeping the approved hero. */
+main .news-hero .hero-inner {
+  min-height: clamp(440px, 34vw, 540px) !important;
+}
+
+main .news-hero .hero-copy {
+  padding: clamp(3.9rem, 5.5vw, 5.5rem) 0 !important;
+}
+
+main .featured-section {
+  padding: clamp(4.4rem, 6vw, 6.25rem) 0 !important;
+}
+
+main .other-news {
+  padding: clamp(4.4rem, 6vw, 6.25rem) 0 clamp(5rem, 7vw, 7rem) !important;
+}
+
+/* Use the same body copy scale used across the final page set. */
+main .featured-copy > p,
+main .news-item > p {
+  font-size: 16.5px !important;
+  line-height: 1.68 !important;
+}
+
+/* Preserve the approved News & Insights read-more treatment as the site standard. */
+main .read-more {
+  display: inline-flex !important;
+  width: max-content !important;
+  align-items: center !important;
+  gap: 0.7rem !important;
+  border-bottom: 1px solid var(--color-blue-dark) !important;
+  padding-bottom: 0.45rem !important;
+  color: var(--color-blue-dark) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+main .read-more:hover,
+main .read-more:focus-visible {
+  gap: 1rem !important;
+  border-color: var(--color-blue) !important;
+  color: var(--color-blue) !important;
+}
+
+@media (max-width: 720px) {
+  main .news-hero .hero-copy {
+    padding: 3.4rem 0 3.6rem !important;
+  }
+
+  main .featured-section {
+    padding: 3.5rem 0 4.25rem !important;
+  }
+
+  main .other-news {
+    padding: 3.75rem 0 4.5rem !important;
+  }
+
+  main .featured-copy > p,
+  main .news-item > p {
+    font-size: 16px !important;
+  }
+}
