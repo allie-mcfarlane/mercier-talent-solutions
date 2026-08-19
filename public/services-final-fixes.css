@@ -1,0 +1,109 @@
+/* Final Services consistency fixes. Content and section structure are unchanged. */
+
+/* Remove the extra vertical buffer while keeping the approved hero treatment. */
+main .services-hero .services-hero-grid {
+  min-height: clamp(500px, 42vw, 620px) !important;
+  padding-block: clamp(4.25rem, 6vw, 6rem) !important;
+}
+
+main .service-section {
+  padding: clamp(4.75rem, 6.5vw, 6.75rem) 0 !important;
+}
+
+/* Use one paragraph scale throughout all service sections. */
+main .service-section .service-summary,
+main .service-section .service-detail-copy,
+main .service-section .assessment-intro,
+main .service-section .consulting-intro,
+main .service-section .coaching-focus .focus-list p,
+main .service-section .assessment-accordion details p,
+main .service-section .program-item p,
+main .service-section .consulting-list p {
+  color: var(--color-ink) !important;
+  font-family: var(--font-body) !important;
+  font-size: 16.5px !important;
+  line-height: 1.68 !important;
+}
+
+/* Training: match the heading-to-copy rhythm used in the other service sections. */
+main .training-text-column {
+  display: grid !important;
+  gap: clamp(2.75rem, 4.5vw, 4rem) !important;
+}
+
+main .training-copy,
+main .training-copy .service-summary {
+  margin: 0 !important;
+}
+
+main .program-groups {
+  margin-top: clamp(3.5rem, 5.5vw, 5.25rem) !important;
+}
+
+main .program-groups > article {
+  border-top: 2px solid var(--color-blue-dark) !important;
+  padding-top: 1.35rem !important;
+}
+
+main .program-list {
+  gap: clamp(1.15rem, 2vw, 1.55rem) clamp(1.5rem, 3vw, 2.5rem) !important;
+}
+
+/* Remove the stray thin rules between training programs. */
+main .program-item {
+  position: relative !important;
+  border-bottom: 0 !important;
+  padding: 0 0 0 1.5rem !important;
+}
+
+/* Keep every training diamond aligned to the first line of its title. */
+main .program-item::before {
+  top: 0.48em !important;
+  left: 0 !important;
+  width: 6px !important;
+  height: 6px !important;
+}
+
+main .program-item > span {
+  font-size: 15.5px !important;
+  line-height: 1.4 !important;
+}
+
+@media (max-width: 1080px) {
+  main .services-hero .services-hero-grid {
+    padding-block: 4rem !important;
+  }
+
+  main .training-text-column {
+    gap: 2.75rem !important;
+  }
+}
+
+@media (max-width: 700px) {
+  main .services-hero .services-hero-grid {
+    padding-block: 3.6rem 4rem !important;
+  }
+
+  main .service-section {
+    padding: 4rem 0 4.75rem !important;
+  }
+
+  main .service-section .service-summary,
+  main .service-section .service-detail-copy,
+  main .service-section .assessment-intro,
+  main .service-section .consulting-intro,
+  main .service-section .coaching-focus .focus-list p,
+  main .service-section .assessment-accordion details p,
+  main .service-section .program-item p,
+  main .service-section .consulting-list p {
+    font-size: 16px !important;
+  }
+
+  main .training-text-column {
+    gap: 2.4rem !important;
+  }
+
+  main .program-groups {
+    margin-top: 3.25rem !important;
+  }
+}
