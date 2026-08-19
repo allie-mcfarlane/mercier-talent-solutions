@@ -262,15 +262,26 @@ collections:
     fields:
       - { label: Title, name: title, widget: string, hint: "Use the exact published headline." }
       - { label: Author, name: author, widget: string, default: Julia Mercier }
+      - { label: Author Job Title, name: authorTitle, widget: string, default: Principal }
+      - { label: Author Headshot, name: authorImage, widget: image, required: false, hint: "Optional. Upload the writer headshot shown beside the byline." }
+      - { label: Author Headshot Alt Text, name: authorImageAlt, widget: string, required: false }
       - { label: Publication Date, name: pubDate, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, default: "{{now}}" }
       - { label: Updated Date, name: updatedDate, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, required: false }
       - { label: Category, name: category, widget: select, default: Insight, options: [Insight, Speaking, White Paper, Announcement, News] }
-      - { label: Excerpt, name: excerpt, widget: text, hint: "Short card and SEO summary shown on the News & Insights page." }
+      - { label: Excerpt, name: excerpt, widget: text, hint: "Short card and SEO summary shown on the News & Insights page only." }
       - { label: Featured Image, name: image, widget: image, required: false }
       - { label: Featured Image Alt Text, name: imageAlt, widget: string, required: false }
       - { label: SEO Title, name: seoTitle, widget: string, required: false, hint: "Optional. Leave blank to use the article title." }
       - { label: SEO Description, name: seoDescription, widget: text, required: false, hint: "Optional. Leave blank to use the excerpt." }
-      - { label: Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote] }
+      - label: References
+        name: references
+        widget: list
+        required: false
+        hint: "Optional. Add sources in citation order. In the Body, type [1], [2], [3], etc. where each superscript citation should appear."
+        fields:
+          - { label: Reference Text, name: text, widget: text }
+          - { label: Source URL, name: url, widget: string }
+      - { label: Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote], hint: "For linked citations, type [1], [2], [3], etc. in the article text and add matching sources to References above." }
   - name: white-papers
     label: White Papers
     label_singular: White Paper
