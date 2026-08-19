@@ -4,6 +4,9 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     author: z.string().default("Julia Mercier"),
+    authorTitle: z.string().default("Principal"),
+    authorImage: z.string().optional(),
+    authorImageAlt: z.string().optional(),
     pubDate: z.date(),
     updatedDate: z.date().optional(),
     category: z.enum(["Insight", "Speaking", "White Paper", "Announcement", "News"]),
@@ -12,6 +15,14 @@ const posts = defineCollection({
     imageAlt: z.string().optional(),
     seoTitle: z.string().optional(),
     seoDescription: z.string().optional(),
+    references: z
+      .array(
+        z.object({
+          text: z.string(),
+          url: z.string(),
+        }),
+      )
+      .optional(),
   }),
 });
 
