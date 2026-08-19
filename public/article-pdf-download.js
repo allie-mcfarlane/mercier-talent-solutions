@@ -13,12 +13,19 @@
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "") || "article";
 
+  const nextFrame = () =>
+    new Promise((resolve) => requestAnimationFrame(() => resolve()));
+
   const loadHtml2Pdf = () => {
     if (window.html2pdf) return Promise.resolve(window.html2pdf);
 
     return new Promise((resolve, reject) => {
       const existing = document.querySelector('script[data-html2pdf-loader]');
       if (existing) {
+        if (window.html2pdf) {
+          resolve(window.html2pdf);
+          return;
+        }
         existing.addEventListener("load", () => resolve(window.html2pdf), { once: true });
         existing.addEventListener("error", reject, { once: true });
         return;
@@ -41,9 +48,9 @@
     style.id = "article-pdf-export-styles";
     style.textContent = `
       .article-pdf-export {
-        position: fixed;
+        position: absolute;
         top: 0;
-        left: -100000px;
+        left: 0;
         z-index: -1;
         width: 760px;
         padding: 0;
@@ -51,6 +58,7 @@
         color: #111;
         font-family: Arial, sans-serif;
         line-height: 1.65;
+        pointer-events: none;
       }
       .article-pdf-export h1 {
         margin: 0 0 12px;
@@ -162,6 +170,17 @@
     return { root, title };
   };
 
+  const downloadBlob = (blob, filename) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
   button.addEventListener(
     "click",
     async (event) => {
@@ -181,9 +200,13 @@
         exportNode = buildPdfNode();
         if (!exportNode) throw new Error("Article content is unavailable.");
 
+        if (document.fonts?.ready) await document.fonts.ready;
+        await nextFrame();
+        await nextFrame();
+
         const filename = `${slugify(exportNode.title)}.pdf`;
 
-        await html2pdf()
+        const pdfBlob = await html2pdf()
           .set({
             margin: [0.55, 0.6, 0.65, 0.6],
             filename,
@@ -193,6 +216,9 @@
               useCORS: true,
               backgroundColor: "#ffffff",
               logging: false,
+              scrollX: 0,
+              scrollY: 0,
+              windowWidth: 760,
             },
             jsPDF: {
               unit: "in",
@@ -203,8 +229,13 @@
             enableLinks: true,
           })
           .from(exportNode.root)
-          .save();
+          .outputPdf("blob");
 
+        if (!(pdfBlob instanceof Blob) || pdfBlob.size < 5000) {
+          throw new Error("Generated PDF was unexpectedly empty.");
+        }
+
+        downloadBlob(pdfBlob, filename);
         setStatus("PDF downloaded.");
       } catch (error) {
         console.error(error);
