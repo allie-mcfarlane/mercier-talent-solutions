@@ -36,6 +36,7 @@ const description = "Opt out of targeted advertising data use with Mercier Talen
         <input type="hidden" name="_subject" value={pageData.formSubject} />
         <input type="hidden" name="_template" value="table" />
         <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_cc" value="julia@merciertalentsolutions.com" />
         <input type="hidden" name="form_name" value={pageData.formName} />
         <input type="hidden" name="browser_privacy_signal" value="none" />
         <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
@@ -54,7 +55,7 @@ const description = "Opt out of targeted advertising data use with Mercier Talen
           MESSAGE
           <textarea name="message" rows="6"></textarea>
         </label>
-        <Turnstile />
+        <Turnstile action="privacy" endpoint="/api/privacy" />
         <button class="button" type="submit">Submit Request</button>
       </form>
     </div>
