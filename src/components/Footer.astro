@@ -22,26 +22,14 @@ const serviceLinks = [
 ---
 
 <footer class="site-footer">
-  <a
-    class="footer-logo-left"
-    href="/"
-    aria-label="Mercier Talent Solutions home"
-  >
-    <img
-      src="/images/mercier-logo-white.png"
-      alt="Mercier Talent Solutions"
-    />
+  <a class="footer-logo-left" href="/" aria-label="Mercier Talent Solutions home">
+    <img src="/images/mercier-logo-white.png" alt="Mercier Talent Solutions" />
   </a>
 
   <div class="container footer-center">
-    <h2 class="footer-cta">
-      Let's do our best work <em>together</em>
-    </h2>
+    <h2 class="footer-cta">Let's do our best work <em>together</em></h2>
 
-    <div
-      class="footer-columns"
-      aria-label="Footer navigation"
-    >
+    <div class="footer-columns" aria-label="Footer navigation">
       <nav>
         <h3>Firm</h3>
         <a href="/about/">About</a>
@@ -52,54 +40,22 @@ const serviceLinks = [
 
       <nav>
         <h3>Services</h3>
-
-        {
-          serviceLinks.map((item) => (
-            <a href={item.href}>
-              {item.label}
-            </a>
-          ))
-        }
+        {serviceLinks.map((item) => <a href={item.href}>{item.label}</a>)}
       </nav>
 
       <div class="footer-contact">
         <h3>Contact</h3>
-
-        <a href={`mailto:${site.email}`}>
-          {site.email}
-        </a>
-
-        <a
-          href={`tel:${site.phone.replaceAll(
-            /[^\d+]/g,
-            "",
-          )}`}
-        >
-          {site.phone}
-        </a>
-
-        <a href={site.linkedIn}>
-          LinkedIn
-        </a>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <a href={`tel:${site.phone.replaceAll(/[^\d+]/g, "")}`}>{site.phone}</a>
+        <a href={site.linkedIn}>LinkedIn</a>
       </div>
     </div>
 
-    <nav
-      class="privacy-links"
-      aria-label="Privacy links"
-    >
-      {
-        site.privacyNav.map((item) => (
-          <a href={item.href}>
-            {item.label}
-          </a>
-        ))
-      }
+    <nav class="privacy-links" aria-label="Privacy links">
+      {site.privacyNav.map((item) => <a href={item.href}>{item.label}</a>)}
     </nav>
 
-    <p class="copyright">
-      ©2026 Mercier Talent Solutions LLC. All rights reserved
-    </p>
+    <p class="copyright">©2026 Mercier Talent Solutions LLC. All rights reserved</p>
   </div>
 </footer>
 
@@ -108,32 +64,23 @@ const serviceLinks = [
     position: relative;
     background: var(--color-blue-dark);
     color: var(--color-white);
-    padding: 2.35rem 0 0.85rem;
+    padding: 3.3rem 0 1.35rem;
   }
 
-  /*
-   * Main footer content.
-   * Everything inside this block shares
-   * exactly the same center line.
-   */
   .footer-center {
     display: grid;
     justify-items: center;
-    width: min(100%, 760px);
+    width: min(100%, 840px);
     margin-inline: auto;
     text-align: center;
   }
 
   .footer-cta {
     width: 100%;
-    margin: 0 0 1.25rem;
+    margin: 0 0 2rem;
     color: var(--color-white) !important;
     font-family: var(--font-heading);
-    font-size: clamp(
-      1.9rem,
-      2.4vw,
-      2.35rem
-    );
+    font-size: clamp(2rem, 2.5vw, 2.55rem);
     font-weight: 700;
     line-height: 1.14;
     text-align: center;
@@ -146,17 +93,13 @@ const serviceLinks = [
     font-weight: 700;
   }
 
-  /*
-   * Firm / Services / Contact
-   */
   .footer-columns {
     display: grid;
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     width: 100%;
-    gap: 1.25rem;
+    gap: 2.4rem;
     align-items: start;
-    margin-bottom: 1.25rem;
+    margin-bottom: 2rem;
     text-align: center;
   }
 
@@ -164,26 +107,22 @@ const serviceLinks = [
   .footer-contact {
     display: grid;
     justify-items: center;
-    gap: 0.22rem;
-    font-size: 12px;
-    line-height: 1.45;
+    gap: 0.5rem;
+    font-size: 13px;
+    line-height: 1.5;
     text-align: center;
   }
 
   .footer-columns h3 {
-    margin: 0 0 0.32rem;
+    margin: 0 0 0.55rem;
     color: var(--color-white);
     font-family: var(--font-label);
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 700;
-    letter-spacing: 0;
     text-align: center;
     text-transform: uppercase;
   }
 
-  /*
-   * Links
-   */
   a {
     color: inherit;
     text-decoration: none;
@@ -194,39 +133,27 @@ const serviceLinks = [
     text-decoration: underline;
   }
 
-  /*
-   * Privacy links
-   */
   .privacy-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.35rem 1rem;
+    gap: 0.55rem 1.2rem;
     width: 100%;
-    margin: 0 0 0.45rem;
+    margin: 0 0 0.75rem;
     color: rgba(255, 255, 255, 0.76);
-    font-size: 12px;
+    font-size: 12.5px;
     text-align: center;
   }
 
-  /*
-   * Copyright
-   */
   .copyright {
     width: 100%;
     margin: 0;
     color: rgba(255, 255, 255, 0.58);
-    font-size: 12px;
-    line-height: 1.45;
+    font-size: 12.5px;
+    line-height: 1.5;
     text-align: center;
   }
 
-  /*
-   * White logo.
-   *
-   * Positioned independently so it does not
-   * push the centered footer content off-center.
-   */
   .footer-logo-left {
     position: absolute;
     top: 50%;
@@ -237,51 +164,41 @@ const serviceLinks = [
 
   .footer-logo-left img {
     display: block;
-    width: min(176px, 15vw);
+    width: min(182px, 15vw);
     height: auto;
   }
 
-  /*
-   * Tablet
-   */
   @media (max-width: 980px) {
     .footer-logo-left {
       position: static;
       display: block;
       width: fit-content;
-      margin:
-        0
-        0
-        1.25rem
-        var(--page-gutter);
+      margin: 0 0 1.75rem var(--page-gutter);
       transform: none;
     }
 
     .footer-logo-left img {
-      width: min(160px, 42vw);
+      width: min(165px, 42vw);
     }
   }
 
-  /*
-   * Mobile
-   */
   @media (max-width: 700px) {
     .site-footer {
-      padding: 2rem 0 0.8rem;
+      padding: 2.6rem 0 1.1rem;
     }
 
     .footer-center {
-      width: min(100%, 520px);
+      width: min(100%, 540px);
     }
 
     .footer-cta {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .footer-columns {
       grid-template-columns: 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
     }
   }
 </style>
