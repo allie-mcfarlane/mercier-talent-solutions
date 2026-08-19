@@ -4,7 +4,7 @@ export const site = {
   description:
     "Mercier Talent Solutions partners with law firms and legal professionals to strengthen the leadership, communication, and practice management capabilities that sustain excellence over time.",
   email: "julia@merciertalentsolutions.com",
-  privacyEmail: "allie@merciertalentsolutions.com",
+  privacyEmail: "julia@merciertalentsolutions.com",
   phone: "(917) 808-5668",
   linkedIn: "https://www.linkedin.com/in/juliamercier/",
   nav: [
