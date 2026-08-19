@@ -12,10 +12,23 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
-const titleMatch = post.data.title.trim().match(/^(.*\S)\s+(\S+)$/);
-const titleStart = titleMatch?.[1] ?? "";
-const titleEnd = titleMatch?.[2] ?? post.data.title;
-const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
+const dateFormat = {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+} as const;
+
+const authorImage = post.data.authorImage ?? "/images/julia-mercier.jpg";
+const authorImageAlt = post.data.authorImageAlt ?? post.data.author;
+const authorTitle = post.data.authorTitle ?? "Principal";
+const canonicalArticleUrl = new URL(`/post/${post.slug}/`, "https://merciertalentsolutions.com").toString();
+
+const categoryClass = (category: string) => {
+  if (category === "Speaking") return "pill-speaking";
+  if (category === "White Paper") return "pill-whitepaper";
+  return "pill-insight";
+};
 ---
 
 <BaseLayout
@@ -27,108 +40,583 @@ const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "
   modifiedTime={post.data.updatedDate}
   author={post.data.author}
 >
-  <article class="section">
-    <div class="container article-shell">
-      <a class="back-link" href="/news/">Back to News & Insights</a>
-      <header>
-        <span class="pill">{post.data.category}</span>
-        <h1>{titleStart && `${titleStart} `}<em>{titleEnd}</em></h1>
-        <p class="dek">{post.data.excerpt}</p>
-        <div class="meta-row">
-          <span>Julia Mercier</span>
+  <article class="article-page">
+    <header class="article-hero">
+      <div class="container article-shell">
+        <a class="back-link" href="/news/">← Back to News & Insights</a>
+
+        <span class={`pill ${categoryClass(post.data.category)}`}>
+          {post.data.category}
+        </span>
+
+        <h1>{post.data.title}</h1>
+
+        <div class="article-meta">
+          <div class="author-block">
+            <img
+              class="author-photo"
+              src={authorImage}
+              alt={authorImageAlt}
+              loading="eager"
+              decoding="async"
+            />
+
+            <div class="author-copy">
+              <strong>{post.data.author}</strong>
+              <span>{authorTitle}</span>
+            </div>
+          </div>
+
           <time datetime={post.data.pubDate.toISOString()}>
             {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}
           </time>
         </div>
-      </header>
-      <div class="article-body">
+      </div>
+    </header>
+
+    <div class="article-content-section">
+      <div class="container article-body" data-article-body>
         <Content />
+
+        {
+          post.data.references && post.data.references.length > 0 && (
+            <section class="references" aria-labelledby="references-heading">
+              <h2 id="references-heading">References</h2>
+              <ol>
+                {post.data.references.map((reference, index) => (
+                  <li id={`reference-${index + 1}`}>
+                    <a href={reference.url} target="_blank" rel="noopener noreferrer">
+                      {reference.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )
+        }
+      </div>
+
+      <div class="container article-actions">
+        <span class="actions-label">Article options</span>
+
+        <div class="action-buttons">
+          <button class="article-action" type="button" data-print-article>
+            Print
+          </button>
+
+          <button class="article-action" type="button" data-download-article>
+            Download article
+          </button>
+
+          <a
+            class="article-action primary"
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalArticleUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Post to LinkedIn
+          </a>
+        </div>
+
+        <p class="download-status" aria-live="polite" data-download-status></p>
       </div>
     </div>
   </article>
 </BaseLayout>
 
+<script is:inline>
+  const articleBody = document.querySelector("[data-article-body]");
+
+  if (articleBody) {
+    const walker = document.createTreeWalker(
+      articleBody,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          const parent = node.parentElement;
+          if (!parent || parent.closest("a, code, pre, .references")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return /\[(\d+)\]/.test(node.nodeValue || "")
+            ? NodeFilter.FILTER_ACCEPT
+            : NodeFilter.FILTER_REJECT;
+        },
+      },
+    );
+
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    textNodes.forEach((node) => {
+      const value = node.nodeValue || "";
+      const regex = /\[(\d+)\]/g;
+      let match;
+      let lastIndex = 0;
+      const fragment = document.createDocumentFragment();
+
+      while ((match = regex.exec(value)) !== null) {
+        const number = match[1];
+        const target = document.getElementById(`reference-${number}`);
+        if (!target) continue;
+
+        fragment.append(value.slice(lastIndex, match.index));
+
+        const sup = document.createElement("sup");
+        sup.className = "reference-marker";
+        const link = document.createElement("a");
+        link.href = `#reference-${number}`;
+        link.textContent = number;
+        link.setAttribute("aria-label", `Reference ${number}`);
+        sup.append(link);
+        fragment.append(sup);
+
+        lastIndex = regex.lastIndex;
+      }
+
+      if (lastIndex > 0) {
+        fragment.append(value.slice(lastIndex));
+        node.parentNode?.replaceChild(fragment, node);
+      }
+    });
+  }
+
+  document.querySelector("[data-print-article]")?.addEventListener("click", () => {
+    window.print();
+  });
+
+  document.querySelector("[data-download-article]")?.addEventListener("click", () => {
+    const article = document.querySelector("[data-article-body]");
+    if (!article) return;
+
+    const title = document.querySelector(".article-hero h1")?.textContent?.trim() || "Article";
+    const author = document.querySelector(".author-copy strong")?.textContent?.trim() || "";
+    const role = document.querySelector(".author-copy span")?.textContent?.trim() || "";
+    const date = document.querySelector(".article-meta time")?.textContent?.trim() || "";
+
+    const fileContent = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title}</title>
 <style>
+body{max-width:860px;margin:48px auto;padding:0 24px;color:#111;font-family:Arial,sans-serif;line-height:1.7}
+h1{font-size:2.2rem;line-height:1.12;margin-bottom:12px}h2,h3{line-height:1.25}
+.meta{color:#66707c;margin-bottom:32px}blockquote{margin:28px 0;border-left:3px solid #45628e;padding-left:18px;color:#1a2b46;font-size:1rem}
+a{color:#1a2b46}.references{margin-top:40px;border-top:1px solid #dddcd7;padding-top:18px}.references li{margin-bottom:8px;font-size:.85rem;font-style:italic;color:#6680a5}
+</style>
+</head>
+<body>
+<h1>${title}</h1>
+<p class="meta">${author}${role ? ` · ${role}` : ""}${date ? ` · ${date}` : ""}</p>
+${article.innerHTML}
+</body>
+</html>`;
+
+    const blob = new Blob([fileContent], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const filename = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "article";
+
+    link.href = url;
+    link.download = `${filename}.html`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+    const status = document.querySelector("[data-download-status]");
+    if (status) status.textContent = "Article downloaded.";
+  });
+</script>
+
+<style>
+  .article-page {
+    background: var(--color-white);
+  }
+
+  .article-hero {
+    border-bottom: 1px solid var(--color-line);
+    padding: clamp(4rem, 6vw, 5.75rem) 0 clamp(2.8rem, 4vw, 3.6rem);
+    background: var(--color-white);
+  }
+
   .article-shell {
-    max-width: var(--reading-width);
+    max-width: 1120px;
   }
 
   .back-link {
-    display: inline-block;
+    display: inline-flex;
     margin-bottom: 2rem;
     color: var(--color-blue-dark);
-    font-weight: 800;
+    font-weight: 700;
     text-decoration: none;
   }
 
-  h1 {
-    margin: 0.5rem 0 1rem;
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: var(--page-title-size);
-    font-weight: 700;
-    line-height: 1;
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: var(--color-blue);
   }
 
-  .dek {
+  .pill {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    border: 1px solid rgba(69, 98, 142, 0.35);
+    padding: 0.4rem 0.7rem;
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .pill-insight {
+    border-color: rgba(69, 98, 142, 0.5);
+    background: transparent;
+    color: var(--color-blue);
+  }
+
+  .pill-speaking {
+    border-color: var(--color-blue);
+    background: var(--color-blue);
+    color: var(--color-white);
+  }
+
+  .pill-whitepaper {
+    border-color: rgba(69, 98, 142, 0.22);
+    background: var(--color-blue-soft);
+    color: var(--color-blue-dark);
+  }
+
+  h1 {
+    max-width: 1050px;
+    margin: 1.35rem 0 1.85rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 5vw, 4.75rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.04;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    align-items: center;
+  }
+
+  .author-block {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .author-photo {
+    width: 54px;
+    height: 54px;
+    flex: 0 0 54px;
+    border-radius: 50%;
+    background: var(--color-paper);
+    object-fit: cover;
+    object-position: center 28%;
+  }
+
+  .author-copy {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .author-copy strong {
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .author-copy span {
     color: var(--color-muted);
-    font-size: var(--paragraph-size);
+    font-size: 13px;
+  }
+
+  .article-meta time {
+    margin-left: auto;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2.3px;
+    text-transform: uppercase;
+  }
+
+  .article-content-section {
+    padding: clamp(3.6rem, 6vw, 5.5rem) 0 0;
   }
 
   .article-body {
-    margin-top: 2.5rem;
-    border-top: 1px solid var(--color-line);
-    padding-top: 2rem;
-    color: var(--color-text);
-    font-size: var(--paragraph-size);
+    max-width: 860px;
+    color: #111;
+    font-size: 17px;
+    line-height: 1.78;
   }
 
   .article-body :global(p) {
-    margin: 0 0 1.1rem;
+    margin: 0 0 1.35rem;
   }
 
   .article-body :global(h2),
   .article-body :global(h3),
   .article-body :global(h4) {
-    margin: 2rem 0 0.8rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
     font-weight: 700;
-    line-height: 1.08;
+    line-height: 1.18;
   }
 
   .article-body :global(h2) {
-    font-size: clamp(1.9rem, 4vw, 3rem);
+    margin: 2.6rem 0 1rem;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
   }
 
   .article-body :global(h3) {
-    font-size: clamp(1.45rem, 3vw, 2rem);
+    margin: 0 0 1.4rem;
+    font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+  }
+
+  .article-body :global(h4) {
+    margin: 2rem 0 0.8rem;
+    font-size: 1.25rem;
   }
 
   .article-body :global(ul),
   .article-body :global(ol) {
     display: grid;
     gap: 0.55rem;
-    margin: 0 0 1.3rem;
-    padding-left: 1.2rem;
-  }
-
-  .article-body :global(li) {
-    padding-left: 0.25rem;
+    margin: 0 0 1.4rem;
+    padding-left: 1.3rem;
   }
 
   .article-body :global(blockquote) {
-    margin: 1.6rem 0;
+    margin: 2rem 0;
     border-left: 3px solid var(--color-blue);
-    padding: 0.2rem 0 0.2rem 1.2rem;
+    padding: 0.2rem 0 0.2rem 1.25rem;
     color: var(--color-blue-dark);
     font-family: var(--font-heading);
-    font-size: clamp(1.25rem, 2.2vw, 1.65rem);
-    line-height: 1.35;
+    font-size: clamp(1.05rem, 1.35vw, 1.2rem);
+    font-weight: 600;
+    line-height: 1.62;
   }
 
   .article-body :global(a) {
     color: var(--color-blue-dark);
     font-weight: 700;
+  }
+
+  .article-body :global(.reference-marker) {
+    position: relative;
+    top: -0.18em;
+    margin-left: 0.08em;
+    font-size: 0.68em;
+    line-height: 0;
+  }
+
+  .article-body :global(.reference-marker a) {
+    color: var(--color-blue);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .references {
+    margin-top: 3.1rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: 1.4rem;
+  }
+
+  .references h2 {
+    margin: 0 0 0.9rem;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .references ol {
+    display: grid;
+    gap: 0.48rem;
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .references li {
+    padding-left: 0.25rem;
+    color: #6680a5;
+    font-size: 13px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .references li::marker {
+    color: var(--color-blue);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .references a {
+    color: inherit !important;
+    font-weight: 500 !important;
+    text-decoration: none;
+  }
+
+  .references a:hover,
+  .references a:focus-visible {
+    color: var(--color-blue-dark) !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .article-actions {
+    display: flex;
+    max-width: 860px;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: clamp(3.2rem, 5vw, 4.6rem);
+    border-top: 1px solid var(--color-line);
+    padding: 1.65rem 0 clamp(4.5rem, 7vw, 6rem);
+  }
+
+  .actions-label {
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .article-action {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-blue-dark);
+    border-radius: 0;
+    padding: 0.65rem 1rem;
+    background: var(--color-white);
+    color: var(--color-blue-dark);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background 220ms var(--ease-soft),
+      border-color 220ms var(--ease-soft),
+      color 220ms var(--ease-soft),
+      transform 220ms var(--ease-soft);
+  }
+
+  .article-action:hover,
+  .article-action:focus-visible {
+    transform: translateY(-1px);
+    border-color: var(--color-blue);
+    background: var(--color-blue);
+    color: var(--color-white);
+  }
+
+  .article-action.primary {
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+  }
+
+  .download-status {
+    width: 100%;
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 12px;
+  }
+
+  @media (max-width: 700px) {
+    .article-hero {
+      padding: 3.2rem 0 2.5rem;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 11vw, 3.4rem);
+    }
+
+    .article-meta time {
+      width: 100%;
+      margin: 0.5rem 0 0 4.3rem;
+    }
+
+    .article-body {
+      font-size: 16.5px;
+      line-height: 1.72;
+    }
+
+    .action-buttons {
+      width: 100%;
+    }
+
+    .article-action {
+      flex: 1;
+    }
+  }
+
+  @media print {
+    :global(.site-header),
+    :global(.site-footer),
+    .back-link,
+    .article-actions {
+      display: none !important;
+    }
+
+    .article-hero {
+      border-bottom: 1px solid #bbb;
+      padding: 0 0 16pt;
+    }
+
+    .article-content-section {
+      padding-top: 18pt;
+    }
+
+    .article-shell,
+    .article-body {
+      width: 100% !important;
+      max-width: none !important;
+    }
+
+    h1 {
+      font-size: 25pt;
+    }
+
+    .article-body {
+      font-size: 11pt;
+      line-height: 1.55;
+    }
+
+    .article-body :global(blockquote) {
+      font-size: 11pt;
+    }
+
+    .references,
+    .references a,
+    .article-body :global(.reference-marker a) {
+      color: #333 !important;
+    }
   }
 </style>
