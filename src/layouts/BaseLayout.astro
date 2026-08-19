@@ -50,8 +50,11 @@ const modifiedIso = modifiedTime instanceof Date ? modifiedTime.toISOString() : 
       rel="stylesheet"
     />
     {Astro.url.pathname === "/" && <link rel="stylesheet" href="/home-polish.css" />}
+    {Astro.url.pathname === "/" && <link rel="stylesheet" href="/home-final-fixes.css" />}
     {Astro.url.pathname === "/about/" && <link rel="stylesheet" href="/about-polish.css" />}
     {Astro.url.pathname === "/services/" && <link rel="stylesheet" href="/services-polish.css" />}
+    {Astro.url.pathname === "/services/" && <link rel="stylesheet" href="/services-final-fixes.css" />}
+    {Astro.url.pathname === "/news/" && <link rel="stylesheet" href="/news-final-fixes.css" />}
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
