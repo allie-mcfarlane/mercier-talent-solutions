@@ -18,12 +18,32 @@
             name: "github",
             repo: "allie-mcfarlane/mercier-talent-solutions",
             branch: "main",
+            api_root: "https://mercier-talent-solutions.pages.dev/admin/api/github",
             base_url: "https://mercier-talent-solutions.pages.dev",
-            auth_endpoint: "/auth",
-            site_domain: "mercier-talent-solutions.pages.dev"
+            auth_endpoint: "admin/auth",
+            site_domain: "mercier-talent-solutions.pages.dev",
+            use_graphql: false
           }
         }
       });
+
+      (() => {
+        const relabel = () => {
+          document.querySelectorAll("button").forEach((button) => {
+            if (button.textContent && button.textContent.includes("Login with GitHub")) {
+              const walker = document.createTreeWalker(button, NodeFilter.SHOW_TEXT);
+              while (walker.nextNode()) {
+                const node = walker.currentNode;
+                if (node.nodeValue && node.nodeValue.includes("Login with GitHub")) {
+                  node.nodeValue = node.nodeValue.replace("Login with GitHub", "Continue to Mercier Admin");
+                }
+              }
+            }
+          });
+        };
+        new MutationObserver(relabel).observe(document.body, { childList: true, subtree: true });
+        relabel();
+      })();
     </script>
     <script src="/admin/admin-preview.js"></script>
   </body>
