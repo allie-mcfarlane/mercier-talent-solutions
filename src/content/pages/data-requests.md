@@ -1,7 +1,7 @@
 ---
 eyebrow: Data Requests & Appeals
-title: Submit a privacy request or
-titleAccent: appeal
+title: Data Requests &
+titleAccent: Appeals
 formSubject: Privacy Request or Appeal
 formName: Data Requests and Appeals
 includeName: true
