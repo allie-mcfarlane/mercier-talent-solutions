@@ -16,4 +16,8 @@
     const category = (pill.textContent || "").trim();
     pill.classList.add(categoryClass(category));
   });
+
+  document.querySelectorAll("main .services-preview .card .button.text").forEach((link) => {
+    link.textContent = "Learn more";
+  });
 })();
