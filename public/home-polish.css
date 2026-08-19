@@ -1,107 +1,84 @@
-/* Homepage-only refinement layer.
-   Keeps the current content and structure while tightening proportion,
-   spacing, section transitions, and wide-screen behavior. */
+/* Homepage hero refinement only.
+   All sections below the first section keep their existing design. */
 
 main .hero {
-  height: clamp(540px, 31vw, 600px) !important;
-  min-height: 540px !important;
+  height: clamp(570px, 32vw, 620px) !important;
+  min-height: 570px !important;
   background: #fff !important;
 }
 
 main .hero .hero-grid {
-  grid-template-columns: minmax(540px, 43%) minmax(0, 57%) !important;
+  grid-template-columns: minmax(540px, 42%) minmax(0, 58%) !important;
 }
 
 main .hero .hero-copy {
   display: flex !important;
   width: calc(100% - clamp(2.75rem, 4.4vw, 6.5rem)) !important;
-  max-width: 690px !important;
+  max-width: 720px !important;
   margin-left: clamp(2.75rem, 4.4vw, 6.5rem) !important;
   padding: 0 clamp(2rem, 3vw, 4rem) 0 0 !important;
   flex-direction: column !important;
   justify-content: center !important;
 }
 
-main .hero h1 {
-  max-width: 630px !important;
+main .hero .eyebrow {
+  margin-bottom: 0 !important;
 }
 
 main .hero h1::before {
-  margin-top: 1.35rem !important;
-  margin-bottom: 1.35rem !important;
+  margin-top: 1.65rem !important;
+  margin-bottom: 1.6rem !important;
+}
+
+main .hero h1 {
+  max-width: 650px !important;
+  margin-bottom: 1.8rem !important;
+  font-size: clamp(3.05rem, 3.45vw, 4.4rem) !important;
+  line-height: 1.07 !important;
 }
 
 main .hero .lede {
   max-width: 590px !important;
+  margin-bottom: 2.15rem !important;
+  font-size: 17px !important;
+  line-height: 1.62 !important;
+}
+
+main .hero .button-row {
+  gap: 1rem 1.1rem !important;
+}
+
+main .hero .button {
+  min-height: 44px !important;
+  padding: 0.68rem 1.3rem !important;
+  font-size: 0.92rem !important;
 }
 
 main .hero .hero-art-circle-animation svg {
-  top: 1% !important;
-  right: -1% !important;
-  width: 84% !important;
-  height: 99% !important;
+  top: -5% !important;
+  right: 2% !important;
+  width: 78% !important;
+  height: 94% !important;
   transform: translate3d(calc(var(--hero-scroll) * -7px), calc(var(--hero-scroll) * -7px), 0)
-    scale(calc(0.985 + (var(--hero-scroll) * 0.026))) !important;
+    scale(calc(0.97 + (var(--hero-scroll) * 0.025))) !important;
   transform-origin: center !important;
-}
-
-/* Keep the dark proof band as the main contrast moment, but soften the
-   surrounding transitions so the homepage does not read as stacked blocks. */
-main .proof {
-  background: #1a2b46 !important;
-}
-
-main .marquee-band {
-  background: #eef1f4 !important;
-  color: rgba(26, 43, 70, 0.62) !important;
-}
-
-main .stats-band {
-  background: linear-gradient(180deg, #ffffff 0%, #fbfbfa 100%) !important;
-}
-
-main .services-preview {
-  background: #fbfbfa !important;
-}
-
-main .approach {
-  background: #ffffff !important;
-}
-
-main .news-band {
-  background: #f4f5f3 !important;
-}
-
-/* Bring the approach copy and graph into one intentional composition. */
-main .approach .approach-grid {
-  width: min(calc(100% - (var(--page-gutter) * 2)), 1380px) !important;
-  grid-template-columns: minmax(0, 760px) minmax(360px, 410px) !important;
-  justify-content: center !important;
-  gap: clamp(3.5rem, 5vw, 5.75rem) !important;
-}
-
-main .approach .approach-copy {
-  max-width: 760px !important;
-}
-
-main .approach .chart-wrapper {
-  width: min(100%, 410px) !important;
-  justify-self: start !important;
 }
 
 @media (min-width: 1800px) {
   main .hero .hero-grid {
-    grid-template-columns: minmax(620px, 41%) minmax(0, 59%) !important;
+    grid-template-columns: minmax(620px, 40%) minmax(0, 60%) !important;
   }
 
   main .hero .hero-copy {
-    max-width: 730px !important;
+    max-width: 760px !important;
     margin-left: clamp(4rem, 5vw, 7rem) !important;
   }
 
   main .hero .hero-art-circle-animation svg {
-    width: 80% !important;
-    right: 1% !important;
+    top: -6% !important;
+    right: 3% !important;
+    width: 74% !important;
+    height: 92% !important;
   }
 }
 
@@ -111,14 +88,12 @@ main .approach .chart-wrapper {
   }
 
   main .hero .hero-copy {
-    margin-left: clamp(2rem, 3.5vw, 3.5rem) !important;
     width: calc(100% - clamp(2rem, 3.5vw, 3.5rem)) !important;
+    margin-left: clamp(2rem, 3.5vw, 3.5rem) !important;
   }
 
-  main .approach .approach-grid {
-    width: min(calc(100% - (var(--page-gutter) * 2)), 1120px) !important;
-    grid-template-columns: minmax(0, 1fr) minmax(340px, 390px) !important;
-    gap: 3rem !important;
+  main .hero h1 {
+    font-size: clamp(2.8rem, 4.5vw, 3.7rem) !important;
   }
 }
 
@@ -128,8 +103,7 @@ main .approach .chart-wrapper {
     min-height: 0 !important;
   }
 
-  main .hero .hero-grid,
-  main .approach .approach-grid {
+  main .hero .hero-grid {
     grid-template-columns: 1fr !important;
   }
 
@@ -138,23 +112,14 @@ main .approach .chart-wrapper {
     width: 100% !important;
     max-width: 740px !important;
     margin-left: 0 !important;
-    padding: 0 0 clamp(2.25rem, 5vw, 3rem) !important;
+    padding: 0 0 clamp(2.5rem, 5vw, 3.25rem) !important;
   }
 
   main .hero .hero-art-circle-animation svg {
-    top: 0 !important;
-    right: 2% !important;
-    width: 78% !important;
-    height: 100% !important;
-  }
-
-  main .approach .approach-grid {
-    width: min(calc(100% - (var(--page-gutter) * 2)), var(--container)) !important;
-    gap: 2.75rem !important;
-  }
-
-  main .approach .chart-wrapper {
-    width: min(100%, 390px) !important;
+    top: -3% !important;
+    right: 4% !important;
+    width: 72% !important;
+    height: 96% !important;
   }
 }
 
