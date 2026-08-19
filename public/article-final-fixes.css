@@ -17,6 +17,16 @@ main .article-hero h1 {
   font-size: clamp(2.6rem, 4.45vw, 4.25rem) !important;
 }
 
+/* Align the article body and action row with the left edge of the article title. */
+@media (min-width: 1050px) {
+  main .article-content-section .article-body,
+  main .article-content-section .article-actions {
+    width: min(calc(100% - (var(--page-gutter) * 2)), 1120px) !important;
+    max-width: 1120px !important;
+    padding-right: 260px !important;
+  }
+}
+
 /* Blog body headings use the eyebrow visual language, without the leading rule. */
 main .article-body h2:not(#references-heading),
 main .article-body h3,
