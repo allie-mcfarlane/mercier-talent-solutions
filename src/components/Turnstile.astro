@@ -1,5 +1,6 @@
 ---
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const { action = "contact", endpoint = "/api/contact" } = Astro.props;
 ---
 
 {
@@ -8,8 +9,9 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       <div
         class="cf-turnstile"
         data-sitekey={siteKey}
-        data-action="contact"
+        data-action={action}
         data-mts-turnstile
+        data-mts-endpoint={endpoint}
       ></div>
       <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
       <script is:inline>
@@ -20,7 +22,8 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
             const form = widget.closest("form");
             if (!form) return;
 
-            form.setAttribute("action", "/api/contact");
+            const endpoint = widget.getAttribute("data-mts-endpoint") || "/api/contact";
+            form.setAttribute("action", endpoint);
             form.setAttribute("method", "POST");
           });
 
