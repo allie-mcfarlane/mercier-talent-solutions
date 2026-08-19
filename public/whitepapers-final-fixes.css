@@ -1,4 +1,20 @@
-/* Final White Papers alignment fix. Content and card design are unchanged. */
+/* Final White Papers fixes. Content remains unchanged. */
+
+/* Remove the decorative circles and lines from the first-section hero. */
+main .wp-hero .hero-art,
+main .wp-hero .hero-rule {
+  display: none !important;
+}
+
+main .wp-hero .wp-hero-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+  max-width: 1500px !important;
+}
+
+main .wp-hero .wp-hero-copy {
+  max-width: 1120px !important;
+}
 
 /* Keep every blue white-paper cover aligned in the left column. */
 main .paper-row,
