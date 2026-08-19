@@ -5,8 +5,55 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 {
   siteKey ? (
     <>
-      <div class="cf-turnstile" data-sitekey={siteKey}></div>
+      <div
+        class="cf-turnstile"
+        data-sitekey={siteKey}
+        data-action="contact"
+        data-mts-turnstile
+      ></div>
       <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+      <script is:inline>
+        (() => {
+          const widgets = document.querySelectorAll("[data-mts-turnstile]");
+
+          widgets.forEach((widget) => {
+            const form = widget.closest("form");
+            if (!form) return;
+
+            form.setAttribute("action", "/api/contact");
+            form.setAttribute("method", "POST");
+          });
+
+          const params = new URLSearchParams(window.location.search);
+          const sent = params.get("sent") === "1";
+          const error = params.get("error");
+          const target = widgets[0];
+
+          if (target && (sent || error)) {
+            const note = document.createElement("p");
+            note.className = "form-note turnstile-result";
+
+            if (sent) {
+              note.textContent = "Thank you. Your message has been sent.";
+              note.setAttribute("role", "status");
+            } else if (error === "verification") {
+              note.textContent = "Please complete the security check and try again.";
+              note.setAttribute("role", "alert");
+            } else {
+              note.textContent = "We couldn't send your message. Please try again or email us directly.";
+              note.setAttribute("role", "alert");
+            }
+
+            target.insertAdjacentElement("afterend", note);
+
+            params.delete("sent");
+            params.delete("error");
+            const query = params.toString();
+            const cleanUrl = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
+            window.history.replaceState({}, "", cleanUrl);
+          }
+        })();
+      </script>
     </>
   ) : (
     <p class="form-note">Anti-spam protection is ready to activate once the Cloudflare Turnstile site key is added.</p>
