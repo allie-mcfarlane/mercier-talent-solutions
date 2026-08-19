@@ -1,27 +1,21 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Turnstile from "../components/Turnstile.astro";
-import { site } from "../data/site";
 import { getEntry } from "astro:content";
 
-type PrivacyFormData = {
+type PrivacyChoicesData = {
   eyebrow: string;
   title: string;
   titleAccent: string;
-  formSubject: string;
-  formName: string;
-  requestOptions: string[];
 };
 
 const page = await getEntry("pages", "privacy-choices");
-if (!page || !page.data.requestOptions) {
+if (!page) {
   throw new Error("Privacy choices content is missing.");
 }
 
-const pageData = page.data as PrivacyFormData;
+const pageData = page.data as PrivacyChoicesData;
 const { Content } = await page.render();
-const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
-const description = "Opt out of targeted advertising data use with Mercier Talent Solutions.";
+const description = "Privacy choices and privacy request information for Mercier Talent Solutions.";
 ---
 
 <BaseLayout title="Privacy Choices | Mercier Talent Solutions" description={description}>
@@ -32,32 +26,12 @@ const description = "Opt out of targeted advertising data use with Mercier Talen
         <h1>{pageData.title} <em>{pageData.titleAccent}</em></h1>
         <div class="intro"><Content /></div>
       </div>
-      <form action={formEndpoint} method="POST">
-        <input type="hidden" name="_subject" value={pageData.formSubject} />
-        <input type="hidden" name="_template" value="table" />
-        <input type="hidden" name="_captcha" value="false" />
-        <input type="hidden" name="_cc" value="julia@merciertalentsolutions.com" />
-        <input type="hidden" name="form_name" value={pageData.formName} />
-        <input type="hidden" name="browser_privacy_signal" value="none" />
-        <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
-        <label>
-          EMAIL
-          <input type="email" name="email" required />
-        </label>
-        <label>
-          REQUEST TYPE
-          <select name="request_type" required>
-            <option value="">Select one</option>
-            {pageData.requestOptions.map((option) => <option>{option}</option>)}
-          </select>
-        </label>
-        <label>
-          MESSAGE
-          <textarea name="message" rows="6"></textarea>
-        </label>
-        <Turnstile action="privacy" endpoint="/api/privacy" />
-        <button class="button" type="submit">Submit Request</button>
-      </form>
+      <div class="privacy-info">
+        <p class="eyebrow">PRIVACY REQUESTS</p>
+        <p>For privacy questions or requests, use our Data Requests & Appeals page.</p>
+        <a class="button" href="/data-requests/">Data Requests & Appeals</a>
+        <a class="policy-link" href="/privacy/">Privacy Policy</a>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -80,18 +54,21 @@ const description = "Opt out of targeted advertising data use with Mercier Talen
     line-height: 1;
   }
 
-  .intro :global(p) {
+  .intro :global(p),
+  .privacy-info p {
     color: var(--color-muted);
     font-size: var(--paragraph-size);
   }
 
-  .intro :global(a) {
+  .intro :global(a),
+  .policy-link {
     color: var(--color-blue-dark);
     font-weight: 800;
   }
 
-  form {
+  .privacy-info {
     display: grid;
+    align-content: start;
     gap: 1rem;
     border: 1px solid var(--color-line);
     border-radius: var(--radius);
@@ -99,33 +76,17 @@ const description = "Opt out of targeted advertising data use with Mercier Talen
     padding: clamp(1.25rem, 3vw, 2rem);
   }
 
-  label {
-    display: grid;
-    gap: 0.35rem;
-    color: var(--color-blue);
-    font-family: var(--font-label);
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: 0;
+  .privacy-info .eyebrow,
+  .privacy-info p {
+    margin: 0;
   }
 
-  input,
-  select,
-  textarea {
-    width: 100%;
-    border: 1px solid var(--color-line);
-    border-radius: 6px;
-    padding: 0.85rem;
-    font: inherit;
+  .privacy-info .button {
+    justify-self: start;
   }
 
-  button {
-    border: 0;
-    cursor: pointer;
-  }
-
-  .honeypot {
-    display: none;
+  .policy-link {
+    justify-self: start;
   }
 
   @media (max-width: 800px) {
