@@ -34,7 +34,7 @@ const homeServices = [serviceItems[0], serviceItems[1], serviceItems[2], service
 const homeData = home.data as HomeData;
 const recentPosts = (await getCollection("posts"))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+  .slice(0, 8);
 const dateFormat = { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" } as const;
 const stats = [
   { value: "15", suffix: "+", text: "Years of developing lawyers in-house and as a consultant for global firms" },
@@ -47,7 +47,7 @@ const stats = [
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow">{homeData.eyebrow}</p>
+        <a class="eyebrow eyebrow-link" href="/services/">{homeData.eyebrow}</a>
         <h1>{homeData.title} <em>{homeData.titleAccent}</em></h1>
         <p class="lede">{homeData.lede}</p>
         <div class="button-row">
@@ -70,15 +70,7 @@ const stats = [
                 <circle cx="430" cy="260" r="260"></circle>
                 <circle cx="430" cy="260" r="340"></circle>
               </g>
-              <path
-                class="draw"
-                pathLength="1"
-                d="M120 700 L300 460 L430 260"
-                fill="none"
-                stroke="#E9E7E2"
-                stroke-opacity=".85"
-                stroke-width="2"
-              ></path>
+              <path class="draw" pathLength="1" d="M120 700 L300 460 L430 260" fill="none" stroke="#E9E7E2" stroke-opacity=".85" stroke-width="2"></path>
               <circle class="dot dot-1" cx="120" cy="700" r="5" fill="#E9E7E2" fill-opacity=".6"></circle>
               <circle class="dot dot-2" cx="300" cy="460" r="5" fill="#E9E7E2" fill-opacity=".85"></circle>
               <circle class="dot dot-3" cx="430" cy="260" r="7" fill="#E9E7E2"></circle>
@@ -123,7 +115,7 @@ const stats = [
   <section class="section services-preview">
     <div class="container">
       <div class="section-heading">
-        <p class="eyebrow">What we do</p>
+        <a class="eyebrow eyebrow-link" href="/services/">What we do</a>
         <h2>How we work with firms</h2>
       </div>
       <div class="grid service-grid">
@@ -143,7 +135,7 @@ const stats = [
     <div class="container approach-grid">
       <div class="approach-copy">
         <div class="section-heading">
-          <p class="eyebrow">{homeData.approach.eyebrow}</p>
+          <a class="eyebrow eyebrow-link" href="/about/">{homeData.approach.eyebrow}</a>
           <h2>{homeData.approach.title}</h2>
           <p>{homeData.approach.text}</p>
         </div>
@@ -172,11 +164,17 @@ const stats = [
 
   <section class="section news-band">
     <div class="container">
-      <div class="section-heading">
-        <p class="eyebrow">{homeData.news.eyebrow}</p>
-        <h2>{homeData.news.title}</h2>
+      <div class="news-heading-row">
+        <div class="section-heading">
+          <a class="eyebrow eyebrow-link" href="/news/">{homeData.news.eyebrow}</a>
+          <h2>{homeData.news.title}</h2>
+        </div>
+        <div class="news-controls" aria-label="News carousel controls">
+          <button type="button" class="news-control" data-news-prev aria-label="Previous articles">←</button>
+          <button type="button" class="news-control" data-news-next aria-label="Next articles">→</button>
+        </div>
       </div>
-      <div class="news-list">
+      <div class="news-list" data-news-carousel>
         {recentPosts.map((post) => (
           <a class="card news-card" href={`/post/${post.slug}/`}>
             <span class="pill">{post.data.category}</span>
@@ -194,12 +192,26 @@ const stats = [
 </BaseLayout>
 
 <style>
+  .eyebrow-link {
+    width: fit-content;
+    text-decoration: none;
+  }
+
+  .eyebrow-link:hover,
+  .eyebrow-link:focus-visible {
+    color: var(--color-blue-dark);
+  }
+
+  .section-heading {
+    gap: 1rem;
+  }
+
   .hero {
     position: relative;
     --hero-scroll: 0;
     overflow: hidden;
-    height: clamp(570px, 34vw, 650px);
-    min-height: 570px;
+    height: clamp(525px, 31vw, 590px);
+    min-height: 525px;
     padding: 0;
     background: var(--color-white);
     isolation: isolate;
@@ -210,7 +222,7 @@ const stats = [
     height: 100%;
     width: 100%;
     max-width: none;
-    grid-template-columns: minmax(430px, 39%) minmax(0, 61%);
+    grid-template-columns: minmax(450px, 39%) minmax(0, 61%);
     gap: 0;
     align-items: stretch;
   }
@@ -219,48 +231,40 @@ const stats = [
     position: relative;
     z-index: 1;
     width: calc(100% - var(--page-gutter));
-    max-width: 560px;
+    max-width: 610px;
     margin-left: var(--page-gutter);
-    padding-top: clamp(1rem, 1.6vw, 1.55rem);
-    padding-right: clamp(1.25rem, 2vw, 2rem);
-    transform: translate3d(0, calc(var(--hero-scroll) * 14px), 0);
+    padding-top: clamp(1.15rem, 1.8vw, 1.75rem);
+    padding-right: clamp(1.5rem, 2.4vw, 2.6rem);
+    transform: translate3d(0, calc(var(--hero-scroll) * 12px), 0);
     transition: transform 80ms linear;
     will-change: transform;
   }
 
-  .hero-copy::before {
-    content: none;
-  }
-
   .hero .eyebrow {
     margin-top: 0;
-    font-size: 14px;
-    letter-spacing: 5.2px;
+    font-size: 15px;
+    letter-spacing: 5.4px;
     white-space: nowrap;
-  }
-
-  .hero .eyebrow::before {
-    background: var(--color-blue);
   }
 
   h1::before {
     display: block;
-    width: 80px;
+    width: 82px;
     height: 2px;
-    margin: clamp(1.6rem, 2.4vw, 2rem) 0 clamp(1.5rem, 2.2vw, 1.85rem);
+    margin: 1.25rem 0 1.25rem;
     background: var(--color-blue-dark);
     content: "";
   }
 
   h1 {
-    max-width: 540px;
-    margin: 0 0 clamp(1.2rem, 1.8vw, 1.5rem);
+    max-width: 585px;
+    margin: 0 0 1.15rem;
     color: var(--color-ink);
     font-family: var(--font-heading);
-    font-size: clamp(2.45rem, 2.9vw, 3.7rem);
+    font-size: clamp(2.8rem, 3.15vw, 4.05rem);
     font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.12;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
   }
 
   h1 em {
@@ -269,25 +273,24 @@ const stats = [
   }
 
   .lede {
-    max-width: 500px;
-    margin: 0 0 clamp(1.6rem, 2.4vw, 2rem);
+    max-width: 540px;
+    margin: 0 0 1.35rem;
     color: var(--color-ink);
     font-family: var(--font-body);
-    font-size: 15.5px;
+    font-size: 17px;
     line-height: 1.58;
   }
 
   .hero .button {
-    min-width: 152px;
-    min-height: 40px;
-    border-radius: 0;
-    padding: 0.58rem 1.15rem;
-    font-size: 0.82rem;
+    min-width: 158px;
+    min-height: 42px;
+    padding: 0.62rem 1.2rem;
+    font-size: 0.88rem;
     font-weight: 500;
   }
 
   .hero .button-row {
-    gap: 0.9rem 1.2rem;
+    gap: 0.85rem 1rem;
   }
 
   .hero-panel {
@@ -300,14 +303,14 @@ const stats = [
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(9% 0, 100% 0, 100% 100%, 0 100%);
     transform: translate3d(0, calc(var(--hero-scroll) * -8px), 0);
     transition: transform 80ms linear;
     will-change: transform;
   }
 
   .hero-panel img {
-    transform: scale(calc(1.005 + (var(--hero-scroll) * 0.03)));
+    transform: scale(calc(1.015 + (var(--hero-scroll) * 0.03)));
     transform-origin: center;
   }
 
@@ -321,17 +324,14 @@ const stats = [
 
   .hero-art-circle-animation svg {
     position: absolute;
-    top: 4%;
-    right: clamp(0.75rem, 2vw, 2.5rem);
-    bottom: auto;
-    left: auto;
+    top: -3%;
+    right: -3%;
     display: block;
-    width: auto;
-    height: 92%;
-    aspect-ratio: 3 / 4;
-    transform: translate3d(calc(var(--hero-scroll) * -10px), calc(var(--hero-scroll) * -16px), 0)
-      scale(calc(0.93 + (var(--hero-scroll) * 0.018)));
-    transform-origin: 58% 48%;
+    width: 92%;
+    height: 106%;
+    transform: translate3d(calc(var(--hero-scroll) * -8px), calc(var(--hero-scroll) * -8px), 0)
+      scale(calc(1.015 + (var(--hero-scroll) * 0.03)));
+    transform-origin: center;
     transition: transform 80ms linear;
     will-change: transform;
   }
@@ -350,17 +350,9 @@ const stats = [
     animation: dotPop 0.72s cubic-bezier(0.34, 1.36, 0.64, 1) forwards;
   }
 
-  .dot-1 {
-    animation-delay: 0.6s;
-  }
-
-  .dot-2 {
-    animation-delay: 1.25s;
-  }
-
-  .dot-3 {
-    animation-delay: 1.9s;
-  }
+  .dot-1 { animation-delay: 0.6s; }
+  .dot-2 { animation-delay: 1.25s; }
+  .dot-3 { animation-delay: 1.9s; }
 
   .rings {
     opacity: 0;
@@ -370,40 +362,15 @@ const stats = [
     animation: ringsIn 1.8s 1.45s var(--ease-smooth) forwards;
   }
 
-  .floating-group {
-    animation: floatGraphic 11s 3s ease-in-out infinite;
-  }
+  .floating-group { animation: floatGraphic 11s 3s ease-in-out infinite; }
 
-  @keyframes drawline {
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
+  @keyframes drawline { to { stroke-dashoffset: 0; } }
   @keyframes dotPop {
-    60% {
-      opacity: 1;
-      transform: scale(1.35);
-    }
-
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
+    60% { opacity: 1; transform: scale(1.35); }
+    100% { opacity: 1; transform: scale(1); }
   }
-
-  @keyframes ringsIn {
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes floatGraphic {
-    50% {
-      transform: translateY(-5px);
-    }
-  }
+  @keyframes ringsIn { to { opacity: 1; transform: scale(1); } }
+  @keyframes floatGraphic { 50% { transform: translateY(-5px); } }
 
   .proof {
     background: var(--color-blue-dark);
@@ -414,38 +381,31 @@ const stats = [
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
-    border: 0;
-    background: var(--color-blue-dark);
     min-height: 210px;
+    background: var(--color-blue-dark);
   }
 
   .proof article {
     display: grid;
     align-content: center;
-    background: var(--color-blue-dark);
-    padding: clamp(1.6rem, 2.6vw, 2.15rem);
+    padding: clamp(1.7rem, 2.6vw, 2.25rem);
     text-align: center;
   }
 
-  .proof article + article {
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-  }
+  .proof article + article { border-left: 1px solid rgba(255, 255, 255, 0.1); }
 
   .proof h2 {
-    margin: 0 0 0.55rem;
+    margin: 0 0 0.75rem;
     color: var(--color-white);
-    font-family: var(--font-heading);
-    font-size: 17px;
-    font-weight: 700;
+    font-size: 19px;
     line-height: 1.35;
   }
 
   .proof p {
-    max-width: 390px;
-    margin: 0;
-    margin-inline: auto;
-    color: rgba(255, 255, 255, 0.82);
-    font-size: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 16.5px;
     line-height: 1.55;
   }
 
@@ -467,7 +427,7 @@ const stats = [
   .marquee-track span {
     display: inline-flex;
     align-items: center;
-    font-size: clamp(0.78rem, 1vw, 0.98rem);
+    font-size: clamp(0.82rem, 1vw, 1rem);
     font-weight: 600;
   }
 
@@ -477,45 +437,33 @@ const stats = [
     content: "◆";
   }
 
-  @keyframes marquee {
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
-  .service-grid {
-    margin-top: clamp(2rem, 3vw, 2.6rem);
-  }
+  @keyframes marquee { to { transform: translateX(-50%); } }
 
   .stats-band {
-    padding: clamp(3.5rem, 5vw, 4.7rem) 0;
+    padding: clamp(3.6rem, 4.8vw, 4.6rem) 0;
     background: var(--color-white);
   }
 
   .stats-grid {
     display: grid;
-    min-height: 190px;
+    min-height: 180px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     width: 100%;
-    border-top: 1px solid var(--color-line);
-    border-bottom: 1px solid var(--color-line);
     background: var(--color-white);
   }
 
   .stat {
     display: flex;
     min-width: 0;
-    min-height: 190px;
+    min-height: 180px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px 28px;
+    padding: 28px 30px;
     text-align: center;
   }
 
-  .stat + .stat {
-    border-left: 1px solid var(--color-line);
-  }
+  .stat + .stat { border-left: 0; }
 
   .number-row {
     display: flex;
@@ -524,13 +472,12 @@ const stats = [
     justify-content: center;
     margin-bottom: 12px;
     line-height: 1;
-    text-align: center;
   }
 
   .stat-number {
     color: #172641;
     font-family: var(--font-heading);
-    font-size: clamp(48px, 4vw, 58px);
+    font-size: clamp(52px, 4vw, 62px);
     font-weight: 700;
     letter-spacing: -2px;
   }
@@ -539,45 +486,45 @@ const stats = [
     margin-left: 5px;
     color: var(--color-blue);
     font-family: var(--font-heading);
-    font-size: clamp(34px, 3vw, 40px);
+    font-size: clamp(36px, 3vw, 43px);
     font-weight: 500;
   }
 
   .description {
     width: 100%;
-    max-width: 310px;
+    max-width: 320px;
     margin: 0;
     color: var(--color-ink);
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 16.5px;
     line-height: 1.5;
-    text-align: center;
   }
 
   .services-preview {
-    padding: clamp(4rem, 5.5vw, 5.5rem) 0 clamp(5rem, 7vw, 7rem);
+    padding: clamp(4.5rem, 6vw, 6rem) 0 clamp(5rem, 7vw, 7rem);
   }
 
-  .services-preview .section-heading {
-    max-width: 720px;
-    gap: 1.6rem;
+  .services-preview .section-heading,
+  .approach .section-heading,
+  .news-band .section-heading {
+    gap: 1rem;
   }
 
-  .services-preview .section-heading > .eyebrow {
-    font-size: 14px;
-    font-weight: 500;
+  .services-preview .section-heading .eyebrow,
+  .approach .section-heading .eyebrow,
+  .news-band .section-heading .eyebrow {
+    font-size: 15px;
     letter-spacing: 6px;
   }
 
-  .services-preview .section-heading > .eyebrow::before {
-    background: var(--color-blue);
+  .services-preview .section-heading h2,
+  .approach .section-heading h2,
+  .news-band .section-heading h2 {
+    margin: 0;
+    font-size: clamp(1.45rem, 1.6vw, 1.8rem);
+    line-height: 1.25;
   }
 
-  .services-preview .section-heading h2 {
-    width: min(620px, 100%);
-    font-size: 19px;
-    line-height: 1.3;
-  }
+  .service-grid { margin-top: clamp(2rem, 3vw, 2.75rem); }
 
   .services-preview .service-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -585,92 +532,69 @@ const stats = [
   }
 
   .services-preview .card {
-    min-height: 276px;
+    min-height: 286px;
     border-radius: 2px;
-    padding: clamp(1.7rem, 2vw, 2.05rem) clamp(1.35rem, 1.7vw, 1.75rem);
+    padding: clamp(1.8rem, 2vw, 2.15rem) clamp(1.4rem, 1.8vw, 1.8rem);
     box-shadow: none;
   }
 
   .services-preview .card .eyebrow {
-    font-size: 12px;
+    font-size: 12.5px;
     letter-spacing: 3px;
   }
 
   .services-preview .card h3 {
-    margin: 1rem 0 0.75rem;
-    font-size: 16px;
-    line-height: 1.45;
+    margin: 0.9rem 0 0.9rem;
+    font-size: 17px;
+    line-height: 1.4;
   }
 
   .services-preview .card p:not(.eyebrow) {
-    max-width: 522px;
-    font-size: 15px;
+    font-size: 16.5px;
     line-height: 1.55;
   }
 
-  .services-preview .card .button.text {
-    margin-top: 1.15rem;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-  }
+  .services-preview .card .button.text { margin-top: 1.15rem; }
 
   .approach {
-    padding: clamp(4rem, 6vw, 6rem) 0;
+    padding: clamp(4.5rem, 6vw, 6rem) 0;
     background: var(--color-white);
-    color: var(--color-text);
   }
 
   .approach-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(440px, 1.1fr);
-    gap: clamp(3rem, 5vw, 6rem);
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 430px);
+    gap: clamp(3rem, 6vw, 7rem);
     align-items: center;
   }
 
   .approach-copy {
     display: grid;
-    max-width: 650px;
+    max-width: 680px;
     align-content: center;
-    gap: 26px;
-  }
-
-  .approach .section-heading {
-    max-width: 600px;
-    gap: 1.6rem;
-  }
-
-  .approach .section-heading .eyebrow {
-    font-size: 14px;
-    letter-spacing: 6px;
-  }
-
-  .approach .section-heading h2 {
-    font-size: 19px;
-    line-height: 1.3;
+    gap: 1.75rem;
   }
 
   .approach .section-heading p:not(.eyebrow) {
-    max-width: 600px;
+    max-width: 640px;
     color: var(--color-ink);
-    font-size: 15px;
+    font-size: 16.5px;
     line-height: 1.58;
   }
 
   ul {
+    display: grid;
+    gap: 11px;
     margin: 0;
     padding: 0;
     list-style: none;
-    display: grid;
-    gap: 10px;
   }
 
   li {
     position: relative;
-    border-top: 0;
-    padding-top: 0;
     padding-left: 29px;
     color: var(--color-ink);
-    font-size: 14.5px;
+    font-size: 16px;
     line-height: 1.5;
   }
 
@@ -688,219 +612,145 @@ const stats = [
 
   .approach-cta {
     justify-self: start;
-    margin-top: 2px;
-    min-width: 152px;
-    min-height: 40px;
-    padding: 0.58rem 1.15rem;
-    font-size: 0.82rem;
+    min-width: 158px;
+    min-height: 42px;
+    padding: 0.62rem 1.2rem;
+    font-size: 0.88rem;
     font-weight: 500;
   }
 
   .chart-wrapper {
     display: flex;
-    width: 100%;
-    min-width: 0;
-    max-width: none;
-    aspect-ratio: 1.2 / 1;
+    width: min(100%, 430px);
+    aspect-ratio: 1;
     align-items: stretch;
     justify-content: stretch;
-    justify-self: stretch;
+    justify-self: center;
     overflow: hidden;
     background: #1b2b46;
   }
 
-  .chart-wrapper svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  .grid-line {
-    stroke: #2b3e5d;
-    stroke-width: 2;
-    opacity: 0.9;
-  }
-
-  .secondary-line {
-    fill: none;
-    stroke: #36547f;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0.85;
-  }
-
-  .main-line {
-    fill: none;
-    stroke: #f2f0eb;
-    stroke-width: 4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .data-point {
-    fill: #f2f0eb;
-    stroke: rgba(255, 255, 255, 0.35);
-    stroke-width: 4;
-    opacity: 0;
-    transform: scale(0);
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-
-  .secondary-line,
-  .main-line {
-    stroke-dasharray: 2000;
-    stroke-dashoffset: 2000;
-  }
-
-  .chart-wrapper.animate .secondary-line {
-    animation: drawSecondary 3.15s var(--ease-smooth) forwards;
-  }
-
-  .chart-wrapper.animate .main-line {
-    animation: drawMain 3.95s var(--ease-smooth) forwards;
-    animation-delay: 0.2s;
-  }
-
-  .chart-wrapper.animate .data-point {
-    animation: revealPoint 0.68s var(--ease-soft) forwards;
-  }
-
-  .chart-wrapper.animate .point-1 {
-    animation-delay: 0.45s;
-  }
-
-  .chart-wrapper.animate .point-2 {
-    animation-delay: 1.1s;
-  }
-
-  .chart-wrapper.animate .point-3 {
-    animation-delay: 1.75s;
-  }
-
-  .chart-wrapper.animate .point-4 {
-    animation-delay: 2.4s;
-  }
-
-  .chart-wrapper.animate .point-5 {
-    animation-delay: 3.05s;
-  }
-
-  @keyframes drawSecondary {
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  @keyframes drawMain {
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  @keyframes revealPoint {
-    70% {
-      opacity: 1;
-      transform: scale(1.15);
-    }
-
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
+  .chart-wrapper svg { display: block; width: 100%; height: 100%; }
+  .grid-line { stroke: #2b3e5d; stroke-width: 2; opacity: 0.9; }
+  .secondary-line { fill: none; stroke: #36547f; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0.85; }
+  .main-line { fill: none; stroke: #f2f0eb; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .data-point { fill: #f2f0eb; stroke: rgba(255, 255, 255, 0.35); stroke-width: 4; opacity: 0; transform: scale(0); transform-box: fill-box; transform-origin: center; }
+  .secondary-line, .main-line { stroke-dasharray: 2000; stroke-dashoffset: 2000; }
+  .chart-wrapper.animate .secondary-line { animation: drawSecondary 3.15s var(--ease-smooth) forwards; }
+  .chart-wrapper.animate .main-line { animation: drawMain 3.95s var(--ease-smooth) forwards; animation-delay: 0.2s; }
+  .chart-wrapper.animate .data-point { animation: revealPoint 0.68s var(--ease-soft) forwards; }
+  .chart-wrapper.animate .point-1 { animation-delay: 0.45s; }
+  .chart-wrapper.animate .point-2 { animation-delay: 1.1s; }
+  .chart-wrapper.animate .point-3 { animation-delay: 1.75s; }
+  .chart-wrapper.animate .point-4 { animation-delay: 2.4s; }
+  .chart-wrapper.animate .point-5 { animation-delay: 3.05s; }
+  @keyframes drawSecondary { to { stroke-dashoffset: 0; } }
+  @keyframes drawMain { to { stroke-dashoffset: 0; } }
+  @keyframes revealPoint { 70% { opacity: 1; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
 
   .news-band {
-    padding: clamp(4rem, 5.5vw, 5.5rem) 0 clamp(5rem, 6.5vw, 6.5rem);
+    padding: clamp(4.5rem, 6vw, 6rem) 0 clamp(5rem, 6.5vw, 6.5rem);
+    overflow: hidden;
     background: #f1f1ee;
   }
 
-  .news-band .section-heading {
-    max-width: 100%;
-    gap: 1.6rem;
+  .news-heading-row {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
   }
 
-  .news-band .section-heading .eyebrow {
-    font-size: 14px;
-    letter-spacing: 6px;
+  .news-band .section-heading h2 { max-width: 620px; }
+
+  .news-controls {
+    display: flex;
+    gap: 0.65rem;
+    flex: 0 0 auto;
   }
 
-  .news-band .section-heading h2 {
-    max-width: 585px;
-    font-size: 19px;
-    line-height: 1.3;
+  .news-control {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid rgba(69, 98, 142, 0.3);
+    background: transparent;
+    color: var(--color-blue-dark);
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: background 220ms var(--ease-smooth), color 220ms var(--ease-smooth), border-color 220ms var(--ease-smooth);
+  }
+
+  .news-control:hover,
+  .news-control:focus-visible {
+    border-color: var(--color-blue-dark);
+    background: var(--color-blue-dark);
+    color: var(--color-white);
   }
 
   .news-list {
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.82fr) minmax(0, 0.82fr);
+    display: flex;
     gap: clamp(1rem, 1.5vw, 1.4rem);
     margin-top: clamp(2.2rem, 3.5vw, 3rem);
+    overflow-x: auto;
+    padding-bottom: 0.4rem;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
   }
+
+  .news-list::-webkit-scrollbar { display: none; }
 
   .news-card {
     display: grid;
-    min-height: 300px;
+    flex: 0 0 clamp(320px, 34vw, 460px);
+    min-height: 330px;
     align-content: start;
-    gap: 13px;
+    gap: 14px;
     border-radius: 2px;
-    padding: clamp(1.6rem, 2vw, 2rem);
+    padding: clamp(1.8rem, 2.2vw, 2.25rem);
+    scroll-snap-align: start;
     text-decoration: none;
     box-shadow: none;
   }
 
   .news-card:first-child {
-    min-height: 340px;
-    padding: clamp(2rem, 2.7vw, 2.7rem);
+    flex-basis: clamp(390px, 48vw, 650px);
   }
 
   .news-card .pill {
     border-color: rgba(69, 98, 142, 0.28);
     color: var(--color-blue);
     font-size: 11px;
-    letter-spacing: 0.03em;
   }
 
   .news-card h3 {
-    margin: 0.25rem 0 0;
-    font-size: clamp(1.15rem, 1.25vw, 1.4rem);
-    line-height: 1.28;
-    letter-spacing: -0.015em;
+    margin: 0.35rem 0 0;
+    font-size: clamp(1.3rem, 1.45vw, 1.65rem);
+    line-height: 1.25;
   }
 
   .news-card:first-child h3 {
-    max-width: 700px;
-    font-size: clamp(1.55rem, 2vw, 2.35rem);
+    font-size: clamp(1.7rem, 2vw, 2.35rem);
     line-height: 1.15;
   }
 
   .news-card p {
     color: var(--color-ink);
-    font-size: 15px;
+    font-size: 16.5px;
     line-height: 1.58;
   }
 
   .news-card .meta-row {
     align-self: end;
     margin-top: 10px;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 600;
   }
 
-  .news-author {
-    align-items: center;
-    gap: 0.7rem;
-  }
-
-  .news-author img {
-    width: 32px;
-    height: 32px;
-    flex: 0 0 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center 30%;
-  }
+  .news-author { align-items: center; gap: 0.7rem; }
+  .news-author img { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 50%; object-fit: cover; object-position: center 30%; }
 
   .proof article[data-reveal],
   .stat[data-reveal],
@@ -908,19 +758,14 @@ const stats = [
   .news-card[data-reveal] {
     opacity: 0.001;
     transform: translate3d(0, 24px, 0);
-    transition: opacity 720ms var(--ease-soft), transform 820ms var(--ease-soft), border-color 260ms var(--ease-smooth),
-      box-shadow 260ms var(--ease-smooth);
+    transition: opacity 720ms var(--ease-soft), transform 820ms var(--ease-soft), border-color 260ms var(--ease-smooth), box-shadow 260ms var(--ease-smooth);
     transition-delay: var(--home-reveal-delay, 0ms);
-    will-change: opacity, transform;
   }
 
   .proof article[data-reveal].is-visible,
   .stat[data-reveal].is-visible,
   .services-preview .card[data-reveal].is-visible,
-  .news-card[data-reveal].is-visible {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+  .news-card[data-reveal].is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
 
   .services-preview .card.is-visible:hover,
   .news-card.is-visible:hover {
@@ -930,51 +775,20 @@ const stats = [
   }
 
   @media (min-width: 1800px) {
-    .hero-grid {
-      grid-template-columns: minmax(500px, 36%) minmax(0, 64%);
-    }
-
-    .hero-copy {
-      max-width: 590px;
-    }
-
-    .hero-art-circle-animation svg {
-      right: 4%;
-      height: 88%;
-    }
-
-    .approach-grid {
-      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
-      gap: clamp(5rem, 7vw, 9rem);
-    }
+    .hero-grid { grid-template-columns: minmax(520px, 36%) minmax(0, 64%); }
+    .hero-copy { max-width: 630px; }
+    .hero-art-circle-animation svg { width: 86%; right: 0; }
   }
 
   @media (max-width: 1200px) {
-    .services-preview .service-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .news-list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .news-card:first-child {
-      grid-column: 1 / -1;
-    }
-
-    .approach-grid {
-      grid-template-columns: minmax(0, 0.95fr) minmax(380px, 1.05fr);
-      gap: clamp(2.5rem, 4vw, 4rem);
-    }
+    .services-preview .service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .approach-grid { grid-template-columns: minmax(0, 1fr) minmax(340px, 400px); gap: 3.5rem; }
   }
 
   @media (max-width: 1080px) {
     .hero-grid,
     .approach-grid,
-    .proof-grid,
-    .news-list {
-      grid-template-columns: 1fr;
-    }
+    .proof-grid { grid-template-columns: 1fr; }
 
     .hero {
       height: auto;
@@ -982,20 +796,14 @@ const stats = [
       padding: clamp(3.6rem, 8vw, 4.8rem) 0 clamp(3rem, 7vw, 4rem);
     }
 
-    h1::before {
-      margin: 1.7rem 0 1.65rem;
-    }
-
     .hero-copy {
       width: 100%;
-      max-width: 700px;
+      max-width: 720px;
       margin-left: 0;
-      padding: 0 0 clamp(2.5rem, 5vw, 3.4rem);
+      padding: 0 0 clamp(2.25rem, 5vw, 3rem);
     }
 
-    .hero .eyebrow {
-      white-space: normal;
-    }
+    .hero .eyebrow { white-space: normal; }
 
     .hero-panel {
       width: 100%;
@@ -1009,162 +817,45 @@ const stats = [
       transform: none;
     }
 
-    .hero-panel img {
-      transform: none;
-    }
+    .hero-panel img { transform: none; }
+    .hero-art-circle-animation svg { width: 82%; height: 106%; right: -1%; }
 
-    .hero-art-circle-animation svg {
-      top: 3%;
-      right: 5%;
-      height: 92%;
-      transform: scale(0.88);
-    }
+    .proof article { min-height: 150px; text-align: left; }
+    .proof article + article { border-top: 1px solid rgba(255, 255, 255, 0.1); border-left: 0; }
+    .proof p { margin-left: 0; }
 
-    .proof article {
-      min-height: 150px;
-      text-align: left;
-    }
-
-    .proof article + article {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      border-left: 0;
-    }
-
-    .proof p {
-      margin-left: 0;
-    }
-
-    .approach-grid {
-      gap: 3rem;
-    }
-
-    .chart-wrapper {
-      width: 100%;
-      max-width: 720px;
-      justify-self: start;
-    }
-
-    .news-card:first-child {
-      grid-column: auto;
-    }
+    .chart-wrapper { width: min(100%, 400px); justify-self: start; }
   }
 
   @media (max-width: 900px) {
-    .stats-band {
-      padding: 3.5rem 0;
-    }
-
-    .stat {
-      min-height: 165px;
-      padding: 26px 18px 24px;
-    }
-
-    .number-row {
-      margin-bottom: 10px;
-    }
-
-    .stat-number {
-      font-size: 42px;
-      letter-spacing: -1.5px;
-    }
-
-    .suffix {
-      margin-left: 4px;
-      font-size: 29px;
-    }
-
-    .description {
-      max-width: 100%;
-      font-size: 15px;
-      line-height: 1.45;
-    }
+    .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .stat { min-height: 160px; padding: 24px 16px; }
+    .description { font-size: 15.5px; }
   }
 
   @media (max-width: 700px) {
-    .stat {
-      min-height: 155px;
-      padding: 24px 14px 22px;
-    }
-
-    .stat-number {
-      font-size: 36px;
-    }
-
-    .suffix {
-      font-size: 25px;
-    }
-
-    .description {
-      font-size: 15px;
-      line-height: 1.4;
-    }
+    .news-heading-row { align-items: start; }
+    .news-card, .news-card:first-child { flex-basis: min(86vw, 390px); }
   }
 
   @media (max-width: 620px) {
-    .hero {
-      padding-top: 3rem;
-    }
+    .hero { padding-top: 3rem; }
+    h1 { font-size: clamp(2.4rem, 11vw, 3.2rem); }
+    .lede { font-size: 16.5px; }
+    .hero .button { width: 100%; }
+    .hero-panel { aspect-ratio: 1.05; }
+    .hero-art-circle-animation { display: none; }
 
-    h1 {
-      font-size: clamp(2.2rem, 10vw, 3rem);
-    }
-
-    .hero .button {
-      width: 100%;
-    }
-
-    .hero-panel {
-      aspect-ratio: 1.05;
-    }
-
-    .hero-art-circle-animation {
-      display: none;
-    }
-
-    .services-preview .service-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .services-preview,
-    .approach,
-    .news-band {
-      padding-top: 4rem;
-      padding-bottom: 4.5rem;
-    }
-
-    .services-preview .card,
-    .news-card,
-    .news-card:first-child {
-      min-height: auto;
-    }
-
-    .chart-wrapper {
-      aspect-ratio: 1;
-    }
+    .services-preview .service-grid { grid-template-columns: 1fr; }
+    .services-preview, .approach, .news-band { padding-top: 4rem; padding-bottom: 4.5rem; }
+    .services-preview .card, .news-card { min-height: auto; }
+    .chart-wrapper { width: min(100%, 360px); }
   }
 
   @media (max-width: 560px) {
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .stat {
-      min-height: auto;
-      padding: 26px 20px;
-    }
-
-    .stat + .stat {
-      border-top: 1px solid var(--color-line);
-      border-left: 0;
-    }
-
-    .stat-number {
-      font-size: 42px;
-    }
-
-    .suffix {
-      font-size: 29px;
-    }
+    .stats-grid { grid-template-columns: 1fr; }
+    .stat { min-height: auto; padding: 24px 20px; }
+    .news-heading-row { display: grid; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1180,26 +871,10 @@ const stats = [
       transition: none;
     }
 
-    .draw {
-      stroke-dashoffset: 0;
-    }
-
-    .dot,
-    .rings {
-      opacity: 1;
-      transform: none;
-    }
-
-    .secondary-line,
-    .main-line {
-      stroke-dashoffset: 0;
-    }
-
-    .data-point {
-      opacity: 1;
-      transform: scale(1);
-    }
-
+    .draw { stroke-dashoffset: 0; }
+    .dot, .rings { opacity: 1; transform: none; }
+    .secondary-line, .main-line { stroke-dashoffset: 0; }
+    .data-point { opacity: 1; transform: scale(1); }
     .chart-wrapper.animate .secondary-line,
     .chart-wrapper.animate .main-line,
     .chart-wrapper.animate .data-point,
@@ -1222,23 +897,17 @@ const stats = [
 
   if (hero && !homeMotionQuery.matches) {
     let ticking = false;
-
     const updateHeroDepth = () => {
       const rect = hero.getBoundingClientRect();
       const progress = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
       hero.style.setProperty("--hero-scroll", progress.toFixed(3));
       ticking = false;
     };
-
     const requestHeroDepthUpdate = () => {
-      if (ticking) {
-        return;
-      }
-
+      if (ticking) return;
       ticking = true;
       requestAnimationFrame(updateHeroDepth);
     };
-
     updateHeroDepth();
     window.addEventListener("scroll", requestHeroDepthUpdate, { passive: true });
     window.addEventListener("resize", requestHeroDepthUpdate);
@@ -1273,7 +942,6 @@ const stats = [
         },
         { rootMargin: "0px 0px -10% 0px", threshold: 0.14 },
       );
-
       homeRevealItems.forEach((item) => homeRevealObserver.observe(item));
     }
   }
@@ -1281,22 +949,14 @@ const stats = [
 
 <script>
   const chartWrapper = document.querySelector("[data-approach-chart]");
-
   if (chartWrapper) {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let animationStarted = false;
-
     const startChartAnimation = () => {
-      if (animationStarted) {
-        return;
-      }
-
+      if (animationStarted) return;
       animationStarted = true;
-      requestAnimationFrame(() => {
-        chartWrapper.classList.add("animate");
-      });
+      requestAnimationFrame(() => chartWrapper.classList.add("animate"));
     };
-
     if (motionQuery.matches || !("IntersectionObserver" in window)) {
       startChartAnimation();
     } else {
@@ -1311,7 +971,6 @@ const stats = [
         },
         { threshold: 0.35 },
       );
-
       chartObserver.observe(chartWrapper);
     }
   }
@@ -1322,48 +981,27 @@ const stats = [
   const statsBand = document.querySelector(".stats-band");
   const countMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   let countAnimationHasRun = false;
-
   const easeOutCubic = (progress: number) => 1 - Math.pow(1 - progress, 3);
-
   const animateNumber = (element: HTMLElement, duration: number) => {
     const target = Number(element.dataset.countTarget);
     const startTime = performance.now();
     element.textContent = "0";
-
     const updateNumber = (currentTime: number) => {
-      const elapsedTime = currentTime - startTime;
-      const progress = Math.min(elapsedTime / duration, 1);
-      const easedProgress = easeOutCubic(progress);
-
-      element.textContent = String(Math.round(target * easedProgress));
-
-      if (progress < 1) {
-        requestAnimationFrame(updateNumber);
-      } else {
-        element.textContent = String(target);
-      }
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      element.textContent = String(Math.round(target * easeOutCubic(progress)));
+      if (progress < 1) requestAnimationFrame(updateNumber);
+      else element.textContent = String(target);
     };
-
     requestAnimationFrame(updateNumber);
   };
-
   const startCountUp = () => {
-    if (countAnimationHasRun) {
-      return;
-    }
-
+    if (countAnimationHasRun) return;
     countAnimationHasRun = true;
-
-    statNumbers.forEach((number) => {
-      animateNumber(number, 1800);
-    });
+    statNumbers.forEach((number) => animateNumber(number, 1800));
   };
-
   if (statNumbers.length > 0 && statsBand) {
     if (countMotionQuery.matches || !("IntersectionObserver" in window)) {
-      statNumbers.forEach((number) => {
-        number.textContent = number.dataset.countTarget ?? number.textContent;
-      });
+      statNumbers.forEach((number) => { number.textContent = number.dataset.countTarget ?? number.textContent; });
     } else {
       const countObserver = new IntersectionObserver(
         (entries) => {
@@ -1376,14 +1014,27 @@ const stats = [
         },
         { rootMargin: "0px 0px -10% 0px", threshold: 0.3 },
       );
-
       countObserver.observe(statsBand);
     }
   }
-
   window.addEventListener("message", (event) => {
-    if (event.data === "start-count-up") {
-      startCountUp();
-    }
+    if (event.data === "start-count-up") startCountUp();
   });
+</script>
+
+<script>
+  const newsCarousel = document.querySelector<HTMLElement>("[data-news-carousel]");
+  const newsPrev = document.querySelector<HTMLButtonElement>("[data-news-prev]");
+  const newsNext = document.querySelector<HTMLButtonElement>("[data-news-next]");
+
+  if (newsCarousel && newsPrev && newsNext) {
+    const scrollCarousel = (direction: number) => {
+      const card = newsCarousel.querySelector<HTMLElement>(".news-card");
+      const gap = parseFloat(getComputedStyle(newsCarousel).gap || "0");
+      const distance = card ? card.getBoundingClientRect().width + gap : newsCarousel.clientWidth * 0.8;
+      newsCarousel.scrollBy({ left: direction * distance, behavior: "smooth" });
+    };
+    newsPrev.addEventListener("click", () => scrollCarousel(-1));
+    newsNext.addEventListener("click", () => scrollCarousel(1));
+  }
 </script>
