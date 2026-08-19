@@ -49,6 +49,47 @@ main .approach .chart-wrapper {
   width: min(100%, 470px) !important;
 }
 
+/* Homepage eyebrows are labels, not navigation links. */
+main .eyebrow.home-static-eyebrow {
+  width: fit-content !important;
+  cursor: default !important;
+}
+
+/* Match the News & Insights category-label system exactly on homepage cards. */
+main .news-card .pill {
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-height: 30px !important;
+  align-items: center !important;
+  border: 1px solid rgba(69, 98, 142, 0.35) !important;
+  border-radius: 0 !important;
+  padding: 0.4rem 0.7rem !important;
+  font-family: var(--font-label) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+main .news-card .pill-insight {
+  border-color: rgba(69, 98, 142, 0.5) !important;
+  background: transparent !important;
+  color: var(--color-blue) !important;
+}
+
+main .news-card .pill-speaking {
+  border-color: var(--color-blue) !important;
+  background: var(--color-blue) !important;
+  color: var(--color-white) !important;
+}
+
+main .news-card .pill-whitepaper {
+  border-color: rgba(69, 98, 142, 0.22) !important;
+  background: var(--color-blue-soft) !important;
+  color: var(--color-blue-dark) !important;
+}
+
 /* Match the approved News & Insights read-more treatment on homepage articles. */
 main .news-card::after {
   display: inline-flex;
