@@ -11,8 +11,8 @@ backend:
 
 local_backend: true
 
-site_url: https://merciertalentsolutions.com
-display_url: https://merciertalentsolutions.com
+site_url: https://mercier-talent-solutions.pages.dev
+display_url: https://mercier-talent-solutions.pages.dev
 logo_url: /images/mercier-logo-color.png
 show_preview_links: true
 editor:
