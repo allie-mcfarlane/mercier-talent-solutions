@@ -16,4 +16,4 @@ requestOptions:
 
 Visitors may use this page to request access, correction, deletion, portability, opt out, or to appeal a privacy request decision.
 
-This form sends privacy requests and appeals to [allie@merciertalentsolutions.com](mailto:allie@merciertalentsolutions.com). Visitors may also email that address directly.
+This form sends privacy requests and appeals to [julia@merciertalentsolutions.com](mailto:julia@merciertalentsolutions.com). Visitors may also email that address directly.
