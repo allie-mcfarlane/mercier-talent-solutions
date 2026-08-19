@@ -23,6 +23,7 @@ const pageData = page.data as PrivacyFormData;
 const { Content } = await page.render();
 const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
 const description = "Submit a privacy request or appeal to Mercier Talent Solutions.";
+const successMessage = "Thank you. Your privacy request has been submitted to Mercier Talent Solutions. We will review your request and respond as required by applicable law.";
 ---
 
 <BaseLayout title="Data Requests & Appeals | Mercier Talent Solutions" description={description}>
@@ -38,7 +39,6 @@ const description = "Submit a privacy request or appeal to Mercier Talent Soluti
         <input type="hidden" name="_template" value="table" />
         <input type="hidden" name="_captcha" value="false" />
         <input type="hidden" name="form_name" value={pageData.formName} />
-        <input type="hidden" name="browser_privacy_signal" value="none" />
         <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
         {pageData.includeName && (
           <label>
@@ -47,7 +47,7 @@ const description = "Submit a privacy request or appeal to Mercier Talent Soluti
           </label>
         )}
         <label>
-          EMAIL
+          EMAIL ADDRESS
           <input type="email" name="email" required />
         </label>
         <label>
@@ -58,10 +58,11 @@ const description = "Submit a privacy request or appeal to Mercier Talent Soluti
           </select>
         </label>
         <label>
-          MESSAGE
+          MESSAGE OR REQUEST DETAILS
           <textarea name="message" rows="6"></textarea>
         </label>
-        <Turnstile />
+        <p class="sensitive-note"><strong>Please do not include sensitive personal information in this form.</strong></p>
+        <Turnstile action="privacy" endpoint="/api/privacy" successMessage={successMessage} />
         <button class="button" type="submit">Submit Request</button>
       </form>
     </div>
@@ -123,6 +124,13 @@ const description = "Submit a privacy request or appeal to Mercier Talent Soluti
     border-radius: 6px;
     padding: 0.85rem;
     font: inherit;
+  }
+
+  .sensitive-note {
+    margin: -0.25rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
 
   button {
