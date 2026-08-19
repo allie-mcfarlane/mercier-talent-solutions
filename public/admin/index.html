@@ -7,9 +7,24 @@
     <meta name="referrer" content="same-origin" />
     <meta name="theme-color" content="#1a2b46" />
     <title>Mercier Talent Solutions Admin</title>
+    <script>window.CMS_MANUAL_INIT = true;</script>
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@3.15.1/dist/decap-cms.js"></script>
+    <script>
+      CMS.init({
+        config: {
+          backend: {
+            name: "github",
+            repo: "allie-mcfarlane/mercier-talent-solutions",
+            branch: "main",
+            base_url: "https://mercier-talent-solutions.pages.dev",
+            auth_endpoint: "/auth",
+            site_domain: "mercier-talent-solutions.pages.dev"
+          }
+        }
+      });
+    </script>
     <script src="/admin/admin-preview.js"></script>
   </body>
 </html>
