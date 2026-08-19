@@ -25,10 +25,16 @@ main .service-section .consulting-list p {
   line-height: 1.68 !important;
 }
 
-/* Training: match the heading-to-copy rhythm used in the other service sections. */
+/* Training: restore the same title rhythm used by the other service sections. */
 main .training-text-column {
   display: grid !important;
-  gap: clamp(2.75rem, 4.5vw, 4rem) !important;
+  gap: 1.75rem !important;
+}
+
+/* Add the missing separator beneath 03 Training without changing the title size or position. */
+main .training-text-column > .service-heading-block {
+  border-bottom: 1px solid var(--color-line) !important;
+  padding-bottom: 1.65rem !important;
 }
 
 main .training-copy,
@@ -36,28 +42,33 @@ main .training-copy .service-summary {
   margin: 0 !important;
 }
 
+/* Training categories: restore the approved category-heading treatment and keep every group evenly spaced. */
 main .program-groups {
-  gap: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  column-gap: clamp(4rem, 6vw, 6.5rem) !important;
+  row-gap: clamp(3.75rem, 5vw, 5rem) !important;
   margin-top: clamp(3.5rem, 5.5vw, 5.25rem) !important;
 }
 
-/* Give every training category the same internal spacing. */
 main .program-groups > article {
-  display: grid !important;
-  grid-template-columns: minmax(220px, 0.5fr) minmax(0, 1fr) !important;
-  column-gap: clamp(2rem, 3.5vw, 3.5rem) !important;
-  row-gap: 0 !important;
-  align-items: start !important;
+  display: block !important;
   border-top: 2px solid var(--color-blue-dark) !important;
-  padding: 2rem 0 !important;
+  padding: 1.35rem 0 0 !important;
 }
 
+/* Restore category subheadings to their previous size and position. */
 main .program-groups > article > h3 {
-  align-self: start !important;
-  margin: 0 !important;
+  margin: 0 0 1.45rem !important;
   padding: 0 !important;
+  color: var(--color-blue-dark) !important;
+  font-family: var(--font-heading) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
 }
 
+/* Use identical spacing inside every category. */
 main .program-list {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -67,15 +78,14 @@ main .program-list {
   align-content: start !important;
 }
 
-/* Remove the stray thin rules between training programs and prevent short items
-   from stretching their title-to-body gap to match a taller item beside them. */
+/* Prevent a short item from stretching its title-to-body gap to match a taller neighbor. */
 main .program-item {
   position: relative !important;
   display: grid !important;
   grid-template-rows: auto auto !important;
+  gap: 0.5rem !important;
   align-content: start !important;
   align-self: start !important;
-  gap: 0.5rem !important;
   border-bottom: 0 !important;
   padding: 0 0 0 1.5rem !important;
 }
@@ -104,12 +114,12 @@ main .program-item > p {
   }
 
   main .training-text-column {
-    gap: 2.75rem !important;
+    gap: 1.65rem !important;
   }
 
-  main .program-groups > article {
-    grid-template-columns: minmax(190px, 0.42fr) minmax(0, 1fr) !important;
-    column-gap: 2rem !important;
+  main .program-groups {
+    grid-template-columns: 1fr !important;
+    row-gap: 3.25rem !important;
   }
 
   main .program-list {
@@ -139,17 +149,25 @@ main .program-item > p {
   }
 
   main .training-text-column {
-    gap: 2.4rem !important;
+    gap: 1.5rem !important;
+  }
+
+  main .training-text-column > .service-heading-block {
+    padding-bottom: 1.4rem !important;
   }
 
   main .program-groups {
     margin-top: 3.25rem !important;
+    row-gap: 2.75rem !important;
   }
 
   main .program-groups > article {
-    grid-template-columns: 1fr !important;
-    row-gap: 1.5rem !important;
-    padding: 1.75rem 0 !important;
+    padding-top: 1.25rem !important;
+  }
+
+  main .program-groups > article > h3 {
+    margin-bottom: 1.35rem !important;
+    font-size: 20px !important;
   }
 
   main .program-list {
