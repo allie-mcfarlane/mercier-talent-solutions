@@ -277,7 +277,7 @@ main .team-band .team-copy > h2 {
 main .team-band .team-copy > p:not(.eyebrow) {
   max-width: 900px !important;
   margin: 0 0 1.25rem !important;
-  color: var(--color-text) !important;
+  color: var(--color-ink) !important;
   font-size: clamp(16px, 1.1vw, 18px) !important;
   line-height: 1.72 !important;
 }
