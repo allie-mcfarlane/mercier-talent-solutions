@@ -60,6 +60,7 @@ const modifiedIso = modifiedTime instanceof Date ? modifiedTime.toISOString() : 
     {Astro.url.pathname === "/whitepapers/" && <script is:inline src="/whitepapers-final-fixes.js" defer></script>}
     {Astro.url.pathname.startsWith("/post/") && <link rel="stylesheet" href="/article-final-fixes.css" />}
     {Astro.url.pathname.startsWith("/post/") && <script is:inline src="/article-pdf-download.js" defer></script>}
+    <link rel="stylesheet" href="/full-width-fixes.css" />
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
