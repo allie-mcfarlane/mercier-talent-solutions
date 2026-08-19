@@ -58,7 +58,9 @@ Depending on applicable law, you may have the right to ask whether Mercier Talen
 
 Because this website does not use visitor accounts or profiles, the personal data we maintain about a website visitor may be limited to information that the visitor previously submitted to us. If we do not maintain personal data responsive to your request, we will let you know.
 
-Privacy requests and appeals may be submitted through our **Data Requests & Appeals** page or by emailing [**julia@merciertalentsolutions.com**](mailto:julia@merciertalentsolutions.com).
+Privacy requests and appeals may be submitted through our [**Data Requests & Appeals**](/data-requests/) page or by emailing [**julia@merciertalentsolutions.com**](mailto:julia@merciertalentsolutions.com).
+
+For additional information about privacy choices and practices that do not apply to our website, please see our [**Privacy Choices**](/privacy-choices/) page.
 
 Where Connecticut law applies, we will respond to privacy requests and appeals within the time required by law.
 
