@@ -261,6 +261,7 @@ collections:
         pattern: \d{4}
     fields:
       - { label: Title, name: title, widget: string, hint: "Use the exact published headline." }
+      - { label: Subtitle, name: subtitle, widget: string, required: false, hint: "Optional. Displays directly under the article title in blue italic type." }
       - { label: Author, name: author, widget: string, default: Julia Mercier }
       - { label: Author Job Title, name: authorTitle, widget: string, default: Principal }
       - { label: Author Headshot, name: authorImage, widget: image, required: false, hint: "Optional. Upload the writer headshot shown beside the byline." }
