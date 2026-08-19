@@ -13,6 +13,12 @@
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "") || "article";
 
+  const normalizeText = (value) =>
+    (value || "")
+      .replace(/\s+/g, " ")
+      .replace(/\u00a0/g, " ")
+      .trim();
+
   const loadJsPdf = () => {
     if (window.jspdf?.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
 
@@ -38,29 +44,96 @@
     });
   };
 
-  const normalizeText = (value) =>
-    (value || "")
-      .replace(/\s+/g, " ")
-      .replace(/\u00a0/g, " ")
-      .trim();
+  const blobToDataUrl = (blob) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
 
-  const createArticlePdf = (JsPDF) => {
+  const loadLogoDataUrl = async () => {
+    const response = await fetch("/images/mercier-logo-color.png", {
+      cache: "force-cache",
+    });
+    if (!response.ok) throw new Error("Logo could not be loaded for the PDF.");
+    return blobToDataUrl(await response.blob());
+  };
+
+  const createArticlePdf = async (JsPDF) => {
     const article = document.querySelector("[data-article-body]");
     if (!article) throw new Error("Article content is unavailable.");
 
-    const title = normalizeText(document.querySelector(".article-hero h1")?.textContent) || "Article";
-    const author = normalizeText(document.querySelector(".author-copy strong")?.textContent);
-    const role = normalizeText(document.querySelector(".author-copy span")?.textContent);
-    const date = normalizeText(document.querySelector(".article-meta time")?.textContent);
+    const title =
+      normalizeText(document.querySelector(".article-hero h1")?.textContent) ||
+      "Article";
+    const category =
+      normalizeText(document.querySelector(".article-hero .pill")?.textContent) ||
+      "Insight";
+    const author = normalizeText(
+      document.querySelector(".author-copy strong")?.textContent,
+    );
+    const role = normalizeText(
+      document.querySelector(".author-copy span")?.textContent,
+    );
+    const date = normalizeText(
+      document.querySelector(".article-meta time")?.textContent,
+    );
 
-    const doc = new JsPDF({ unit: "pt", format: "letter", orientation: "portrait" });
+    const logoDataUrl = await loadLogoDataUrl();
+    const doc = new JsPDF({
+      unit: "pt",
+      format: "letter",
+      orientation: "portrait",
+    });
+
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const marginX = 54;
-    const topMargin = 58;
+    const topMargin = 54;
     const bottomMargin = 58;
     const contentWidth = pageWidth - marginX * 2;
     let y = topMargin;
+
+    const drawFirstPageHeader = () => {
+      const props = doc.getImageProperties(logoDataUrl);
+      const logoWidth = 145;
+      const rawHeight = logoWidth * (props.height / props.width);
+      const logoHeight = Math.min(42, rawHeight);
+      const logoY = 38;
+
+      doc.addImage(
+        logoDataUrl,
+        "PNG",
+        marginX,
+        logoY,
+        logoWidth,
+        logoHeight,
+      );
+
+      const label = category.toUpperCase();
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8.5);
+      const labelWidth = doc.getTextWidth(label);
+      const boxWidth = labelWidth + 20;
+      const boxHeight = 22;
+      const boxX = pageWidth - marginX - boxWidth;
+      const boxY = 41;
+
+      doc.setDrawColor(69, 98, 142);
+      doc.setLineWidth(0.7);
+      doc.rect(boxX, boxY, boxWidth, boxHeight);
+      doc.setTextColor(69, 98, 142);
+      doc.text(label, boxX + 10, boxY + 14.5);
+
+      const ruleY = Math.max(88, logoY + logoHeight + 14);
+      doc.setDrawColor(221, 220, 215);
+      doc.setLineWidth(0.7);
+      doc.line(marginX, ruleY, pageWidth - marginX, ruleY);
+      y = ruleY + 31;
+    };
+
+    drawFirstPageHeader();
 
     const ensureSpace = (heightNeeded = 18) => {
       if (y + heightNeeded <= pageHeight - bottomMargin) return;
@@ -108,6 +181,17 @@
       y += 16;
     };
 
+    const writeBodyHeading = (text, size, before, after) => {
+      writeLines(text, {
+        size,
+        style: "bold",
+        color: [69, 98, 142],
+        lineHeight: 1.38,
+        before,
+        after,
+      });
+    };
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(23);
     doc.setTextColor(0, 0, 0);
@@ -117,7 +201,7 @@
       doc.text(line, marginX, y);
       y += 27;
     });
-    y += 4;
+    y += 6;
 
     const meta = [author, role, date].filter(Boolean).join(" · ");
     if (meta) {
@@ -125,21 +209,21 @@
       doc.setFontSize(9.5);
       doc.setTextColor(102, 112, 124);
       doc.text(meta, marginX, y);
-      y += 22;
+      y += 26;
     }
-
-    writeRule();
 
     const renderList = (list, ordered = false) => {
       Array.from(list.children).forEach((item, index) => {
         const marker = ordered ? `${index + 1}.` : "•";
         const text = normalizeText(item.textContent);
         if (!text) return;
+
         ensureSpace(28);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(11);
         doc.setTextColor(17, 17, 17);
         doc.text(marker, marginX + 4, y);
+
         const lines = doc.splitTextToSize(text, contentWidth - 28);
         lines.forEach((line, lineIndex) => {
           if (lineIndex > 0) ensureSpace(16);
@@ -195,8 +279,41 @@
       });
     };
 
+    const renderQuote = (node) => {
+      const quote = normalizeText(node.textContent);
+      if (!quote) return;
+
+      y += 8;
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(9.5);
+      doc.setTextColor(26, 43, 70);
+
+      const lines = doc.splitTextToSize(quote, contentWidth - 28);
+      const lineStep = 14.5;
+      const blockHeight = Math.max(24, lines.length * lineStep + 8);
+      ensureSpace(Math.min(blockHeight, pageHeight - topMargin - bottomMargin));
+
+      const startY = y - 6;
+      doc.setDrawColor(69, 98, 142);
+      doc.setLineWidth(2);
+      doc.line(
+        marginX,
+        startY,
+        marginX,
+        startY + Math.min(blockHeight - 2, pageHeight - bottomMargin - startY),
+      );
+
+      lines.forEach((line) => {
+        ensureSpace(lineStep + 2);
+        doc.text(line, marginX + 16, y);
+        y += lineStep;
+      });
+      y += 10;
+    };
+
     const renderNode = (node) => {
       if (!(node instanceof HTMLElement)) return;
+
       if (node.classList.contains("references")) {
         renderReferences(node);
         return;
@@ -205,42 +322,27 @@
       const tag = node.tagName.toLowerCase();
 
       if (tag === "h2") {
-        writeLines(node.textContent, { size: 17, style: "bold", before: 14, after: 10, lineHeight: 1.25 });
+        writeBodyHeading(node.textContent, 11.5, 15, 9);
         return;
       }
       if (tag === "h3") {
-        writeLines(node.textContent, { size: 14.5, style: "bold", before: 11, after: 9, lineHeight: 1.28 });
+        writeBodyHeading(node.textContent, 10.8, 13, 8);
         return;
       }
       if (tag === "h4") {
-        writeLines(node.textContent, { size: 12.5, style: "bold", before: 9, after: 7, lineHeight: 1.3 });
+        writeBodyHeading(node.textContent, 10.2, 11, 7);
         return;
       }
       if (tag === "p") {
-        writeLines(node.textContent, { size: 11, after: 9, lineHeight: 1.5 });
+        writeLines(node.textContent, {
+          size: 11,
+          after: 9,
+          lineHeight: 1.5,
+        });
         return;
       }
       if (tag === "blockquote") {
-        const quote = normalizeText(node.textContent);
-        if (!quote) return;
-        y += 8;
-        doc.setFont("helvetica", "italic");
-        doc.setFontSize(10.5);
-        doc.setTextColor(26, 43, 70);
-        const lines = doc.splitTextToSize(quote, contentWidth - 28);
-        const lineStep = 15.5;
-        const blockHeight = Math.max(26, lines.length * lineStep + 8);
-        ensureSpace(Math.min(blockHeight, pageHeight - topMargin - bottomMargin));
-        const startY = y - 6;
-        doc.setDrawColor(69, 98, 142);
-        doc.setLineWidth(2);
-        doc.line(marginX, startY, marginX, startY + Math.min(blockHeight - 2, pageHeight - bottomMargin - startY));
-        lines.forEach((line) => {
-          ensureSpace(lineStep + 2);
-          doc.text(line, marginX + 16, y);
-          y += lineStep;
-        });
-        y += 10;
+        renderQuote(node);
         return;
       }
       if (tag === "ul") {
@@ -264,13 +366,16 @@
     const pageCount = doc.getNumberOfPages();
     for (let page = 1; page <= pageCount; page += 1) {
       doc.setPage(page);
+      doc.setDrawColor(221, 220, 215);
+      doc.setLineWidth(0.5);
+      doc.line(marginX, pageHeight - 40, pageWidth - marginX, pageHeight - 40);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8);
       doc.setTextColor(145, 145, 145);
       doc.text(
         `Mercier Talent Solutions · ${page} of ${pageCount}`,
         pageWidth / 2,
-        pageHeight - 26,
+        pageHeight - 25,
         { align: "center" },
       );
     }
@@ -290,9 +395,11 @@
 
       try {
         const JsPDF = await loadJsPdf();
-        if (typeof JsPDF !== "function") throw new Error("PDF library failed to load.");
+        if (typeof JsPDF !== "function") {
+          throw new Error("PDF library failed to load.");
+        }
 
-        const { doc, title } = createArticlePdf(JsPDF);
+        const { doc, title } = await createArticlePdf(JsPDF);
         const filename = `${slugify(title)}.pdf`;
         const blob = doc.output("blob");
 
