@@ -1,4 +1,9 @@
-/* Final homepage fixes below the hero only. The homepage hero HTML and hero styling are intentionally untouched. */
+/* Final homepage fixes. Hero geometry remains intentionally untouched. */
+
+/* Keep the approved hero exactly as positioned and make only the bottom endpoint dot fully visible. */
+main .hero-art-circle-animation .dot-1 {
+  fill-opacity: 1 !important;
+}
 
 /* Open up the Our Approach content rhythm without adding extra page height. */
 main .approach {
