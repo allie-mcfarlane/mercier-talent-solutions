@@ -37,21 +37,45 @@ main .training-copy .service-summary {
 }
 
 main .program-groups {
+  gap: 0 !important;
   margin-top: clamp(3.5rem, 5.5vw, 5.25rem) !important;
 }
 
+/* Give every training category the same internal spacing. */
 main .program-groups > article {
+  display: grid !important;
+  grid-template-columns: minmax(220px, 0.5fr) minmax(0, 1fr) !important;
+  column-gap: clamp(2rem, 3.5vw, 3.5rem) !important;
+  row-gap: 0 !important;
+  align-items: start !important;
   border-top: 2px solid var(--color-blue-dark) !important;
-  padding-top: 1.35rem !important;
+  padding: 2rem 0 !important;
+}
+
+main .program-groups > article > h3 {
+  align-self: start !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 main .program-list {
-  gap: clamp(1.15rem, 2vw, 1.55rem) clamp(1.5rem, 3vw, 2.5rem) !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  column-gap: clamp(1.75rem, 3vw, 2.5rem) !important;
+  row-gap: 1.65rem !important;
+  align-items: start !important;
+  align-content: start !important;
 }
 
-/* Remove the stray thin rules between training programs. */
+/* Remove the stray thin rules between training programs and prevent short items
+   from stretching their title-to-body gap to match a taller item beside them. */
 main .program-item {
   position: relative !important;
+  display: grid !important;
+  grid-template-rows: auto auto !important;
+  align-content: start !important;
+  align-self: start !important;
+  gap: 0.5rem !important;
   border-bottom: 0 !important;
   padding: 0 0 0 1.5rem !important;
 }
@@ -65,8 +89,13 @@ main .program-item::before {
 }
 
 main .program-item > span {
+  margin: 0 !important;
   font-size: 15.5px !important;
   line-height: 1.4 !important;
+}
+
+main .program-item > p {
+  margin: 0 !important;
 }
 
 @media (max-width: 1080px) {
@@ -76,6 +105,16 @@ main .program-item > span {
 
   main .training-text-column {
     gap: 2.75rem !important;
+  }
+
+  main .program-groups > article {
+    grid-template-columns: minmax(190px, 0.42fr) minmax(0, 1fr) !important;
+    column-gap: 2rem !important;
+  }
+
+  main .program-list {
+    column-gap: 1.75rem !important;
+    row-gap: 1.55rem !important;
   }
 }
 
@@ -105,5 +144,16 @@ main .program-item > span {
 
   main .program-groups {
     margin-top: 3.25rem !important;
+  }
+
+  main .program-groups > article {
+    grid-template-columns: 1fr !important;
+    row-gap: 1.5rem !important;
+    padding: 1.75rem 0 !important;
+  }
+
+  main .program-list {
+    grid-template-columns: 1fr !important;
+    row-gap: 1.45rem !important;
   }
 }
