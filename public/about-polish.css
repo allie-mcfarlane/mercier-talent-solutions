@@ -1,0 +1,446 @@
+/* Approved About page redesign. Content remains unchanged. */
+
+main .about-hero {
+  min-height: clamp(520px, 48vw, 700px) !important;
+  background:
+    radial-gradient(circle at 86% 62%, rgba(69, 98, 142, 0.13), transparent 34%),
+    linear-gradient(135deg, #17253e 0%, #1a2b46 54%, #203553 100%) !important;
+}
+
+main .about-hero .about-hero-inner {
+  display: grid !important;
+  min-height: inherit !important;
+  grid-template-columns: minmax(0, 1.12fr) minmax(260px, 0.88fr) !important;
+  gap: clamp(3rem, 7vw, 7rem) !important;
+  align-items: center !important;
+  padding: clamp(5.5rem, 9vw, 8.75rem) 0 !important;
+}
+
+main .about-hero .about-hero-copy {
+  max-width: 980px !important;
+  padding-top: 0 !important;
+}
+
+main .about-hero .eyebrow {
+  color: rgba(255, 255, 255, 0.74) !important;
+}
+
+main .about-hero .eyebrow::before {
+  background: currentColor !important;
+}
+
+main .about-hero h1 {
+  max-width: 980px !important;
+  margin: 1.9rem 0 2.1rem !important;
+  color: var(--color-white) !important;
+  font-family: var(--font-heading) !important;
+  font-size: clamp(3.25rem, 5vw, 5.4rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.045em !important;
+  line-height: 1.03 !important;
+}
+
+main .about-hero h1 em {
+  color: var(--color-blue) !important;
+  font-family: var(--font-serif) !important;
+  font-style: italic !important;
+}
+
+main .about-hero p:not(.eyebrow) {
+  max-width: 900px !important;
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-family: var(--font-body) !important;
+  font-size: clamp(17px, 1.25vw, 20px) !important;
+  line-height: 1.68 !important;
+}
+
+/* Distinct About-page orbit treatment; no endpoint dot. */
+main .about-hero .about-rings {
+  right: clamp(-150px, -7vw, -85px) !important;
+  bottom: clamp(-210px, -10vw, -120px) !important;
+  width: min(38vw, 560px) !important;
+  height: min(38vw, 560px) !important;
+  opacity: 0.9 !important;
+}
+
+main .about-hero .about-rings span {
+  border-color: rgba(233, 231, 226, 0.18) !important;
+}
+
+main .about-hero .about-rings span:first-child {
+  inset: 2% !important;
+}
+
+main .about-hero .about-rings span:last-child {
+  inset: 18% 2% 2% 18% !important;
+  border-color: rgba(69, 98, 142, 0.34) !important;
+}
+
+main .firm-band {
+  position: relative !important;
+  padding: clamp(5.35rem, 8vw, 7.9rem) 0 clamp(6rem, 9vw, 9rem) !important;
+  background: var(--color-white) !important;
+}
+
+main .firm-band::before {
+  position: absolute;
+  top: 0;
+  right: var(--page-gutter);
+  left: var(--page-gutter);
+  height: 1px;
+  background: rgba(221, 220, 215, 0.85);
+  content: "";
+}
+
+main .firm-band .firm-card {
+  display: grid !important;
+  max-width: 1420px !important;
+  min-height: 0 !important;
+  grid-template-columns: minmax(300px, 0.75fr) minmax(520px, 1.25fr) !important;
+  gap: clamp(3.6rem, 8vw, 8.75rem) !important;
+  align-items: start !important;
+  margin-inline: auto !important;
+}
+
+main .firm-band .firm-kicker {
+  position: sticky !important;
+  top: 122px !important;
+  max-width: 470px !important;
+  min-height: 0 !important;
+  padding-right: clamp(1.25rem, 4vw, 3.75rem) !important;
+}
+
+main .firm-band .firm-kicker .eyebrow {
+  color: var(--color-blue) !important;
+}
+
+main .firm-band .firm-kicker h2 {
+  max-width: 470px !important;
+  margin: 1.75rem 0 0 !important;
+  color: var(--color-ink) !important;
+  font-family: var(--font-heading) !important;
+  font-size: clamp(1.9rem, 2.8vw, 2.9rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.14 !important;
+}
+
+main .firm-band .firm-text {
+  max-width: 780px !important;
+  margin: 0 !important;
+  border-left: 2px solid rgba(69, 98, 142, 0.32) !important;
+  padding: 0.9rem 0 1.1rem clamp(1.75rem, 3vw, 2.75rem) !important;
+  color: var(--color-ink) !important;
+  font-size: clamp(17px, 1.18vw, 19px) !important;
+  line-height: 1.75 !important;
+}
+
+main .team-band {
+  padding: clamp(6.25rem, 9vw, 9.4rem) 0 !important;
+  background: linear-gradient(180deg, #fafaf8 0%, #f7f7f4 100%) !important;
+}
+
+main .team-band .team-list {
+  display: grid !important;
+  max-width: 1510px !important;
+  gap: clamp(7.2rem, 11vw, 11.9rem) !important;
+  margin-inline: auto !important;
+}
+
+main .team-band .team-card {
+  position: relative !important;
+  display: grid !important;
+  width: 100% !important;
+  max-width: none !important;
+  grid-template-columns: minmax(270px, 390px) minmax(0, 1fr) !important;
+  gap: clamp(3.6rem, 7vw, 7.5rem) !important;
+  align-items: start !important;
+  margin: 0 !important;
+}
+
+main .team-band .team-card:nth-child(even) {
+  grid-template-columns: minmax(0, 1fr) minmax(270px, 390px) !important;
+}
+
+main .team-band .team-card:nth-child(even) .portrait {
+  order: 2 !important;
+  justify-self: end !important;
+}
+
+main .team-band .team-card:nth-child(even) .team-copy {
+  order: 1 !important;
+}
+
+main .team-band .team-card::after {
+  position: absolute;
+  right: 0;
+  bottom: calc(clamp(7.2rem, 11vw, 11.9rem) / -2);
+  left: 0;
+  height: 1px;
+  background: rgba(221, 220, 215, 0.82);
+  content: "";
+}
+
+main .team-band .team-card:last-child::after {
+  display: none;
+}
+
+main .team-band .portrait {
+  position: relative !important;
+  width: min(100%, 390px) !important;
+  aspect-ratio: 1111 / 1416 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+main .team-band .portrait::before {
+  position: absolute;
+  z-index: 0;
+  width: 68%;
+  height: 68%;
+  border: 1px solid rgba(69, 98, 142, 0.2);
+  content: "";
+  transition: transform 0.8s var(--ease-soft);
+}
+
+main .team-band .team-card:nth-child(odd) .portrait::before {
+  bottom: -22px;
+  left: -22px;
+}
+
+main .team-band .team-card:nth-child(even) .portrait::before {
+  top: -22px;
+  right: -22px;
+}
+
+main .team-band .portrait picture {
+  position: relative;
+  z-index: 1;
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: #ddd;
+  box-shadow: 0 28px 80px rgba(23, 37, 62, 0.1);
+}
+
+main .team-band .portrait img {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transform: scale(1.015) !important;
+  transition: transform 1.1s var(--ease-soft) !important;
+}
+
+main .team-band .portrait:hover img {
+  transform: scale(1.045) !important;
+}
+
+main .team-band .team-copy {
+  max-width: 930px !important;
+  align-self: center !important;
+}
+
+/* Job-title eyebrows intentionally match THE FIRM eyebrow. */
+main .team-band .team-copy > .eyebrow {
+  color: var(--color-blue) !important;
+  font-family: var(--font-label) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 5.5px !important;
+}
+
+main .team-band .team-copy > .eyebrow::before {
+  display: inline-block !important;
+  width: 18px !important;
+  height: 1px !important;
+  background: currentColor !important;
+  content: "" !important;
+}
+
+main .team-band .team-copy > h2 {
+  margin: 1.15rem 0 1.9rem !important;
+  color: var(--color-ink) !important;
+  font-family: var(--font-heading) !important;
+  font-size: clamp(2.15rem, 3.1vw, 3.15rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.07 !important;
+}
+
+main .team-band .team-copy > p:not(.eyebrow) {
+  max-width: 900px !important;
+  margin: 0 0 1.25rem !important;
+  color: var(--color-text) !important;
+  font-size: clamp(16px, 1.1vw, 18px) !important;
+  line-height: 1.72 !important;
+}
+
+main .team-band .team-copy .meta-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.75rem 1.5rem !important;
+  margin: 2.15rem 0 2.5rem !important;
+  color: var(--color-blue-dark) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+main .team-band .credentials {
+  margin-top: 0 !important;
+  border-top: 1px solid rgba(221, 220, 215, 0.9) !important;
+  padding-top: 1.65rem !important;
+}
+
+main .team-band .credentials .eyebrow {
+  color: var(--color-blue) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 5px !important;
+}
+
+main .team-band .credential-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.55rem 1.25rem !important;
+  margin-top: 1.4rem !important;
+}
+
+main .team-band .credential-list span {
+  margin-right: 0.5rem !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(69, 98, 142, 0.28) !important;
+  padding: 0.5rem 0 !important;
+  background: transparent !important;
+  color: var(--color-text) !important;
+  font-size: 14px !important;
+  line-height: 1.3 !important;
+}
+
+main .firm-card[data-reveal],
+main .team-card[data-reveal] {
+  transform: translateY(32px) !important;
+  transition: opacity 0.85s var(--ease-soft), transform 0.95s var(--ease-soft) !important;
+}
+
+main .firm-card[data-reveal].is-visible,
+main .team-card[data-reveal].is-visible {
+  transform: translateY(0) !important;
+}
+
+@media (max-width: 1080px) {
+  main .about-hero .about-hero-inner {
+    grid-template-columns: 1fr !important;
+  }
+
+  main .about-hero .about-rings {
+    right: -180px !important;
+    bottom: -150px !important;
+    width: 430px !important;
+    height: 430px !important;
+    opacity: 0.55 !important;
+  }
+
+  main .firm-band .firm-card,
+  main .team-band .team-card,
+  main .team-band .team-card:nth-child(even) {
+    grid-template-columns: 1fr !important;
+  }
+
+  main .firm-band .firm-kicker {
+    position: static !important;
+  }
+
+  main .team-band .team-card:nth-child(even) .portrait,
+  main .team-band .team-card:nth-child(even) .team-copy {
+    order: initial !important;
+  }
+
+  main .team-band .team-card:nth-child(even) .portrait {
+    justify-self: start !important;
+  }
+
+  main .team-band .portrait {
+    width: min(100%, 340px) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  main .about-hero {
+    min-height: 0 !important;
+  }
+
+  main .about-hero .about-hero-inner {
+    padding: 3.9rem 0 4.5rem !important;
+  }
+
+  main .about-hero h1 {
+    margin-bottom: 1.6rem !important;
+    font-size: clamp(2.65rem, 12vw, 3.65rem) !important;
+  }
+
+  main .about-hero p:not(.eyebrow) {
+    font-size: 16px !important;
+    line-height: 1.62 !important;
+  }
+
+  main .about-hero .about-rings {
+    right: -250px !important;
+    bottom: -190px !important;
+    width: 390px !important;
+    height: 390px !important;
+  }
+
+  main .firm-band {
+    padding: 3.9rem 0 4.5rem !important;
+  }
+
+  main .firm-band .firm-card {
+    gap: 2.1rem !important;
+  }
+
+  main .firm-band .firm-text {
+    padding-left: 1.25rem !important;
+  }
+
+  main .team-band {
+    padding: 4.5rem 0 5.25rem !important;
+  }
+
+  main .team-band .team-list {
+    gap: 5.75rem !important;
+  }
+
+  main .team-band .team-card {
+    gap: 2.1rem !important;
+  }
+
+  main .team-band .team-card::after {
+    bottom: -2.9rem !important;
+  }
+
+  main .team-band .team-copy > h2 {
+    font-size: 2.25rem !important;
+  }
+
+  main .team-band .team-copy > p:not(.eyebrow) {
+    font-size: 16px !important;
+    line-height: 1.68 !important;
+  }
+
+  main .team-band .team-copy .meta-row {
+    display: grid !important;
+    gap: 0.6rem !important;
+  }
+
+  main .team-band .credential-list span {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+}
