@@ -6,14 +6,20 @@ formSubject: Privacy Request or Appeal
 formName: Data Requests and Appeals
 includeName: true
 requestOptions:
-  - Access my data
-  - Correct my data
-  - Delete my data
-  - Receive a copy of my data
-  - Opt out of targeted advertising data use
-  - Appeal a privacy request decision
+  - Access my personal information
+  - Correct my personal information
+  - Delete my personal information
+  - Request a copy of my personal information
+  - Appeal a previous privacy request decision
+  - General privacy question or request
 ---
 
-Visitors may use this page to request access, correction, deletion, portability, opt out, or to appeal a privacy request decision.
+You may use this form to ask whether Mercier Talent Solutions maintains personal information about you or to submit a request relating to that information.
 
-This form sends privacy requests and appeals to [julia@merciertalentsolutions.com](mailto:julia@merciertalentsolutions.com). Visitors may also email that address directly.
+Because our website does not use visitor accounts or profiles, the personal information we maintain about a website visitor may be limited to information the visitor previously submitted to us through a website form or other communication.
+
+If we do not maintain personal information responsive to your request, we will let you know.
+
+For more information about our privacy practices, please review our [**Privacy Policy**](/privacy/).
+
+Privacy requests may also be sent to [**julia@merciertalentsolutions.com**](mailto:julia@merciertalentsolutions.com).
