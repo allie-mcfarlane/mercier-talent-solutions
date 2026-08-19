@@ -1,8 +1,15 @@
 /* Final homepage fixes. Hero geometry remains intentionally untouched. */
 
-/* Keep the approved hero exactly as positioned and make only the bottom endpoint dot fully visible. */
+/* Keep the approved hero graphic exactly as positioned. */
 main .hero-art-circle-animation .dot-1 {
   fill-opacity: 1 !important;
+}
+
+/* Match the homepage hero title scale to the other redesigned page heroes. */
+main .hero h1 {
+  font-size: clamp(3.25rem, 5vw, 5.25rem) !important;
+  line-height: 1.03 !important;
+  letter-spacing: -0.045em !important;
 }
 
 /* Open up the Our Approach content rhythm without adding extra page height. */
@@ -95,6 +102,43 @@ main .news-card .pill-whitepaper {
   color: var(--color-blue-dark) !important;
 }
 
+/* Use the approved News & Insights read-more treatment for What We Do links too. */
+main .services-preview .card .button.text {
+  display: inline-flex !important;
+  width: max-content !important;
+  min-height: auto !important;
+  align-items: center !important;
+  align-self: end !important;
+  margin-top: 1.15rem !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--color-blue-dark) !important;
+  border-radius: 0 !important;
+  padding: 0 0 0.45rem !important;
+  background: transparent !important;
+  color: var(--color-blue-dark) !important;
+  font-family: var(--font-body) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.2 !important;
+  text-transform: none !important;
+  transition: color 220ms ease, border-color 220ms ease, letter-spacing 300ms var(--ease-soft) !important;
+}
+
+main .services-preview .card .button.text::after {
+  margin-left: 0.7rem;
+  content: "→";
+}
+
+main .services-preview .card .button.text:hover,
+main .services-preview .card .button.text:focus-visible {
+  border-color: var(--color-blue) !important;
+  background: transparent !important;
+  color: var(--color-blue) !important;
+  letter-spacing: 0.03em !important;
+  transform: none !important;
+}
+
 /* Match the approved News & Insights read-more treatment on homepage articles. */
 main .news-card::after {
   display: inline-flex;
@@ -129,6 +173,10 @@ main .news-card:focus-visible::after {
 }
 
 @media (max-width: 1080px) {
+  main .hero h1 {
+    font-size: clamp(3rem, 7vw, 4.5rem) !important;
+  }
+
   main .approach .approach-grid {
     grid-template-columns: 1fr !important;
   }
@@ -139,6 +187,10 @@ main .news-card:focus-visible::after {
 }
 
 @media (max-width: 620px) {
+  main .hero h1 {
+    font-size: clamp(2.65rem, 12vw, 3.65rem) !important;
+  }
+
   main .approach {
     padding: 4rem 0 4.5rem !important;
   }
