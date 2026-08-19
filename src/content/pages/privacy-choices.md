@@ -12,4 +12,4 @@ requestOptions:
 
 Use this page to opt out of data collection or use for targeted advertising purposes. This page is included so visitors have a clear, visible privacy choice.
 
-This form sends opt-out requests to [allie@merciertalentsolutions.com](mailto:allie@merciertalentsolutions.com). Visitors may also email that address directly.
+This form sends opt-out requests to [julia@merciertalentsolutions.com](mailto:julia@merciertalentsolutions.com). Visitors may also email that address directly.
