@@ -1,0 +1,334 @@
+body.mts-guided-pages {
+  background: #f7f9fc;
+}
+
+.mts-page-picker,
+.mts-page-edit-guide {
+  font-family: Manrope, Arial, sans-serif;
+}
+
+.mts-page-picker {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(34px, 5vw, 58px) clamp(18px, 3vw, 34px) 64px;
+}
+
+.mts-page-picker-head {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.mts-simple-back {
+  display: inline-flex;
+  margin-bottom: 18px;
+  color: #45628e;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mts-simple-back:hover,
+.mts-simple-back:focus-visible {
+  color: #1a2b46;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mts-page-step {
+  display: block;
+  margin-bottom: 7px;
+  color: #7c8998;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.mts-page-picker h1 {
+  margin: 0 0 10px;
+  color: #172941;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: -.035em;
+  line-height: 1.05;
+}
+
+.mts-page-picker-head p {
+  margin: 0;
+  color: #66707c;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.mts-page-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mts-page-card {
+  display: grid;
+  min-height: 154px;
+  align-content: start;
+  gap: 8px;
+  border: 1px solid #e0e6ed;
+  border-radius: 14px;
+  padding: 22px;
+  background: #fff;
+  color: #1a2b46;
+  text-decoration: none;
+  box-shadow: 0 3px 14px rgba(26, 43, 70, .035);
+  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.mts-page-card:hover,
+.mts-page-card:focus-visible {
+  border-color: #b7c4d3;
+  box-shadow: 0 12px 30px rgba(26, 43, 70, .08);
+  transform: translateY(-2px);
+}
+
+.mts-page-card-title {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.mts-page-card-note {
+  color: #6d7987;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.mts-page-card-action {
+  margin-top: auto;
+  color: #45628e;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.mts-create-page-callout {
+  display: flex;
+  margin-top: 20px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 20px 22px;
+  background: #eef3f8;
+}
+
+.mts-create-page-callout > div {
+  display: grid;
+  gap: 3px;
+}
+
+.mts-create-page-callout strong {
+  color: #1a2b46;
+  font-size: 13px;
+}
+
+.mts-create-page-callout span {
+  color: #66707c;
+  font-size: 11px;
+}
+
+.mts-create-page-callout a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0 15px;
+  background: #1a2b46;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mts-page-edit-guide {
+  position: relative;
+  z-index: 9999;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 24px;
+  align-items: center;
+  border-bottom: 1px solid #e2e7ed;
+  padding: 18px clamp(16px, 2.5vw, 30px) 14px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(26, 43, 70, .035);
+}
+
+.mts-page-edit-guide-main {
+  display: flex;
+  min-width: 0;
+  gap: 18px;
+  align-items: center;
+}
+
+.mts-page-edit-guide-main .mts-simple-back {
+  flex: 0 0 auto;
+  margin: 0;
+  border-right: 1px solid #e1e6ec;
+  padding-right: 18px;
+}
+
+.mts-page-edit-guide-main > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mts-page-edit-guide-main .mts-page-step {
+  margin: 0;
+}
+
+.mts-page-edit-guide-main strong {
+  color: #1a2b46;
+  font-size: 15px;
+}
+
+.mts-page-edit-guide-main small {
+  color: #6f7b89;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.mts-page-edit-guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.mts-page-edit-guide-actions a,
+.mts-page-edit-guide-actions button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d7dfe8;
+  border-radius: 9px;
+  padding: 0 12px;
+  background: #fff;
+  color: #334a67;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mts-page-edit-guide-actions a:hover,
+.mts-page-edit-guide-actions button:hover {
+  background: #f5f7fa;
+}
+
+.mts-edit-steps {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mts-edit-steps span {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 0 10px;
+  background: #f4f7fa;
+  color: #657487;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.mts-edit-steps b {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+  border-radius: 50%;
+  background: #dfe8f1;
+  color: #45628e;
+  font-size: 9px;
+}
+
+.mts-builder-helper {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  border-top: 1px solid #edf0f4;
+  padding-top: 10px;
+  color: #66707c;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.mts-builder-helper strong {
+  color: #334a67;
+}
+
+/* Make the actual Decap form feel less dense when editing pages. */
+body:has(.mts-page-edit-guide) #nc-root {
+  background: #f7f9fc;
+}
+
+body:has(.mts-page-edit-guide) #nc-root label {
+  color: #334a67;
+}
+
+body:has(.mts-page-edit-guide) #nc-root input,
+body:has(.mts-page-edit-guide) #nc-root textarea,
+body:has(.mts-page-edit-guide) #nc-root select {
+  border-radius: 9px !important;
+}
+
+body:has(.mts-page-edit-guide) #nc-root textarea {
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .mts-page-picker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mts-page-edit-guide {
+    grid-template-columns: 1fr;
+  }
+
+  .mts-page-edit-guide-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 620px) {
+  .mts-page-picker-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mts-create-page-callout,
+  .mts-page-edit-guide-main {
+    align-items: flex-start;
+  }
+
+  .mts-create-page-callout {
+    display: grid;
+  }
+
+  .mts-create-page-callout a {
+    width: fit-content;
+  }
+
+  .mts-page-edit-guide-main {
+    display: grid;
+    gap: 8px;
+  }
+
+  .mts-page-edit-guide-main .mts-simple-back {
+    width: fit-content;
+    border-right: 0;
+    padding-right: 0;
+  }
+}
