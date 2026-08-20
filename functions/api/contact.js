@@ -1,6 +1,6 @@
 const CONTACT_PATH = "/contactus/";
 const FORMSUBMIT_ENDPOINT =
-  "https://formsubmit.co/ajax/allie@merciertalentsolutions.com";
+  "https://formsubmit.co/allie@merciertalentsolutions.com";
 
 const redirectToContact = (request, params) => {
   const url = new URL(CONTACT_PATH, request.url);
@@ -21,6 +21,67 @@ const textValue = (formData, name, maxLength = 10000) => {
   const value = formData.get(name);
   if (typeof value !== "string") return "";
   return value.trim().slice(0, maxLength);
+};
+
+const escapeHtml = (value) =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+const hiddenInput = (name, value) =>
+  `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`;
+
+const browserDeliveryResponse = (request, payload) => {
+  const successUrl = new URL(CONTACT_PATH, request.url);
+  successUrl.searchParams.set("sent", "1");
+
+  const fields = [
+    hiddenInput("_subject", payload._subject),
+    hiddenInput("_template", payload._template),
+    hiddenInput("_captcha", payload._captcha),
+    hiddenInput("_cc", payload._cc),
+    hiddenInput("_replyto", payload._replyto),
+    hiddenInput("_next", successUrl.toString()),
+    hiddenInput("_url", payload._url),
+    hiddenInput("form_name", payload.form_name),
+    hiddenInput("browser_privacy_signal", payload.browser_privacy_signal),
+    hiddenInput("first_name", payload.first_name),
+    hiddenInput("last_name", payload.last_name),
+    hiddenInput("email", payload.email),
+    hiddenInput("interest", payload.interest),
+    `<textarea name="message" hidden>${escapeHtml(payload.message)}</textarea>`,
+  ].join("\n");
+
+  const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sending message…</title>
+  </head>
+  <body>
+    <form id="contact-delivery" action="${escapeHtml(FORMSUBMIT_ENDPOINT)}" method="POST">
+      ${fields}
+      <noscript>
+        <p>Your security check passed. Select Continue to send your message.</p>
+        <button type="submit">Continue</button>
+      </noscript>
+    </form>
+    <script>document.getElementById("contact-delivery").submit();</script>
+  </body>
+</html>`;
+
+  return new Response(html, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+    },
+  });
 };
 
 export async function onRequestPost(context) {
@@ -101,30 +162,7 @@ export async function onRequestPost(context) {
       message: textValue(formData, "message", 10000),
     };
 
-    const sendResponse = await fetch(FORMSUBMIT_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    let sendResult = null;
-    try {
-      sendResult = await sendResponse.json();
-    } catch {
-      // A successful HTTP response is enough if FormSubmit does not return JSON.
-    }
-
-    if (!sendResponse.ok || sendResult?.success === false) {
-      console.error("FormSubmit rejected contact submission.", {
-        status: sendResponse.status,
-      });
-      return redirectToContact(request, { error: "send" });
-    }
-
-    return redirectToContact(request, { sent: "1" });
+    return browserDeliveryResponse(request, payload);
   } catch (error) {
     console.error("Contact form submission failed.", error);
     return redirectToContact(request, { error: "send" });
