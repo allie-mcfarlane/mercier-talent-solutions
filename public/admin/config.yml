@@ -26,163 +26,210 @@ public_folder: /images/uploads
 publish_mode: editorial_workflow
 
 collections:
+  - name: settings
+    label: Site Settings
+    files:
+      - name: appearance
+        label: Colors & Font Sizes
+        file: src/content/settings/appearance.md
+        description: "Optional design controls. The current approved website values are already set as the defaults."
+        fields:
+          - { label: Accent Blue, name: accentColor, widget: color, default: "#45628e", hint: "Default #45628e. Used for blue accents, links, and highlighted words." }
+          - { label: Dark Navy, name: darkColor, widget: color, default: "#1a2b46", hint: "Default #1a2b46. Used for dark panels, buttons, and navigation accents." }
+          - { label: Main Body Text, name: bodyTextColor, widget: color, default: "#2b3036", hint: "Default #2b3036." }
+          - { label: Secondary Text, name: mutedTextColor, widget: color, default: "#66707c", hint: "Default #66707c. Used for supporting copy and metadata." }
+          - { label: Body Font Size, name: bodyFontSize, widget: number, value_type: int, min: 14, max: 22, default: 16, hint: "Default 16 px. Keep between 14 and 22 for readability." }
+          - label: Page Title Size
+            name: pageTitleSize
+            widget: select
+            default: default
+            options:
+              - { label: Default, value: default }
+              - { label: Slightly Smaller, value: smaller }
+              - { label: Slightly Larger, value: larger }
+          - label: Section Heading Size
+            name: sectionTitleSize
+            widget: select
+            default: default
+            options:
+              - { label: Default, value: default }
+              - { label: Slightly Smaller, value: smaller }
+              - { label: Slightly Larger, value: larger }
+
   - name: pages
-    label: Site Pages
+    label: Existing Website Pages
+    description: "Edit the content already on the website. Images can be replaced directly from the image fields."
     files:
       - name: home
         label: Home Page
         file: src/content/pages/home.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
-          - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string, hint: "The final italic blue word." }
+          - { label: Small Heading Above Title, name: eyebrow, widget: string }
+          - { label: Main Title, name: title, widget: string }
+          - { label: Blue Italic Title Word, name: titleAccent, widget: string, hint: "The final italic blue word." }
           - { label: Intro Text, name: lede, widget: text }
           - label: Primary Button
             name: primaryCta
             widget: object
             fields:
-              - { label: Label, name: label, widget: string }
+              - { label: Button Text, name: label, widget: string }
               - { label: Link, name: href, widget: string }
           - label: Secondary Button
             name: secondaryCta
             widget: object
             fields:
-              - { label: Label, name: label, widget: string }
+              - { label: Button Text, name: label, widget: string }
               - { label: Link, name: href, widget: string }
-          - label: Proof Cards
+          - label: Three Intro Cards
             name: proof
             widget: list
             min: 3
             max: 3
+            summary: "{{fields.title}}"
             fields:
               - { label: Title, name: title, widget: string }
               - { label: Text, name: text, widget: text }
-          - { label: Marquee Items, name: marqueeItems, widget: list, field: { label: Item, name: item, widget: string } }
-          - label: Approach Section
+          - { label: Scrolling Focus Areas, name: marqueeItems, widget: list, field: { label: Item, name: item, widget: string } }
+          - label: Our Approach Section
             name: approach
             widget: object
             fields:
-              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Small Heading, name: eyebrow, widget: string }
               - { label: Title, name: title, widget: string }
               - { label: Text, name: text, widget: text }
               - { label: Bullet Items, name: items, widget: list, field: { label: Item, name: item, widget: string } }
-          - label: News Section
+          - label: News Section Heading
             name: news
             widget: object
             fields:
-              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Small Heading, name: eyebrow, widget: string }
               - { label: Title, name: title, widget: string }
+
       - name: about
-        label: About Page
+        label: About Page & Team Headshots
         file: src/content/pages/about.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
-          - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Small Heading Above Title, name: eyebrow, widget: string }
+          - { label: Main Title, name: title, widget: string }
+          - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - { label: Intro Text, name: lede, widget: text }
-          - label: Firm Panel
+          - label: Firm Introduction
             name: firm
             widget: object
             fields:
-              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Small Heading, name: eyebrow, widget: string }
               - { label: Title, name: title, widget: string }
               - { label: Text, name: text, widget: text }
-          - label: Team
+          - label: Team Members — Photos, Bios & Contact Details
+            label_singular: Team Member
             name: team
             widget: list
+            summary: "{{fields.name}} — {{fields.eyebrow}}"
             fields:
-              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Role, name: eyebrow, widget: string }
               - { label: Name, name: name, widget: string }
-              - { label: Image, name: image, widget: image }
-              - { label: Image Alt Text, name: imageAlt, widget: string }
-              - { label: Bio Paragraphs, name: paragraphs, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+              - { label: Headshot, name: image, widget: image, hint: "Use this field to replace Julia's or Allie's headshot. The preview updates as you edit." }
+              - { label: Headshot Alt Text, name: imageAlt, widget: string }
+              - { label: Bio Paragraphs, name: paragraphs, widget: list, summary: "{{fields.paragraph}}", field: { label: Paragraph, name: paragraph, widget: text } }
               - { label: Email, name: email, widget: string }
               - { label: Phone, name: phone, widget: string }
               - { label: LinkedIn, name: linkedin, widget: string }
-              - { label: Credentials Eyebrow, name: credentialsEyebrow, widget: string }
+              - { label: Credentials Heading, name: credentialsEyebrow, widget: string }
               - { label: Credentials, name: credentials, widget: text }
+
       - name: news-page
-        label: News Page
+        label: News & Insights Landing Page
         file: src/content/pages/news.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
-          - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string }
-          - { label: Intro Paragraphs, name: paragraphs, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+          - { label: Small Heading Above Title, name: eyebrow, widget: string }
+          - { label: Main Title, name: title, widget: string }
+          - { label: Blue Italic Title Word, name: titleAccent, widget: string }
+          - { label: Intro Paragraphs, name: paragraphs, widget: list, summary: "{{fields.paragraph}}", field: { label: Paragraph, name: paragraph, widget: text } }
+
       - name: whitepapers-page
-        label: White Papers Page
+        label: White Papers Landing Page
         file: src/content/pages/whitepapers.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
-          - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Small Heading Above Title, name: eyebrow, widget: string }
+          - { label: Main Title, name: title, widget: string }
+          - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - { label: Intro Text, name: lede, widget: text }
+
       - name: contact
         label: Contact Page
         file: src/content/pages/contact.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
-          - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Small Heading Above Title, name: eyebrow, widget: string }
+          - { label: Main Title, name: title, widget: string }
+          - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - label: Direct Contacts
             name: contacts
             widget: list
+            summary: "{{fields.name}} — {{fields.email}}"
             fields:
-              - { label: Eyebrow, name: eyebrow, widget: string, required: false }
+              - { label: Role, name: eyebrow, widget: string, required: false }
               - { label: Name, name: name, widget: string }
               - { label: Email, name: email, widget: string }
               - { label: Phone, name: phone, widget: string }
               - { label: LinkedIn, name: linkedin, widget: string, required: false }
+
       - name: services-page
-        label: Services Page
+        label: Services Page — Add, Remove or Reorder Services
         file: src/content/pages/services.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
-          - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Small Heading Above Title, name: eyebrow, widget: string }
+          - { label: Main Title, name: title, widget: string }
+          - { label: Blue Italic Title Words, name: titleAccent, widget: string }
           - { label: Intro Text, name: lede, widget: text }
-          - { label: Hero Image, name: heroImage, widget: image }
-          - { label: Hero Image Alt Text, name: heroImageAlt, widget: string }
-          - { label: Focus Intro, name: focusIntro, widget: text }
+          - { label: Main Services Image, name: heroImage, widget: image, hint: "Replace the main Services page image here." }
+          - { label: Main Image Alt Text, name: heroImageAlt, widget: string }
+          - { label: Focus Area Introduction, name: focusIntro, widget: text }
           - label: Focus Areas
             name: focusAreas
             widget: list
+            summary: "{{fields.title}}"
             fields:
               - { label: Title, name: title, widget: string }
               - { label: Text, name: text, widget: text }
-          - label: Services
+          - label: Services — use Add Service to create a new one
+            label_singular: Service
             name: services
             widget: list
+            summary: "{{fields.number}} — {{fields.title}}"
+            hint: "Drag services to reorder them. Each service can have its own image and optional detail highlights."
             fields:
-              - { label: Eyebrow, name: eyebrow, widget: string }
-              - { label: Number, name: number, widget: string }
-              - { label: Title, name: title, widget: string }
-              - { label: Home Card Text, name: text, widget: text }
-              - { label: Summary, name: summary, widget: text }
-              - { label: Detail, name: detail, widget: text }
-              - { label: Image, name: image, widget: image }
+              - { label: Small Label, name: eyebrow, widget: string, hint: "Example: 05 - NEW SERVICE" }
+              - { label: Display Number, name: number, widget: string, hint: "Example: 05" }
+              - { label: Service Name, name: title, widget: string }
+              - { label: Home Page Card Text, name: text, widget: text }
+              - { label: Short Summary, name: summary, widget: text }
+              - { label: Full Description, name: detail, widget: text }
+              - { label: Service Image, name: image, widget: image }
               - { label: Image Alt Text, name: imageAlt, widget: string }
-              - label: Highlights
+              - label: Optional Highlights
                 name: highlights
                 widget: list
                 required: false
+                summary: "{{fields.title}}"
                 fields:
                   - { label: Title, name: title, widget: string }
                   - { label: Text, name: text, widget: text }
-          - label: Training Section
+          - label: Training Programs
             name: training
             widget: object
             fields:
-              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Small Heading, name: eyebrow, widget: string }
               - { label: Title, name: title, widget: string }
-              - label: Groups
+              - label: Program Groups
                 name: groups
                 widget: list
+                summary: "{{fields.group}}"
                 fields:
-                  - { label: Group, name: group, widget: string }
-                  - label: Items
+                  - { label: Group Name, name: group, widget: string }
+                  - label: Programs
                     name: items
                     widget: list
+                    summary: "{{fields.title}}"
                     fields:
                       - { label: Title, name: title, widget: string }
                       - { label: Text, name: text, widget: text }
@@ -190,51 +237,242 @@ collections:
             name: consulting
             widget: object
             fields:
-              - { label: Eyebrow, name: eyebrow, widget: string }
-              - label: Items
+              - { label: Small Heading, name: eyebrow, widget: string }
+              - label: Consulting Items
                 name: items
                 widget: list
+                summary: "{{fields.title}}"
                 fields:
                   - { label: Title, name: title, widget: string }
                   - { label: Text, name: text, widget: text }
+
       - name: privacy
         label: Privacy Policy
         file: src/content/pages/privacy.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Small Heading, name: eyebrow, widget: string }
           - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - { label: Last Updated, name: updated, widget: string }
           - { label: Policy Content, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list] }
+
       - name: privacy-choices
         label: Privacy Choices Page
         file: src/content/pages/privacy-choices.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Small Heading, name: eyebrow, widget: string }
           - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string }
-          - { label: Form Email Subject, name: formSubject, widget: string }
-          - { label: Form Name, name: formName, widget: string }
-          - { label: Request Options, name: requestOptions, widget: list, field: { label: Option, name: option, widget: string } }
-          - { label: Page Intro Content, name: body, widget: markdown, buttons: [bold, italic, link, bulleted-list, numbered-list] }
+          - { label: Blue Italic Title Word, name: titleAccent, widget: string }
+          - { label: Page Content, name: body, widget: markdown, buttons: [bold, italic, link, bulleted-list, numbered-list] }
+
       - name: data-requests
         label: Data Requests & Appeals Page
         file: src/content/pages/data-requests.md
         fields:
-          - { label: Eyebrow, name: eyebrow, widget: string }
+          - { label: Small Heading, name: eyebrow, widget: string }
           - { label: Title, name: title, widget: string }
-          - { label: Title Accent, name: titleAccent, widget: string }
+          - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - { label: Form Email Subject, name: formSubject, widget: string }
           - { label: Form Name, name: formName, widget: string }
           - { label: Show Name Field, name: includeName, widget: boolean, default: true }
-          - { label: Request Options, name: requestOptions, widget: list, field: { label: Option, name: option, widget: string } }
+          - { label: Request Type Options, name: requestOptions, widget: list, field: { label: Option, name: option, widget: string } }
           - { label: Page Intro Content, name: body, widget: markdown, buttons: [bold, italic, link, bulleted-list, numbered-list] }
+
+  - name: custom-pages
+    label: Page Builder — Create New Pages
+    label_singular: Custom Page
+    folder: src/content/pages
+    create: true
+    filter: { field: pageBuilder, value: true }
+    identifier_field: slug
+    slug: "{{slug}}"
+    summary: "{{title}} — /{{slug}}/"
+    preview_path: "{{slug}}"
+    description: "Create a new website page without coding. Add and reorder ready-made sections such as heroes, text, image-and-text layouts, cards, calls to action, full-width images, or an advanced HTML block."
+    fields:
+      - { label: Page Builder Entry, name: pageBuilder, widget: hidden, default: true }
+      - { label: Page URL, name: slug, widget: string, hint: "Use lowercase words separated by hyphens, for example leadership-programs. Do not include the domain." }
+      - { label: Page Name, name: title, widget: string, hint: "Used for the browser title and admin list." }
+      - { label: Blue Italic Title Word, name: titleAccent, widget: string, required: false }
+      - { label: SEO Description, name: seoDescription, widget: text, required: false }
+      - label: Page Sections — drag to reorder
+        name: sections
+        widget: list
+        typeKey: type
+        types:
+          - label: Hero Section
+            name: hero
+            widget: object
+            fields:
+              - { label: Small Heading, name: eyebrow, widget: string, required: false }
+              - { label: Main Heading, name: title, widget: string }
+              - { label: Blue Italic Heading Words, name: titleAccent, widget: string, required: false }
+              - { label: Text, name: text, widget: text, required: false }
+              - { label: Image, name: image, widget: image, required: false }
+              - { label: Image Alt Text, name: imageAlt, widget: string, required: false }
+              - { label: Button Text, name: buttonLabel, widget: string, required: false }
+              - { label: Button Link, name: buttonLink, widget: string, required: false }
+              - label: Background
+                name: theme
+                widget: select
+                default: white
+                options:
+                  - { label: White, value: white }
+                  - { label: Soft Gray, value: paper }
+                  - { label: Navy, value: navy }
+              - label: Text Alignment
+                name: align
+                widget: select
+                default: left
+                options: [left, center]
+          - label: Text Section
+            name: text
+            widget: object
+            fields:
+              - { label: Small Heading, name: eyebrow, widget: string, required: false }
+              - { label: Heading, name: title, widget: string, required: false }
+              - { label: Text, name: text, widget: text, hint: "Separate paragraphs with a blank line." }
+              - label: Heading Size
+                name: headingSize
+                widget: select
+                default: default
+                options:
+                  - { label: Default, value: default }
+                  - { label: Smaller, value: small }
+                  - { label: Larger, value: large }
+              - label: Background
+                name: theme
+                widget: select
+                default: white
+                options:
+                  - { label: White, value: white }
+                  - { label: Soft Gray, value: paper }
+                  - { label: Navy, value: navy }
+              - label: Text Alignment
+                name: align
+                widget: select
+                default: left
+                options: [left, center]
+          - label: Image + Text Section
+            name: imageText
+            widget: object
+            fields:
+              - { label: Image, name: image, widget: image }
+              - { label: Image Alt Text, name: imageAlt, widget: string }
+              - { label: Small Heading, name: eyebrow, widget: string, required: false }
+              - { label: Heading, name: title, widget: string }
+              - { label: Text, name: text, widget: text }
+              - { label: Button Text, name: buttonLabel, widget: string, required: false }
+              - { label: Button Link, name: buttonLink, widget: string, required: false }
+              - label: Image Position
+                name: imagePosition
+                widget: select
+                default: left
+                options: [left, right]
+              - label: Heading Size
+                name: headingSize
+                widget: select
+                default: default
+                options:
+                  - { label: Default, value: default }
+                  - { label: Smaller, value: small }
+                  - { label: Larger, value: large }
+              - label: Background
+                name: theme
+                widget: select
+                default: white
+                options:
+                  - { label: White, value: white }
+                  - { label: Soft Gray, value: paper }
+                  - { label: Navy, value: navy }
+          - label: Cards / Services Grid
+            name: cards
+            widget: object
+            fields:
+              - { label: Small Heading, name: eyebrow, widget: string, required: false }
+              - { label: Section Heading, name: title, widget: string, required: false }
+              - label: Columns
+                name: columns
+                widget: select
+                default: "3"
+                options: ["2", "3", "4"]
+              - label: Background
+                name: theme
+                widget: select
+                default: white
+                options:
+                  - { label: White, value: white }
+                  - { label: Soft Gray, value: paper }
+                  - { label: Navy, value: navy }
+              - label: Cards
+                label_singular: Card
+                name: items
+                widget: list
+                summary: "{{fields.title}}"
+                fields:
+                  - { label: Title, name: title, widget: string }
+                  - { label: Text, name: text, widget: text, required: false }
+                  - { label: Image, name: image, widget: image, required: false }
+                  - { label: Image Alt Text, name: imageAlt, widget: string, required: false }
+                  - { label: Button Text, name: buttonLabel, widget: string, required: false }
+                  - { label: Button Link, name: buttonLink, widget: string, required: false }
+          - label: Full Width Image
+            name: image
+            widget: object
+            fields:
+              - { label: Image, name: image, widget: image }
+              - { label: Image Alt Text, name: imageAlt, widget: string }
+              - { label: Caption, name: caption, widget: string, required: false }
+              - label: Background
+                name: theme
+                widget: select
+                default: white
+                options:
+                  - { label: White, value: white }
+                  - { label: Soft Gray, value: paper }
+          - label: Call to Action
+            name: callout
+            widget: object
+            fields:
+              - { label: Small Heading, name: eyebrow, widget: string, required: false }
+              - { label: Heading, name: title, widget: string }
+              - { label: Text, name: text, widget: text, required: false }
+              - { label: Button Text, name: buttonLabel, widget: string, required: false }
+              - { label: Button Link, name: buttonLink, widget: string, required: false }
+              - label: Background
+                name: theme
+                widget: select
+                default: navy
+                options:
+                  - { label: Navy, value: navy }
+                  - { label: White, value: white }
+                  - { label: Soft Gray, value: paper }
+              - label: Text Alignment
+                name: align
+                widget: select
+                default: center
+                options: [left, center]
+          - label: Advanced HTML Block
+            name: html
+            widget: object
+            fields:
+              - { label: HTML, name: html, widget: code, default_language: html, allow_language_selection: false, output_code_only: true, hint: "Advanced option. Paste trusted HTML only. Use the visual sections above whenever possible." }
+              - label: Background
+                name: theme
+                widget: select
+                default: white
+                options:
+                  - { label: White, value: white }
+                  - { label: Soft Gray, value: paper }
+                  - { label: Navy, value: navy }
+
   - name: posts
-    label: News & Insights
+    label: News & Insights Articles
+    label_singular: Article
     folder: src/content/posts
     create: true
     slug: "{{slug}}"
-    summary: "{{title}} - {{category}} - {{pubDate}}"
+    summary: "{{title}} — {{category}} — {{pubDate}}"
     preview_path: "post/{{slug}}"
     sortable_fields: [title, pubDate, updatedDate, category]
     view_filters:
@@ -260,38 +498,40 @@ collections:
         field: pubDate
         pattern: \d{4}
     fields:
-      - { label: Title, name: title, widget: string, hint: "Use the exact published headline." }
+      - { label: Article Title, name: title, widget: string, hint: "Use the exact published headline." }
       - { label: Subtitle, name: subtitle, widget: string, required: false, hint: "Optional. Displays directly under the article title in blue italic type." }
       - { label: Author, name: author, widget: string, default: Julia Mercier }
       - { label: Author Job Title, name: authorTitle, widget: string, default: Principal }
-      - { label: Author Headshot, name: authorImage, widget: image, required: false, hint: "Optional. Upload the writer headshot shown beside the byline." }
-      - { label: Author Headshot Alt Text, name: authorImageAlt, widget: string, required: false }
+      - { label: Author Headshot, name: authorImage, widget: image, required: false, hint: "Optional. Upload or replace the writer headshot shown beside the byline." }
+      - { label: Headshot Alt Text, name: authorImageAlt, widget: string, required: false }
       - { label: Publication Date, name: pubDate, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, default: "{{now}}" }
       - { label: Updated Date, name: updatedDate, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, required: false }
       - { label: Category, name: category, widget: select, default: Insight, options: [Insight, Speaking, White Paper, Announcement, News] }
-      - { label: Excerpt, name: excerpt, widget: text, hint: "Short card and SEO summary shown on the News & Insights page only." }
+      - { label: Card / SEO Summary, name: excerpt, widget: text, hint: "Short summary shown on the News & Insights page." }
       - { label: Featured Image, name: image, widget: image, required: false }
       - { label: Featured Image Alt Text, name: imageAlt, widget: string, required: false }
       - { label: SEO Title, name: seoTitle, widget: string, required: false, hint: "Optional. Leave blank to use the article title." }
-      - { label: SEO Description, name: seoDescription, widget: text, required: false, hint: "Optional. Leave blank to use the excerpt." }
+      - { label: SEO Description, name: seoDescription, widget: text, required: false, hint: "Optional. Leave blank to use the summary." }
       - label: References
         name: references
         widget: list
         required: false
+        summary: "{{fields.text}}"
         hint: "Optional. Add sources in citation order. In the Body, type [1], [2], [3], etc. where each superscript citation should appear."
         fields:
           - { label: Reference Text, name: text, widget: text }
           - { label: Source URL, name: url, widget: string }
-      - { label: Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote], hint: "For linked citations, type [1], [2], [3], etc. in the article text and add matching sources to References above." }
+      - { label: Article Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote], hint: "Write the article here. The preview shows the site styling as you edit." }
+
   - name: white-papers
-    label: White Papers
+    label: White Papers — Library
     label_singular: White Paper
     folder: src/content/white-papers
     create: true
     identifier_field: title
     slug: "{{slug}}"
-    description: "Add or edit white papers. Each entry automatically creates one tile on the White Papers page."
-    summary: "No. {{number}} - {{title}} - {{date}}"
+    description: "Each row is one white paper. Click a title to edit it or choose New White Paper to add one."
+    summary: "No. {{number}}  |  {{title}}  |  {{date}}"
     preview_path: "whitepapers"
     sortable_fields: [number, title, date]
     view_groups:
@@ -299,11 +539,11 @@ collections:
         field: date
         pattern: \d{4}
     fields:
+      - { label: White Paper Number, name: number, widget: string, hint: "Example: 03. Controls the displayed WHITE PAPER No. 03 label." }
       - { label: Title, name: title, widget: string, hint: "This becomes the tile title." }
-      - { label: White Paper Number, name: number, widget: string, hint: "Use the display number, for example 03. This becomes WHITE PAPER No. 03." }
-      - { label: Publication Date, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, default: "{{now}}", hint: "This controls the displayed date and newest-first ordering." }
-      - { label: Description, name: description, widget: text, hint: "This becomes the italic subtitle on the tile." }
-      - { label: Document, name: document, widget: file, required: false, media_folder: public/documents, public_folder: /documents, hint: "Upload the PDF here. The download button appears automatically when a document is attached." }
-      - { label: Featured Image, name: image, widget: image, required: false }
-      - { label: Featured Image Alt Text, name: imageAlt, widget: string, required: false }
-      - { label: Tile Text, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote], hint: "This is the main paragraph shown on the tile." }
+      - { label: Publication Date, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, default: "{{now}}", hint: "Controls the displayed date and newest-first ordering." }
+      - { label: Short Description, name: description, widget: text, hint: "This becomes the italic subtitle on the tile." }
+      - { label: PDF Document, name: document, widget: file, required: false, media_folder: public/documents, public_folder: /documents, hint: "Upload or replace the PDF here. The download button appears automatically." }
+      - { label: Tile Image, name: image, widget: image, required: false, hint: "Optional image shown with the white paper." }
+      - { label: Image Alt Text, name: imageAlt, widget: string, required: false }
+      - { label: Tile Description, name: body, widget: markdown, buttons: [bold, italic, link, bulleted-list, numbered-list], hint: "Main descriptive paragraph shown on the White Papers page." }
