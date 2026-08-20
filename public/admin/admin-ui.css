@@ -1,0 +1,66 @@
+html,
+body {
+  background: #f5f5f3;
+}
+
+body {
+  font-family: Manrope, Arial, sans-serif;
+}
+
+.mts-admin-help {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #d9dce1;
+  padding: 9px 18px;
+  background: #1a2b46;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.mts-admin-help strong {
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
+.mts-admin-help span {
+  color: rgba(255,255,255,.82);
+}
+
+.mts-admin-help a {
+  color: #fff;
+  font-weight: 700;
+  text-underline-offset: 2px;
+}
+
+body.mts-whitepaper-library a.mts-whitepaper-row {
+  display: block;
+  border-bottom: 1px solid #e2e3e6;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+body.mts-whitepaper-library a.mts-whitepaper-row:hover {
+  background: rgba(69,98,142,.04);
+}
+
+/* Keep the editor readable for people who do not work in code. */
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+@media (max-width: 760px) {
+  .mts-admin-help {
+    position: static;
+    justify-content: flex-start;
+  }
+}
