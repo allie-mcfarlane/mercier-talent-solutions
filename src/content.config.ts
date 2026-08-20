@@ -45,6 +45,11 @@ const pages = defineCollection({
     title: z.string().optional(),
     titleAccent: z.string().optional(),
     lede: z.string().optional(),
+    pageBuilder: z.boolean().optional(),
+    slug: z.string().optional(),
+    navTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
+    sections: z.array(z.record(z.unknown())).optional(),
     primaryCta: z
       .object({
         label: z.string(),
@@ -187,8 +192,21 @@ const pages = defineCollection({
   }),
 });
 
+const settings = defineCollection({
+  schema: z.object({
+    accentColor: z.string().default("#45628e"),
+    darkColor: z.string().default("#1a2b46"),
+    bodyTextColor: z.string().default("#2b3036"),
+    mutedTextColor: z.string().default("#66707c"),
+    bodyFontSize: z.number().min(14).max(22).default(16),
+    pageTitleSize: z.enum(["default", "smaller", "larger"]).default("default"),
+    sectionTitleSize: z.enum(["default", "smaller", "larger"]).default("default"),
+  }),
+});
+
 export const collections = {
   pages,
   posts,
   "white-papers": whitePapers,
+  settings,
 };
