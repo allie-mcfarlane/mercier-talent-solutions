@@ -330,8 +330,7 @@
     return `<div class="ve-field"><label>${esc(label)}</label><div class="ve-image-field"><div class="ve-image-current">${value ? `<img src="${esc(value)}" alt="" />` : '<div style="width:76px;height:54px;border-radius:7px;background:#edf0f3"></div>'}<div><strong>${value ? 'Current image' : 'No image selected'}</strong><span>${esc(value || 'Choose from Media Assets')}</span></div></div><button class="ve-button subtle" type="button" data-action="choose-image" data-target="${esc(path)}">${value ? 'Replace image' : 'Choose image'}</button>${altPath ? `<input data-bind="${esc(altPath)}" value="${esc(alt)}" placeholder="Image description" aria-label="Image description" />` : ''}</div></div>`;
   };
 
-  const linesField = (path, label, values, hint = '') => field(path, label, Array.isArray(values) ? values.join('\n') : '', { type: 'textarea', rows: 6, hint, lines: true }).replace(`data-bind="${esc(path)}"`, `data-lines="${esc(path)}"`);
-
+  const linesField = (path, label, values, hint = '') => field(path, label, Array.isArray(values) ? values.join('\n') : '', { type: 'textarea', rows: 6, hint }).replace(`data-bind="${esc(path)}"`, `data-lines="${esc(path)}"`);
   const pageSectionMeta = (pageKey) => PAGE_SECTIONS[pageKey] || PAGE_SECTIONS.news;
 
   const duplicateFixedButton = (pageKey, sectionId) => {
@@ -491,14 +490,29 @@
     state.body = richHtmlToMarkdown(editor.innerHTML);
   };
 
+  const semanticizeCitations = (body, refs) => String(body || '').replace(/\[(\d+)\]/g, (match, number) => {
+    const ref = refs?.[Number(number) - 1];
+    return ref?.id ? `[[cite:${ref.id}]]` : match;
+  });
+
+  const numberCitations = (body, refs) => String(body || '').replace(/\[\[cite:([^\]]+)\]\]/g, (match, id) => {
+    const index = refs?.findIndex((ref) => ref.id === id) ?? -1;
+    return index >= 0 ? `[${index + 1}]` : match;
+  });
+
   const currentSerialized = () => {
     if (state.screen === 'blog-edit') readFormBody();
-    return serializeDocument(state.data, state.body);
+    if (state.screen !== 'blog-edit') return serializeDocument(state.data, state.body);
+    const data = clone(state.data);
+    const refs = data.references || [];
+    const semanticRefs = state.data.references || [];
+    refs.forEach((ref) => { delete ref.id; });
+    return serializeDocument(data, numberCitations(state.body, semanticRefs));
   };
 
   const performSave = async (publish = false) => {
     try {
-      if (state.isNew) {
+      if (state.screen === 'new-page' && state.isNew) {
         const slug = slugify(state.data.slug || state.data.navTitle);
         if (!slug) throw new Error('Add a page address before saving.');
         state.data.slug = slug;
@@ -639,11 +653,11 @@
         text('.news-band .eyebrow-link', state.data.news?.eyebrow); text('.news-band h2', state.data.news?.title);
       } else if (key === 'about') {
         text('.about-hero .eyebrow', state.data.eyebrow); heading('.about-hero h1', state.data.title, state.data.titleAccent); text('.about-hero-copy>p:not(.eyebrow)', state.data.lede); text('.firm-kicker .eyebrow', state.data.firm?.eyebrow); text('.firm-kicker h2', state.data.firm?.title); text('.firm-text', state.data.firm?.text);
-        doc.querySelectorAll('.team-card').forEach((card, i) => { const person = state.data.team?.[i]; if (!person) return; image('.portrait img', person.image, person.imageAlt); const img = card.querySelector('.portrait img'); if (img && person.image) { img.removeAttribute('srcset'); img.src = person.image; img.alt = person.imageAlt || ''; } const e = card.querySelector('.team-copy>.eyebrow'); if (e) e.textContent = person.eyebrow || ''; const h2 = card.querySelector('.team-copy>h2'); if (h2) h2.textContent = person.name || ''; });
+        doc.querySelectorAll('.team-card').forEach((card, i) => { const person = state.data.team?.[i]; if (!person) return; const img = card.querySelector('.portrait img'); if (img && person.image) { img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src = person.image; img.alt = person.imageAlt || ''; } const e = card.querySelector('.team-copy>.eyebrow'); if (e) e.textContent = person.eyebrow || ''; const h2 = card.querySelector('.team-copy>h2'); if (h2) h2.textContent = person.name || ''; });
       } else if (key === 'services') {
         text('.services-hero .eyebrow', state.data.eyebrow); text('.services-hero h1 span', state.data.title); text('.services-hero h1 em', state.data.titleAccent); text('.services-hero .hero-copy>p:last-child', state.data.lede); image('.services-hero .hero-image img', state.data.heroImage, state.data.heroImageAlt); text('.coaching-copy-stack .service-detail-copy', state.data.focusIntro);
         doc.querySelectorAll('.focus-list article').forEach((node, i) => { if (!state.data.focusAreas?.[i]) return; node.querySelector('h3').textContent = state.data.focusAreas[i].title; node.querySelector('p').textContent = state.data.focusAreas[i].text; });
-        doc.querySelectorAll('.service-section').forEach((node, i) => { const service = state.data.services?.[i]; if (!service) return; const num = node.querySelector('.service-number'); if (num) num.textContent = service.number; const h2 = node.querySelector('.service-heading-block h2'); if (h2) h2.textContent = service.title; const summary = node.querySelector('.service-summary'); if (summary) summary.textContent = service.summary || service.text || ''; const img = node.querySelector('.service-image img'); if (img && service.image) { img.removeAttribute('srcset'); img.src = service.image; img.alt = service.imageAlt || ''; } });
+        doc.querySelectorAll('.service-section').forEach((node, i) => { const service = state.data.services?.[i]; if (!service) return; const num = node.querySelector('.service-number'); if (num) num.textContent = service.number; const h2 = node.querySelector('.service-heading-block h2'); if (h2) h2.textContent = service.title; const summary = node.querySelector('.service-summary'); if (summary) summary.textContent = service.summary || service.text || ''; const img = node.querySelector('.service-image img'); if (img && service.image) { img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src = service.image; img.alt = service.imageAlt || ''; } });
       } else {
         text('main .eyebrow', state.data.eyebrow); heading('main h1', state.data.title, state.data.titleAccent);
       }
@@ -713,7 +727,9 @@
       if (slug) {
         const path = `src/content/posts/${slug}.md`; const doc = await loadDocument(path); state.doc = doc; state.data = doc.data; state.body = doc.body; state.path = path; state.branch = doc.branch; state.pr = doc.pr;
       } else { state.doc = null; state.data = defaultPost(); state.body = ''; state.path = ''; state.branch = ''; state.pr = null; }
-      normalizeReferences(); renderBlogEditor();
+      normalizeReferences();
+      state.body = semanticizeCitations(state.body, state.data.references || []);
+      renderBlogEditor();
     } catch (error) { toast(error.message, true); loadBlogList(); }
   };
 
@@ -739,13 +755,13 @@
 
   const editorMarkdownToHtml = (markdown) => {
     const withCites = String(markdown || '').replace(/\[\[cite:([^\]]+)\]\]/g, (_, id) => `<sup class="editor-cite" data-cite="${esc(id)}">source</sup>`);
-    return window.DOMPurify.sanitize(window.marked.parse(withCites), { ADD_ATTR: ['data-cite'] });
+    return window.DOMPurify.sanitize(window.marked.parse(withCites), { ADD_ATTR: ['data-cite', 'style', 'contenteditable'] });
   };
 
   const richHtmlToMarkdown = (html) => {
     const turndown = new window.TurndownService({ headingStyle: 'atx', bulletListMarker: '-' });
     turndown.addRule('mercierCitation', { filter: (node) => node.nodeName === 'SUP' && node.dataset?.cite, replacement: (_content, node) => `[[cite:${node.dataset.cite}]]` });
-    turndown.addRule('mercierImage', { filter: (node) => node.nodeName === 'FIGURE' && node.classList.contains('article-inline-image'), replacement: (_content, node) => { const img = node.querySelector('img'); const caption = node.querySelector('figcaption'); if (!img) return ''; return `\n\n<figure class="article-inline-image"><img src="${img.getAttribute('src') || ''}" alt="${(img.getAttribute('alt') || '').replaceAll('"', '&quot;')}">${caption?.textContent ? `<figcaption>${esc(caption.textContent)}</figcaption>` : ''}</figure>\n\n`; } });
+    turndown.addRule('mercierImage', { filter: (node) => node.nodeName === 'FIGURE' && node.classList.contains('article-inline-image'), replacement: (_content, node) => { const img = node.querySelector('img'); const caption = node.querySelector('figcaption'); if (!img) return ''; const cap = caption?.textContent && caption.textContent !== 'Add a caption if needed' ? `<figcaption style="margin-top:.65rem;color:#66707c;font-size:13px;line-height:1.5">${esc(caption.textContent)}</figcaption>` : ''; return `\n\n<figure class="article-inline-image" style="margin:2.4rem 0"><img src="${img.getAttribute('src') || ''}" alt="${(img.getAttribute('alt') || '').replaceAll('"', '&quot;')}" style="display:block;width:100%;height:auto">${cap}</figure>\n\n`; } });
     return turndown.turndown(html).trim() + '\n';
   };
 
@@ -801,7 +817,6 @@
   const patchBlogPreview = (frame) => {
     try {
       const doc = frame.contentDocument; if (!doc || doc.readyState === 'loading') return;
-      // If creating a new post, turn the News page into a clean article-shaped preview.
       if (!doc.querySelector('.article-page')) {
         const main = doc.querySelector('main'); if (!main) return;
         main.innerHTML = `<article class="article-page"><header class="article-hero"><div class="container article-shell"><span class="pill">${esc(state.data.category || 'Insight')}</span><h1></h1><p class="article-preview-subtitle"></p><div class="article-meta"><div class="author-block"><img class="author-photo" alt=""><div class="author-copy"><strong></strong><span></span></div></div><time></time></div></div></header><div class="article-content-section"><div class="container article-body"></div></div></article>`;
@@ -814,7 +829,7 @@
       const person = state.team.find((item) => item.name === state.data.author) || {}; const photo = doc.querySelector('.author-photo'); if (photo && person.image) { photo.src = person.image; photo.alt = person.name || ''; } text('.author-copy span', person.eyebrow || person.role || '');
       const refs = state.data.references || [];
       let html = window.marked.parse(String(state.body || '').replace(/\[\[cite:([^\]]+)\]\]/g, (_, id) => { const index = refs.findIndex((ref) => ref.id === id); return index >= 0 ? `<sup class="reference-marker"><a href="#reference-${index + 1}">${index + 1}</a></sup>` : ''; }));
-      html = window.DOMPurify.sanitize(html);
+      html = window.DOMPurify.sanitize(html, { ADD_ATTR: ['style'] });
       const body = doc.querySelector('.article-body'); if (body) body.innerHTML = html;
       let references = doc.querySelector('.references'); if (references) references.remove();
       if (refs.length && body) { references = doc.createElement('section'); references.className = 'references'; references.innerHTML = `<h2>References</h2><ol>${refs.map((ref, i) => `<li id="reference-${i + 1}"><a href="${esc(ref.url || '#')}">${esc(ref.text || `Source ${i + 1}`)}</a></li>`).join('')}</ol>`; body.append(references); }
@@ -825,9 +840,6 @@
 
   const route = async () => {
     const hash = location.hash || '#/';
-    if (state.dirty && state.screen && !route.ignoreDirty) {
-      // hash navigation is initiated by the user; keep warning limited to leaving an active edit screen.
-    }
     if (hash === '#/' || hash === '#') return renderHome();
     if (hash === '#/pages') return renderPages();
     if (hash === '#/new-page') return startNewPage();
