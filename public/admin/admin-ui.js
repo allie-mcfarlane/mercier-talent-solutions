@@ -4,7 +4,7 @@
     currentPages: '/admin/editor/#/pages',
     newPage: '/admin/editor/#/new-page',
     blog: '/admin/editor/#/blog',
-    whitepapers: '#/collections/white-papers',
+    whitepapers: '/admin/editor/whitepapers.html',
     menu: '#/collections/navigation/entries/main',
     media: '#/media',
     design: '#/collections/settings/entries/appearance',
