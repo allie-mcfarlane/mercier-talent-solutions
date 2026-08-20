@@ -20,14 +20,16 @@ editor:
   preview_styles:
     - /admin/preview.css
 
-media_folder: public/images/uploads
-public_folder: /images/uploads
+# The Media Assets library points at the real website image folder so existing
+# site photography, logos, headshots, and future uploads are available together.
+media_folder: public/images
+public_folder: /images
 
 publish_mode: editorial_workflow
 
 collections:
   - name: settings
-    label: Site Settings
+    label: Design Settings
     files:
       - name: appearance
         label: Colors & Font Sizes
@@ -56,9 +58,26 @@ collections:
               - { label: Slightly Smaller, value: smaller }
               - { label: Slightly Larger, value: larger }
 
+  - name: navigation
+    label: Website Menu
+    files:
+      - name: main
+        label: Top Menu
+        file: src/content/navigation/main.md
+        description: "Controls the links shown across the top of the website. Add a new page here if you want it to appear in the menu."
+        fields:
+          - label: Menu Items
+            label_singular: Menu Item
+            name: items
+            widget: list
+            summary: "{{fields.label}} — {{fields.href}}"
+            fields:
+              - { label: Menu Label, name: label, widget: string }
+              - { label: Page URL, name: href, widget: string, hint: "Example: /services/ or /leadership-programs/" }
+
   - name: pages
-    label: Existing Website Pages
-    description: "Edit the content already on the website. Images can be replaced directly from the image fields."
+    label: Current Pages
+    description: "Edit the pages already on the website. The preview shows the page with the website header and footer."
     files:
       - name: home
         label: Home Page
@@ -104,6 +123,178 @@ collections:
             fields:
               - { label: Small Heading, name: eyebrow, widget: string }
               - { label: Title, name: title, widget: string }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            hint: "Add and drag sections into the order you want. These appear after the existing Home page content."
+            types: &page_section_types
+              - label: Hero / Feature Section
+                name: hero
+                widget: object
+                fields:
+                  - { label: Small Heading, name: eyebrow, widget: string, required: false }
+                  - { label: Main Heading, name: title, widget: string }
+                  - { label: Blue Italic Heading Words, name: titleAccent, widget: string, required: false }
+                  - { label: Text, name: text, widget: text, required: false }
+                  - { label: Image, name: image, widget: image, required: false }
+                  - { label: Image Alt Text, name: imageAlt, widget: string, required: false }
+                  - { label: Button Text, name: buttonLabel, widget: string, required: false }
+                  - { label: Button Link, name: buttonLink, widget: string, required: false }
+                  - label: Background
+                    name: theme
+                    widget: select
+                    default: white
+                    options:
+                      - { label: White, value: white }
+                      - { label: Soft Gray, value: paper }
+                      - { label: Navy, value: navy }
+                  - label: Text Alignment
+                    name: align
+                    widget: select
+                    default: left
+                    options: [left, center]
+              - label: Text Section
+                name: text
+                widget: object
+                fields:
+                  - { label: Small Heading, name: eyebrow, widget: string, required: false }
+                  - { label: Heading, name: title, widget: string, required: false }
+                  - { label: Text, name: text, widget: text, hint: "Separate paragraphs with a blank line." }
+                  - label: Heading Size
+                    name: headingSize
+                    widget: select
+                    default: default
+                    options:
+                      - { label: Default, value: default }
+                      - { label: Smaller, value: small }
+                      - { label: Larger, value: large }
+                  - label: Background
+                    name: theme
+                    widget: select
+                    default: white
+                    options:
+                      - { label: White, value: white }
+                      - { label: Soft Gray, value: paper }
+                      - { label: Navy, value: navy }
+                  - label: Text Alignment
+                    name: align
+                    widget: select
+                    default: left
+                    options: [left, center]
+              - label: Image + Text Section
+                name: imageText
+                widget: object
+                fields:
+                  - { label: Image, name: image, widget: image }
+                  - { label: Image Alt Text, name: imageAlt, widget: string }
+                  - { label: Small Heading, name: eyebrow, widget: string, required: false }
+                  - { label: Heading, name: title, widget: string }
+                  - { label: Text, name: text, widget: text }
+                  - { label: Button Text, name: buttonLabel, widget: string, required: false }
+                  - { label: Button Link, name: buttonLink, widget: string, required: false }
+                  - label: Image Position
+                    name: imagePosition
+                    widget: select
+                    default: left
+                    options: [left, right]
+                  - label: Heading Size
+                    name: headingSize
+                    widget: select
+                    default: default
+                    options:
+                      - { label: Default, value: default }
+                      - { label: Smaller, value: small }
+                      - { label: Larger, value: large }
+                  - label: Background
+                    name: theme
+                    widget: select
+                    default: white
+                    options:
+                      - { label: White, value: white }
+                      - { label: Soft Gray, value: paper }
+                      - { label: Navy, value: navy }
+              - label: Cards / Services Grid
+                name: cards
+                widget: object
+                fields:
+                  - { label: Small Heading, name: eyebrow, widget: string, required: false }
+                  - { label: Section Heading, name: title, widget: string, required: false }
+                  - label: Columns
+                    name: columns
+                    widget: select
+                    default: "3"
+                    options: ["2", "3", "4"]
+                  - label: Background
+                    name: theme
+                    widget: select
+                    default: white
+                    options:
+                      - { label: White, value: white }
+                      - { label: Soft Gray, value: paper }
+                      - { label: Navy, value: navy }
+                  - label: Cards
+                    label_singular: Card
+                    name: items
+                    widget: list
+                    summary: "{{fields.title}}"
+                    fields:
+                      - { label: Title, name: title, widget: string }
+                      - { label: Text, name: text, widget: text, required: false }
+                      - { label: Image, name: image, widget: image, required: false }
+                      - { label: Image Alt Text, name: imageAlt, widget: string, required: false }
+                      - { label: Button Text, name: buttonLabel, widget: string, required: false }
+                      - { label: Button Link, name: buttonLink, widget: string, required: false }
+              - label: Full Width Image
+                name: image
+                widget: object
+                fields:
+                  - { label: Image, name: image, widget: image }
+                  - { label: Image Alt Text, name: imageAlt, widget: string }
+                  - { label: Caption, name: caption, widget: string, required: false }
+                  - label: Background
+                    name: theme
+                    widget: select
+                    default: white
+                    options:
+                      - { label: White, value: white }
+                      - { label: Soft Gray, value: paper }
+              - label: Call to Action
+                name: callout
+                widget: object
+                fields:
+                  - { label: Small Heading, name: eyebrow, widget: string, required: false }
+                  - { label: Heading, name: title, widget: string }
+                  - { label: Text, name: text, widget: text, required: false }
+                  - { label: Button Text, name: buttonLabel, widget: string, required: false }
+                  - { label: Button Link, name: buttonLink, widget: string, required: false }
+                  - label: Background
+                    name: theme
+                    widget: select
+                    default: navy
+                    options:
+                      - { label: Navy, value: navy }
+                      - { label: White, value: white }
+                      - { label: Soft Gray, value: paper }
+                  - label: Text Alignment
+                    name: align
+                    widget: select
+                    default: center
+                    options: [left, center]
+              - label: Advanced HTML Block
+                name: html
+                widget: object
+                fields:
+                  - { label: HTML, name: html, widget: code, default_language: html, allow_language_selection: false, output_code_only: true, hint: "Advanced option. Paste trusted HTML only. Use the visual sections above whenever possible." }
+                  - label: Background
+                    name: theme
+                    widget: select
+                    default: white
+                    options:
+                      - { label: White, value: white }
+                      - { label: Soft Gray, value: paper }
+                      - { label: Navy, value: navy }
 
       - name: about
         label: About Page & Team Headshots
@@ -128,7 +319,7 @@ collections:
             fields:
               - { label: Role, name: eyebrow, widget: string }
               - { label: Name, name: name, widget: string }
-              - { label: Headshot, name: image, widget: image, hint: "Use this field to replace Julia's or Allie's headshot. The preview updates as you edit." }
+              - { label: Headshot, name: image, widget: image, hint: "Choose an existing photo from Media Assets or upload a replacement here." }
               - { label: Headshot Alt Text, name: imageAlt, widget: string }
               - { label: Bio Paragraphs, name: paragraphs, widget: list, summary: "{{fields.paragraph}}", field: { label: Paragraph, name: paragraph, widget: text } }
               - { label: Email, name: email, widget: string }
@@ -136,6 +327,13 @@ collections:
               - { label: LinkedIn, name: linkedin, widget: string }
               - { label: Credentials Heading, name: credentialsEyebrow, widget: string }
               - { label: Credentials, name: credentials, widget: text }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            hint: "Add and reorder extra visual sections after the current About page content."
+            types: *page_section_types
 
       - name: news-page
         label: News & Insights Landing Page
@@ -145,6 +343,12 @@ collections:
           - { label: Main Title, name: title, widget: string }
           - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - { label: Intro Paragraphs, name: paragraphs, widget: list, summary: "{{fields.paragraph}}", field: { label: Paragraph, name: paragraph, widget: text } }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            types: *page_section_types
 
       - name: whitepapers-page
         label: White Papers Landing Page
@@ -154,6 +358,12 @@ collections:
           - { label: Main Title, name: title, widget: string }
           - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - { label: Intro Text, name: lede, widget: text }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            types: *page_section_types
 
       - name: contact
         label: Contact Page
@@ -172,6 +382,12 @@ collections:
               - { label: Email, name: email, widget: string }
               - { label: Phone, name: phone, widget: string }
               - { label: LinkedIn, name: linkedin, widget: string, required: false }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            types: *page_section_types
 
       - name: services-page
         label: Services Page — Add, Remove or Reorder Services
@@ -181,7 +397,7 @@ collections:
           - { label: Main Title, name: title, widget: string }
           - { label: Blue Italic Title Words, name: titleAccent, widget: string }
           - { label: Intro Text, name: lede, widget: text }
-          - { label: Main Services Image, name: heroImage, widget: image, hint: "Replace the main Services page image here." }
+          - { label: Main Services Image, name: heroImage, widget: image, hint: "Choose from Media Assets or upload a replacement image." }
           - { label: Main Image Alt Text, name: heroImageAlt, widget: string }
           - { label: Focus Area Introduction, name: focusIntro, widget: text }
           - label: Focus Areas
@@ -245,6 +461,13 @@ collections:
                 fields:
                   - { label: Title, name: title, widget: string }
                   - { label: Text, name: text, widget: text }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            hint: "Use this for additional visual sections beyond the built-in Services content."
+            types: *page_section_types
 
       - name: privacy
         label: Privacy Policy
@@ -255,6 +478,12 @@ collections:
           - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - { label: Last Updated, name: updated, widget: string }
           - { label: Policy Content, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list] }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            types: *page_section_types
 
       - name: privacy-choices
         label: Privacy Choices Page
@@ -264,6 +493,12 @@ collections:
           - { label: Title, name: title, widget: string }
           - { label: Blue Italic Title Word, name: titleAccent, widget: string }
           - { label: Page Content, name: body, widget: markdown, buttons: [bold, italic, link, bulleted-list, numbered-list] }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            types: *page_section_types
 
       - name: data-requests
         label: Data Requests & Appeals Page
@@ -277,10 +512,16 @@ collections:
           - { label: Show Name Field, name: includeName, widget: boolean, default: true }
           - { label: Request Type Options, name: requestOptions, widget: list, field: { label: Option, name: option, widget: string } }
           - { label: Page Intro Content, name: body, widget: markdown, buttons: [bold, italic, link, bulleted-list, numbered-list] }
+          - label: Add Sections to the Bottom of This Page
+            name: sections
+            widget: list
+            required: false
+            typeKey: type
+            types: *page_section_types
 
   - name: custom-pages
-    label: Page Builder — Create New Pages
-    label_singular: Custom Page
+    label: Create New Page
+    label_singular: New Page
     folder: src/content/pages
     create: true
     filter: { field: pageBuilder, value: true }
@@ -288,7 +529,7 @@ collections:
     slug: "{{slug}}"
     summary: "{{title}} — /{{slug}}/"
     preview_path: "{{slug}}"
-    description: "Create a new website page without coding. Add and reorder ready-made sections such as heroes, text, image-and-text layouts, cards, calls to action, full-width images, or an advanced HTML block."
+    description: "Build a new website page with ready-made visual sections. When you want the page in the top navigation, add it under Website Menu → Top Menu."
     fields:
       - { label: Page Builder Entry, name: pageBuilder, widget: hidden, default: true }
       - { label: Page URL, name: slug, widget: string, hint: "Use lowercase words separated by hyphens, for example leadership-programs. Do not include the domain." }
@@ -299,176 +540,11 @@ collections:
         name: sections
         widget: list
         typeKey: type
-        types:
-          - label: Hero Section
-            name: hero
-            widget: object
-            fields:
-              - { label: Small Heading, name: eyebrow, widget: string, required: false }
-              - { label: Main Heading, name: title, widget: string }
-              - { label: Blue Italic Heading Words, name: titleAccent, widget: string, required: false }
-              - { label: Text, name: text, widget: text, required: false }
-              - { label: Image, name: image, widget: image, required: false }
-              - { label: Image Alt Text, name: imageAlt, widget: string, required: false }
-              - { label: Button Text, name: buttonLabel, widget: string, required: false }
-              - { label: Button Link, name: buttonLink, widget: string, required: false }
-              - label: Background
-                name: theme
-                widget: select
-                default: white
-                options:
-                  - { label: White, value: white }
-                  - { label: Soft Gray, value: paper }
-                  - { label: Navy, value: navy }
-              - label: Text Alignment
-                name: align
-                widget: select
-                default: left
-                options: [left, center]
-          - label: Text Section
-            name: text
-            widget: object
-            fields:
-              - { label: Small Heading, name: eyebrow, widget: string, required: false }
-              - { label: Heading, name: title, widget: string, required: false }
-              - { label: Text, name: text, widget: text, hint: "Separate paragraphs with a blank line." }
-              - label: Heading Size
-                name: headingSize
-                widget: select
-                default: default
-                options:
-                  - { label: Default, value: default }
-                  - { label: Smaller, value: small }
-                  - { label: Larger, value: large }
-              - label: Background
-                name: theme
-                widget: select
-                default: white
-                options:
-                  - { label: White, value: white }
-                  - { label: Soft Gray, value: paper }
-                  - { label: Navy, value: navy }
-              - label: Text Alignment
-                name: align
-                widget: select
-                default: left
-                options: [left, center]
-          - label: Image + Text Section
-            name: imageText
-            widget: object
-            fields:
-              - { label: Image, name: image, widget: image }
-              - { label: Image Alt Text, name: imageAlt, widget: string }
-              - { label: Small Heading, name: eyebrow, widget: string, required: false }
-              - { label: Heading, name: title, widget: string }
-              - { label: Text, name: text, widget: text }
-              - { label: Button Text, name: buttonLabel, widget: string, required: false }
-              - { label: Button Link, name: buttonLink, widget: string, required: false }
-              - label: Image Position
-                name: imagePosition
-                widget: select
-                default: left
-                options: [left, right]
-              - label: Heading Size
-                name: headingSize
-                widget: select
-                default: default
-                options:
-                  - { label: Default, value: default }
-                  - { label: Smaller, value: small }
-                  - { label: Larger, value: large }
-              - label: Background
-                name: theme
-                widget: select
-                default: white
-                options:
-                  - { label: White, value: white }
-                  - { label: Soft Gray, value: paper }
-                  - { label: Navy, value: navy }
-          - label: Cards / Services Grid
-            name: cards
-            widget: object
-            fields:
-              - { label: Small Heading, name: eyebrow, widget: string, required: false }
-              - { label: Section Heading, name: title, widget: string, required: false }
-              - label: Columns
-                name: columns
-                widget: select
-                default: "3"
-                options: ["2", "3", "4"]
-              - label: Background
-                name: theme
-                widget: select
-                default: white
-                options:
-                  - { label: White, value: white }
-                  - { label: Soft Gray, value: paper }
-                  - { label: Navy, value: navy }
-              - label: Cards
-                label_singular: Card
-                name: items
-                widget: list
-                summary: "{{fields.title}}"
-                fields:
-                  - { label: Title, name: title, widget: string }
-                  - { label: Text, name: text, widget: text, required: false }
-                  - { label: Image, name: image, widget: image, required: false }
-                  - { label: Image Alt Text, name: imageAlt, widget: string, required: false }
-                  - { label: Button Text, name: buttonLabel, widget: string, required: false }
-                  - { label: Button Link, name: buttonLink, widget: string, required: false }
-          - label: Full Width Image
-            name: image
-            widget: object
-            fields:
-              - { label: Image, name: image, widget: image }
-              - { label: Image Alt Text, name: imageAlt, widget: string }
-              - { label: Caption, name: caption, widget: string, required: false }
-              - label: Background
-                name: theme
-                widget: select
-                default: white
-                options:
-                  - { label: White, value: white }
-                  - { label: Soft Gray, value: paper }
-          - label: Call to Action
-            name: callout
-            widget: object
-            fields:
-              - { label: Small Heading, name: eyebrow, widget: string, required: false }
-              - { label: Heading, name: title, widget: string }
-              - { label: Text, name: text, widget: text, required: false }
-              - { label: Button Text, name: buttonLabel, widget: string, required: false }
-              - { label: Button Link, name: buttonLink, widget: string, required: false }
-              - label: Background
-                name: theme
-                widget: select
-                default: navy
-                options:
-                  - { label: Navy, value: navy }
-                  - { label: White, value: white }
-                  - { label: Soft Gray, value: paper }
-              - label: Text Alignment
-                name: align
-                widget: select
-                default: center
-                options: [left, center]
-          - label: Advanced HTML Block
-            name: html
-            widget: object
-            fields:
-              - { label: HTML, name: html, widget: code, default_language: html, allow_language_selection: false, output_code_only: true, hint: "Advanced option. Paste trusted HTML only. Use the visual sections above whenever possible." }
-              - label: Background
-                name: theme
-                widget: select
-                default: white
-                options:
-                  - { label: White, value: white }
-                  - { label: Soft Gray, value: paper }
-                  - { label: Navy, value: navy }
+        types: *page_section_types
 
   - name: posts
-    label: News & Insights Articles
-    label_singular: Article
+    label: Blog Posts
+    label_singular: Blog Post
     folder: src/content/posts
     create: true
     slug: "{{slug}}"
@@ -500,10 +576,14 @@ collections:
     fields:
       - { label: Article Title, name: title, widget: string, hint: "Use the exact published headline." }
       - { label: Subtitle, name: subtitle, widget: string, required: false, hint: "Optional. Displays directly under the article title in blue italic type." }
-      - { label: Author, name: author, widget: string, default: Julia Mercier }
-      - { label: Author Job Title, name: authorTitle, widget: string, default: Principal }
-      - { label: Author Headshot, name: authorImage, widget: image, required: false, hint: "Optional. Upload or replace the writer headshot shown beside the byline." }
-      - { label: Headshot Alt Text, name: authorImageAlt, widget: string, required: false }
+      - label: Author
+        name: author
+        widget: select
+        default: Julia Mercier
+        hint: "The author's role and headshot are automatically matched to that person under About Page & Team Headshots."
+        options:
+          - Julia Mercier
+          - Allie McFarlane
       - { label: Publication Date, name: pubDate, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, default: "{{now}}" }
       - { label: Updated Date, name: updatedDate, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, required: false }
       - { label: Category, name: category, widget: select, default: Insight, options: [Insight, Speaking, White Paper, Announcement, News] }
@@ -524,7 +604,7 @@ collections:
       - { label: Article Body, name: body, widget: markdown, buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote], hint: "Write the article here. The preview shows the site styling as you edit." }
 
   - name: white-papers
-    label: White Papers — Library
+    label: White Papers
     label_singular: White Paper
     folder: src/content/white-papers
     create: true
