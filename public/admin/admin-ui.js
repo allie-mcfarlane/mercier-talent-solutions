@@ -1,5 +1,6 @@
 (() => {
   const ADMIN_LINKS = {
+    home: '#/',
     currentPages: '#/collections/pages',
     newPage: '#/collections/custom-pages/new',
     blog: '#/collections/posts',
@@ -22,49 +23,86 @@
     shell.className = 'mts-editor-shell';
     shell.innerHTML = `
       <div class="mts-editor-brandbar">
-        <div>
-          <strong>Mercier Website Editor</strong>
-          <span>Draft safely, preview your changes, then publish when ready.</span>
+        <a class="mts-editor-brand" href="${ADMIN_LINKS.home}" aria-label="Mercier Website Editor home">
+          <img src="/images/mercier-logo-color.png" alt="Mercier Talent Solutions" />
+          <span class="mts-editor-brand-copy">
+            <strong>Website Editor</strong>
+            <small>Mercier Talent Solutions</small>
+          </span>
+        </a>
+        <div class="mts-editor-actions">
+          <a class="mts-back-home" href="${ADMIN_LINKS.home}">← Editor Home</a>
+          <span class="mts-draft-pill">Draft mode</span>
+          <a class="mts-open-site" href="/" target="_blank" rel="noopener">View Website ↗</a>
         </div>
-        <a class="mts-open-site" href="/" target="_blank" rel="noopener">Open Live Website ↗</a>
       </div>
+
       <nav class="mts-editor-nav" aria-label="Website editor menu">
         <details class="mts-editor-menu">
           <summary>Pages</summary>
           <div class="mts-editor-dropdown">
-            <a href="${ADMIN_LINKS.currentPages}"><strong>Current Pages</strong><span>Edit Home, About, Services, Contact and privacy pages.</span></a>
-            <a href="${ADMIN_LINKS.newPage}"><strong>Create New Page</strong><span>Build a new page with ready-made visual sections.</span></a>
+            <a href="${ADMIN_LINKS.currentPages}">
+              <strong>Current Pages</strong>
+              <span>Edit Home, About, Services, Contact and the other pages already on the site.</span>
+            </a>
+            <a href="${ADMIN_LINKS.newPage}">
+              <strong>Create New Page</strong>
+              <span>Build a new page with visual sections. No code required.</span>
+            </a>
           </div>
         </details>
-        <details class="mts-editor-menu">
-          <summary>Content</summary>
-          <div class="mts-editor-dropdown">
-            <a href="${ADMIN_LINKS.blog}"><strong>Blog Posts</strong><span>Create and edit articles and insights.</span></a>
-            <a href="${ADMIN_LINKS.whitepapers}"><strong>White Papers</strong><span>Manage PDFs, titles, dates, images and descriptions.</span></a>
-          </div>
-        </details>
-        <details class="mts-editor-menu">
-          <summary>Website</summary>
-          <div class="mts-editor-dropdown">
-            <a href="${ADMIN_LINKS.menu}"><strong>Top Menu</strong><span>Choose which pages appear in the website navigation.</span></a>
-            <a href="${ADMIN_LINKS.media}"><strong>Media Assets</strong><span>Browse website photos, headshots, graphics and uploads.</span></a>
-          </div>
-        </details>
-        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.design}">Design Settings</a>
+        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.blog}">Blog Posts</a>
+        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.whitepapers}">White Papers</a>
+        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.media}">Media Assets</a>
+        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.menu}">Top Menu</a>
+        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.design}">Design</a>
       </nav>
-      <section class="mts-editor-dashboard" aria-label="Editor quick start">
-        <div class="mts-dashboard-copy">
-          <span class="mts-dashboard-kicker">QUICK START</span>
-          <h1>What would you like to edit?</h1>
-          <p>Choose a task below. You do not need to know anything about code.</p>
+
+      <section class="mts-editor-dashboard" aria-label="Editor home">
+        <div class="mts-dashboard-welcome">
+          <span class="mts-dashboard-kicker">WELCOME</span>
+          <h1>What would you like to change?</h1>
+          <p>Choose a task below. Changes stay as drafts until you choose to publish them, so you can preview everything first.</p>
         </div>
-        <div class="mts-dashboard-grid">
-          <a href="${ADMIN_LINKS.currentPages}"><span class="mts-card-icon">▣</span><strong>Edit a Page</strong><small>Update text, photos or add sections.</small></a>
-          <a href="${ADMIN_LINKS.newPage}"><span class="mts-card-icon">＋</span><strong>Create a Page</strong><small>Build a new page from visual blocks.</small></a>
-          <a href="${ADMIN_LINKS.blog}"><span class="mts-card-icon">✎</span><strong>Blog Posts</strong><small>Write or update website articles.</small></a>
-          <a href="${ADMIN_LINKS.whitepapers}"><span class="mts-card-icon">▤</span><strong>White Papers</strong><small>Manage the white paper library.</small></a>
-          <a href="${ADMIN_LINKS.media}"><span class="mts-card-icon">▧</span><strong>Media Assets</strong><small>See and replace website images.</small></a>
-          <a href="${ADMIN_LINKS.menu}"><span class="mts-card-icon">☰</span><strong>Top Menu</strong><small>Add or reorder navigation links.</small></a>
+
+        <div class="mts-dashboard-primary">
+          <a href="${ADMIN_LINKS.currentPages}">
+            <span class="mts-card-number">1</span>
+            <div>
+              <strong>Edit an existing page</strong>
+              <small>Change text, replace photos, or add a new section to a page already on the website.</small>
+            </div>
+            <span class="mts-card-arrow">→</span>
+          </a>
+          <a href="${ADMIN_LINKS.newPage}">
+            <span class="mts-card-number">2</span>
+            <div>
+              <strong>Create a new page</strong>
+              <small>Start with a blank page and add ready-made hero, text, image, card, and call-to-action sections.</small>
+            </div>
+            <span class="mts-card-arrow">→</span>
+          </a>
+          <a href="${ADMIN_LINKS.blog}">
+            <span class="mts-card-number">3</span>
+            <div>
+              <strong>Add or edit a blog post</strong>
+              <small>Write an article, choose the author, add images, and preview it before publishing.</small>
+            </div>
+            <span class="mts-card-arrow">→</span>
+          </a>
+        </div>
+
+        <div class="mts-more-tools">
+          <div class="mts-more-tools-heading">
+            <strong>More website tools</strong>
+            <span>Use these when you need them.</span>
+          </div>
+          <div class="mts-secondary-grid">
+            <a href="${ADMIN_LINKS.whitepapers}"><span>White Papers</span><small>Manage PDFs and library entries</small></a>
+            <a href="${ADMIN_LINKS.media}"><span>Media Assets</span><small>Browse or replace website images</small></a>
+            <a href="${ADMIN_LINKS.menu}"><span>Top Menu</span><small>Add or reorder website links</small></a>
+            <a href="${ADMIN_LINKS.design}"><span>Design</span><small>Colors and font sizes</small></a>
+          </div>
         </div>
       </section>
     `;
@@ -104,9 +142,14 @@
 
   const updateDashboard = () => {
     const dashboard = document.querySelector('.mts-editor-dashboard');
+    const backHome = document.querySelector('.mts-back-home');
     if (!dashboard) return;
+
     const hash = window.location.hash || '#/';
-    dashboard.hidden = !(hash === '#/' || hash === '#');
+    const isHome = hash === '#/' || hash === '#';
+    dashboard.hidden = !isHome;
+    document.body.classList.toggle('mts-editor-home', isHome);
+    if (backHome) backHome.hidden = isHome;
   };
 
   const decoratePreview = () => {
@@ -116,7 +159,7 @@
       if (parent && !parent.querySelector(':scope > .mts-preview-label')) {
         const label = document.createElement('div');
         label.className = 'mts-preview-label';
-        label.textContent = 'Website Preview';
+        label.innerHTML = '<strong>Website preview</strong><span>This updates while you edit. Nothing is live until you publish.</span>';
         parent.prepend(label);
       }
     });
