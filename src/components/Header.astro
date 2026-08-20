@@ -1,5 +1,9 @@
 ---
+import { getEntry } from "astro:content";
 import { site } from "../data/site";
+
+const navigation = await getEntry("navigation", "main");
+const navItems = navigation?.data.items ?? site.nav;
 ---
 
 <header class="site-header">
@@ -16,7 +20,7 @@ import { site } from "../data/site";
     </button>
 
     <nav class="nav" id="site-nav" aria-label="Site navigation">
-      {site.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
     </nav>
   </div>
 </header>
