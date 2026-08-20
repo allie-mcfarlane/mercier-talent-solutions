@@ -1,0 +1,193 @@
+---
+import ResponsiveImage from "./ResponsiveImage.astro";
+
+type BuilderSection = Record<string, any>;
+
+const { sections = [] } = Astro.props as { sections?: BuilderSection[] };
+
+const paragraphs = (value: unknown) =>
+  typeof value === "string"
+    ? value.split(/\n\s*\n/).map((item) => item.trim()).filter(Boolean)
+    : [];
+
+const sectionClass = (section: BuilderSection) =>
+  [
+    "builder-section",
+    `builder-${section.type ?? "text"}`,
+    `builder-theme-${section.theme ?? "white"}`,
+    `builder-align-${section.align ?? "left"}`,
+  ].join(" ");
+---
+
+{sections.map((section) => (
+  <section class={sectionClass(section)}>
+    {section.type === "hero" && (
+      <div class={`container builder-hero-grid ${section.image ? "has-image" : ""}`}>
+        <div class="builder-copy">
+          {section.eyebrow && <p class="eyebrow">{section.eyebrow}</p>}
+          {section.title && <h1>{section.title} {section.titleAccent && <em>{section.titleAccent}</em>}</h1>}
+          {paragraphs(section.text).map((paragraph) => <p>{paragraph}</p>)}
+          {section.buttonLabel && section.buttonLink && <a class="button" href={section.buttonLink}>{section.buttonLabel}</a>}
+        </div>
+        {section.image && (
+          <div class="media-frame builder-hero-image">
+            <ResponsiveImage src={section.image} alt={section.imageAlt ?? ""} sizes="(min-width: 900px) 48vw, 100vw" />
+          </div>
+        )}
+      </div>
+    )}
+
+    {section.type === "text" && (
+      <div class="container builder-reading">
+        {section.eyebrow && <p class="eyebrow">{section.eyebrow}</p>}
+        {section.title && <h2 class={`builder-heading-${section.headingSize ?? "default"}`}>{section.title}</h2>}
+        <div class="builder-prose">
+          {paragraphs(section.text).map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      </div>
+    )}
+
+    {section.type === "imageText" && (
+      <div class={`container builder-image-text ${section.imagePosition === "right" ? "image-right" : ""}`}>
+        <div class="media-frame builder-image-frame">
+          {section.image && <ResponsiveImage src={section.image} alt={section.imageAlt ?? ""} sizes="(min-width: 900px) 46vw, 100vw" />}
+        </div>
+        <div class="builder-copy">
+          {section.eyebrow && <p class="eyebrow">{section.eyebrow}</p>}
+          {section.title && <h2 class={`builder-heading-${section.headingSize ?? "default"}`}>{section.title}</h2>}
+          {paragraphs(section.text).map((paragraph) => <p>{paragraph}</p>)}
+          {section.buttonLabel && section.buttonLink && <a class="button secondary" href={section.buttonLink}>{section.buttonLabel}</a>}
+        </div>
+      </div>
+    )}
+
+    {section.type === "cards" && (
+      <div class="container">
+        <div class="section-heading">
+          {section.eyebrow && <p class="eyebrow">{section.eyebrow}</p>}
+          {section.title && <h2 class={`builder-heading-${section.headingSize ?? "default"}`}>{section.title}</h2>}
+        </div>
+        <div class={`builder-card-grid columns-${section.columns ?? "3"}`}>
+          {(section.items ?? []).map((item: BuilderSection) => (
+            <article class="card">
+              {item.image && <img class="builder-card-image" src={item.image} alt={item.imageAlt ?? ""} loading="lazy" />}
+              <h3>{item.title}</h3>
+              {item.text && <p>{item.text}</p>}
+              {item.buttonLabel && item.buttonLink && <a class="button text" href={item.buttonLink}>{item.buttonLabel}</a>}
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {section.type === "image" && section.image && (
+      <div class="container builder-image-only">
+        <div class="media-frame">
+          <ResponsiveImage src={section.image} alt={section.imageAlt ?? ""} sizes="100vw" />
+        </div>
+        {section.caption && <p class="builder-caption">{section.caption}</p>}
+      </div>
+    )}
+
+    {section.type === "callout" && (
+      <div class="container builder-callout">
+        {section.eyebrow && <p class="eyebrow">{section.eyebrow}</p>}
+        {section.title && <h2>{section.title}</h2>}
+        {section.text && <p>{section.text}</p>}
+        {section.buttonLabel && section.buttonLink && <a class="button" href={section.buttonLink}>{section.buttonLabel}</a>}
+      </div>
+    )}
+
+    {section.type === "html" && section.html && (
+      <div class="container builder-html" set:html={section.html}></div>
+    )}
+  </section>
+))}
+
+<style>
+  .builder-section {
+    padding: clamp(4rem, 7vw, 6.5rem) 0;
+  }
+
+  .builder-theme-white { background: var(--color-white); }
+  .builder-theme-paper { background: var(--color-paper); }
+  .builder-theme-navy { background: var(--color-blue-dark); color: var(--color-white); }
+  .builder-theme-navy :global(h1),
+  .builder-theme-navy :global(h2),
+  .builder-theme-navy :global(h3),
+  .builder-theme-navy :global(p) { color: var(--color-white); }
+  .builder-theme-navy .eyebrow { color: rgba(255,255,255,.72); }
+  .builder-theme-navy .button { border-color: var(--color-white); background: var(--color-white); color: var(--color-blue-dark); }
+
+  .builder-align-center .builder-copy,
+  .builder-align-center .builder-reading,
+  .builder-align-center .section-heading,
+  .builder-align-center .builder-callout { text-align: center; margin-inline: auto; }
+  .builder-align-center .eyebrow,
+  .builder-align-center .button { margin-inline: auto; }
+
+  .builder-hero-grid,
+  .builder-image-text {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+
+  .builder-hero-grid.has-image,
+  .builder-image-text {
+    grid-template-columns: minmax(0, .95fr) minmax(320px, 1.05fr);
+  }
+
+  .builder-copy { max-width: 760px; }
+  .builder-copy h1 { margin: .55rem 0 1.25rem; font-size: var(--page-title-size); line-height: 1.02; }
+  .builder-copy h2,
+  .builder-reading h2,
+  .builder-callout h2 { margin: .55rem 0 1.25rem; font-size: var(--section-title-size); line-height: 1.08; }
+  .builder-copy p,
+  .builder-reading p,
+  .builder-callout p { color: var(--color-muted); line-height: 1.65; }
+  .builder-theme-navy .builder-copy p,
+  .builder-theme-navy .builder-reading p,
+  .builder-theme-navy .builder-callout p { color: rgba(255,255,255,.82); }
+  .builder-copy .button,
+  .builder-callout .button { margin-top: .6rem; }
+
+  .builder-reading { max-width: var(--reading-width); }
+  .builder-prose { max-width: 860px; }
+  .builder-heading-small { font-size: clamp(1.55rem, 2.6vw, 2.4rem) !important; }
+  .builder-heading-large { font-size: clamp(2.4rem, 4.5vw, 4.2rem) !important; }
+
+  .builder-image-frame { min-height: 320px; }
+  .builder-image-frame :global(img),
+  .builder-hero-image :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .builder-image-text.image-right .builder-image-frame { order: 2; }
+  .builder-image-text.image-right .builder-copy { order: 1; }
+
+  .builder-card-grid {
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.35rem);
+    margin-top: 2rem;
+  }
+  .builder-card-grid.columns-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .builder-card-grid.columns-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .builder-card-grid.columns-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .builder-card-image { width: calc(100% + 3.3rem); max-width: none; height: 190px; margin: -1.65rem -1.65rem 1.25rem; object-fit: cover; }
+
+  .builder-image-only .media-frame { max-height: 760px; }
+  .builder-image-only :global(img) { width: 100%; max-height: 760px; object-fit: cover; }
+  .builder-caption { margin: .8rem 0 0; color: var(--color-muted); font-size: .9rem; }
+
+  .builder-callout { max-width: 980px; }
+  .builder-html { max-width: var(--content-wide); }
+
+  @media (max-width: 820px) {
+    .builder-hero-grid.has-image,
+    .builder-image-text { grid-template-columns: 1fr; }
+    .builder-image-text.image-right .builder-image-frame,
+    .builder-image-text.image-right .builder-copy { order: initial; }
+    .builder-card-grid.columns-2,
+    .builder-card-grid.columns-3,
+    .builder-card-grid.columns-4 { grid-template-columns: 1fr; }
+  }
+</style>
