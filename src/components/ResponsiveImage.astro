@@ -15,9 +15,10 @@ const {
   eager = false,
 } = Astro.props;
 
+const isAdminUpload = src.startsWith("/images/uploads/");
 const optimizedBase = src.replace(/^\/images\//, "/images/optimized/").replace(/\.[^.]+$/, "");
-const fallbackSrc = `${optimizedBase}-1400.jpg`;
-const srcset = `${optimizedBase}-900.jpg 900w, ${optimizedBase}-1400.jpg 1400w`;
+const fallbackSrc = isAdminUpload ? src : `${optimizedBase}-1400.jpg`;
+const srcset = isAdminUpload ? undefined : `${optimizedBase}-900.jpg 900w, ${optimizedBase}-1400.jpg 1400w`;
 ---
 
 <img
