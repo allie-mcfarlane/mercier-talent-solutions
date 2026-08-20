@@ -2,6 +2,8 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ThemeSettings from "../components/ThemeSettings.astro";
+import PageBuilder from "../components/PageBuilder.astro";
+import { getEntry } from "astro:content";
 import { site } from "../data/site";
 import "../styles/global.css";
 
@@ -19,6 +21,34 @@ const canonicalUrl = new URL(Astro.url.pathname, site.url).toString();
 const imageUrl = image ? new URL(image, site.url).toString() : undefined;
 const publishedIso = publishedTime instanceof Date ? publishedTime.toISOString() : publishedTime;
 const modifiedIso = modifiedTime instanceof Date ? modifiedTime.toISOString() : modifiedTime;
+
+const existingPageByPath: Record<string, string> = {
+  "/": "home",
+  "/about/": "about",
+  "/services/": "services",
+  "/news/": "news",
+  "/whitepapers/": "whitepapers",
+  "/contactus/": "contact",
+  "/privacy/": "privacy",
+  "/privacy-choices/": "privacy-choices",
+  "/data-requests/": "data-requests",
+};
+
+const pageEntryId = existingPageByPath[Astro.url.pathname];
+const pageEntry = pageEntryId ? await getEntry("pages", pageEntryId) : undefined;
+const additionalSections = (pageEntry?.data.sections ?? []) as Record<string, unknown>[];
+
+const aboutEntry = await getEntry("pages", "about");
+const teamAuthors = Object.fromEntries(
+  (aboutEntry?.data.team ?? []).map((person) => [
+    person.name,
+    {
+      image: person.image,
+      imageAlt: person.imageAlt,
+      role: person.eyebrow,
+    },
+  ]),
+);
 ---
 
 <!doctype html>
@@ -69,8 +99,28 @@ const modifiedIso = modifiedTime instanceof Date ? modifiedTime.toISOString() : 
     <Header />
     <main id="main-content">
       <slot />
+      {additionalSections.length > 0 && <PageBuilder sections={additionalSections} />}
     </main>
     <Footer />
+    <script is:inline define:vars={{ teamAuthors }}>
+      (() => {
+        const authorName = document.querySelector(".author-copy strong")?.textContent?.trim();
+        if (!authorName || !teamAuthors[authorName]) return;
+
+        const profile = teamAuthors[authorName];
+        const photo = document.querySelector(".author-photo");
+        const role = document.querySelector(".author-copy span");
+
+        if (photo instanceof HTMLImageElement && profile.image) {
+          photo.src = profile.image;
+          photo.alt = profile.imageAlt || authorName;
+        }
+
+        if (role && profile.role) {
+          role.textContent = profile.role;
+        }
+      })();
+    </script>
     <script>
       (() => {
         const typedNavigator = navigator as unknown as Navigator & Record<string, unknown>;
