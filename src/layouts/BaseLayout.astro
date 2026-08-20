@@ -1,6 +1,7 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import ThemeSettings from "../components/ThemeSettings.astro";
 import { site } from "../data/site";
 import "../styles/global.css";
 
@@ -49,6 +50,7 @@ const modifiedIso = modifiedTime instanceof Date ? modifiedTime.toISOString() : 
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Sora:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
+    <ThemeSettings />
     {Astro.url.pathname === "/" && <link rel="stylesheet" href="/home-polish.css" />}
     {Astro.url.pathname === "/" && <link rel="stylesheet" href="/home-final-fixes.css" />}
     {Astro.url.pathname === "/" && <script is:inline src="/home-final-fixes.js" defer></script>}
