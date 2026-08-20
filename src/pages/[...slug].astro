@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageBuilder from "../components/PageBuilder.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const pages = await getCollection("pages", ({ data }) => data.pageBuilder === true && Boolean(data.slug));
+
+  return pages.map((page) => ({
+    params: { slug: String(page.data.slug).replace(/^\/+|\/+$/g, "") },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const sections = (page.data.sections ?? []) as Record<string, unknown>[];
+const pageTitle = [page.data.title, page.data.titleAccent].filter(Boolean).join(" ") || "Mercier Talent Solutions";
+const description = page.data.seoDescription ?? page.data.lede ?? "Mercier Talent Solutions";
+---
+
+<BaseLayout title={`${pageTitle} | Mercier Talent Solutions`} description={description}>
+  {sections.length ? (
+    <PageBuilder sections={sections} />
+  ) : (
+    <section class="section">
+      <div class="container empty-page">
+        <p class="eyebrow">{page.data.eyebrow ?? "Mercier Talent Solutions"}</p>
+        <h1>{page.data.title} {page.data.titleAccent && <em>{page.data.titleAccent}</em>}</h1>
+        {page.data.lede && <p>{page.data.lede}</p>}
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .empty-page {
+    max-width: var(--reading-width);
+  }
+
+  .empty-page h1 {
+    margin: .55rem 0 1.25rem;
+    font-size: var(--page-title-size);
+    line-height: 1.03;
+  }
+
+  .empty-page p:not(.eyebrow) {
+    color: var(--color-muted);
+    line-height: 1.65;
+  }
+</style>
