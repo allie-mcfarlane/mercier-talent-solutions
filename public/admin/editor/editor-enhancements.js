@@ -64,7 +64,7 @@
     dock.innerHTML = `
       <div class="ve-publish-dock-copy">
         <strong>Ready when you are</strong>
-        <span>Save Draft keeps it private. Publish updates the live website.</span>
+        <span>Save Draft keeps it off the live site. Publish updates the website.</span>
       </div>
       <button class="ve-button" type="button" data-dock-save>Save Draft</button>
       <button class="ve-button primary" type="button" data-dock-publish>Publish to Website</button>
@@ -79,7 +79,7 @@
     if (!head || head.parentElement?.querySelector(':scope > .ve-save-note')) return;
     const note = document.createElement('p');
     note.className = 've-save-note';
-    note.innerHTML = '<strong>Save Draft</strong> keeps changes private. <strong>Publish</strong> sends them to the live website; Cloudflare may take a short moment to deploy.';
+    note.innerHTML = '<strong>Save Draft</strong> keeps changes off the live website. <strong>Publish</strong> sends them live; Cloudflare may take a short moment to deploy.';
     head.after(note);
   };
 
