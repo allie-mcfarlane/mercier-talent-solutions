@@ -204,9 +204,21 @@ const settings = defineCollection({
   }),
 });
 
+const navigation = defineCollection({
+  schema: z.object({
+    items: z.array(
+      z.object({
+        label: z.string(),
+        href: z.string(),
+      }),
+    ),
+  }),
+});
+
 export const collections = {
   pages,
   posts,
   "white-papers": whitePapers,
   settings,
+  navigation,
 };
