@@ -11,15 +11,18 @@
     <link rel="stylesheet" href="/admin/page-guide.css" />
     <link rel="stylesheet" href="/admin/page-editor-polish.css" />
     <link rel="stylesheet" href="/admin/blog-editor.css" />
+    <link rel="stylesheet" href="/admin/editor-unified.css" />
     <script>window.CMS_MANUAL_INIT = true;</script>
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@3.15.1/dist/decap-cms.js"></script>
+    <script src="/admin/editor-components.js"></script>
     <script>
       window.CMS.registerPreviewStyle("/admin/preview.css");
       window.CMS.registerPreviewStyle("/admin/page-preview.css");
       window.CMS.registerPreviewStyle("/admin/preview-friendly.css");
       window.CMS.registerPreviewStyle("/admin/page-live-preview.css");
+      window.CMS.registerPreviewStyle("/admin/preview-polish.css");
 
       window.initCMS({
         config: {
@@ -60,5 +63,6 @@
     <script src="/admin/admin-ui.js"></script>
     <script src="/admin/page-guide.js"></script>
     <script src="/admin/blog-guide.js"></script>
+    <script src="/admin/preview-click-sync.js"></script>
   </body>
 </html>
