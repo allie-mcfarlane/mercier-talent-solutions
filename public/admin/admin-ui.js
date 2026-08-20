@@ -1,9 +1,9 @@
 (() => {
   const ADMIN_LINKS = {
-    home: '#/',
-    currentPages: '#/collections/pages',
-    newPage: '#/collections/custom-pages/new',
-    blog: '#/collections/posts',
+    home: '/admin/editor/#/',
+    currentPages: '/admin/editor/#/pages',
+    newPage: '/admin/editor/#/new-page',
+    blog: '/admin/editor/#/blog',
     whitepapers: '#/collections/white-papers',
     menu: '#/collections/navigation/entries/main',
     media: '#/media',
@@ -70,7 +70,7 @@
             <span class="mts-card-number">1</span>
             <div>
               <strong>Edit an existing page</strong>
-              <small>Change text, replace photos, or add a new section to a page already on the website.</small>
+              <small>Change text, replace photos, duplicate sections, or add new sections while viewing the website beside your changes.</small>
             </div>
             <span class="mts-card-arrow">→</span>
           </a>
@@ -86,7 +86,7 @@
             <span class="mts-card-number">3</span>
             <div>
               <strong>Add or edit a blog post</strong>
-              <small>Write an article, choose the author, add images, and preview it before publishing.</small>
+              <small>Write an article, insert images, reuse sources for citations, and preview it before publishing.</small>
             </div>
             <span class="mts-card-arrow">→</span>
           </a>
