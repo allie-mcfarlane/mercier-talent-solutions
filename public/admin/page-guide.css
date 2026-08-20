@@ -1,4 +1,5 @@
-body.mts-guided-pages {
+body.mts-guided-pages,
+body.mts-focused-page-editor {
   background: #f7f9fc;
 }
 
@@ -150,10 +151,10 @@ body.mts-guided-pages {
   z-index: 9999;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px 24px;
+  gap: 14px 24px;
   align-items: center;
-  border-bottom: 1px solid #e2e7ed;
-  padding: 18px clamp(16px, 2.5vw, 30px) 14px;
+  border-bottom: 1px solid #e1e7ee;
+  padding: 20px clamp(16px, 2.5vw, 30px) 18px;
   background: #fff;
   box-shadow: 0 4px 16px rgba(26, 43, 70, .035);
 }
@@ -174,8 +175,8 @@ body.mts-guided-pages {
 
 .mts-page-edit-guide-main > div {
   display: grid;
-  gap: 2px;
   min-width: 0;
+  gap: 2px;
 }
 
 .mts-page-edit-guide-main .mts-page-step {
@@ -184,13 +185,14 @@ body.mts-guided-pages {
 
 .mts-page-edit-guide-main strong {
   color: #1a2b46;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .mts-page-edit-guide-main small {
+  max-width: 680px;
   color: #6f7b89;
   font-size: 11px;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .mts-page-edit-guide-actions {
@@ -227,7 +229,7 @@ body.mts-guided-pages {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 7px;
 }
 
 .mts-edit-steps span {
@@ -254,39 +256,208 @@ body.mts-guided-pages {
   font-size: 9px;
 }
 
-.mts-builder-helper {
+.mts-section-chooser {
   grid-column: 1 / -1;
+  display: grid;
+  gap: 12px;
+  margin-top: 2px;
+  border: 1px solid #dfe6ed;
+  border-radius: 14px;
+  padding: 16px;
+  background: #f8fafc;
+}
+
+.mts-section-chooser-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mts-section-chooser-head > div {
+  display: grid;
+  gap: 2px;
+}
+
+.mts-section-chooser-head span {
+  color: #8290a0;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .13em;
+}
+
+.mts-section-chooser-head strong {
+  color: #1a2b46;
+  font-size: 13px;
+}
+
+.mts-show-all-fields {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: transparent;
+  color: #66778b;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mts-show-all-fields:hover,
+.mts-show-all-fields.is-active {
+  background: #eaf0f6;
+  color: #334a67;
+}
+
+.mts-section-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 12px;
-  border-top: 1px solid #edf0f4;
-  padding-top: 10px;
-  color: #66707c;
-  font-size: 10px;
+  gap: 8px;
+}
+
+.mts-section-tabs button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #dbe3eb;
+  border-radius: 10px;
+  padding: 0 13px;
+  background: #fff;
+  color: #42566f;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.mts-section-tabs button:hover,
+.mts-section-tabs button:focus-visible {
+  border-color: #aebfd1;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(69, 98, 142, .08);
+}
+
+.mts-section-tabs button.is-active {
+  border-color: #45628e;
+  background: #45628e;
+  color: #fff;
+  box-shadow: 0 5px 14px rgba(69, 98, 142, .18);
+}
+
+.mts-section-tabs b {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef3f7;
+  color: #45628e;
+  font-size: 9px;
+}
+
+.mts-section-tabs button.is-active b {
+  background: rgba(255, 255, 255, .18);
+  color: #fff;
+}
+
+.mts-section-help {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 9px;
+  min-height: 34px;
+  align-items: center;
+  border-radius: 9px;
+  padding: 8px 11px;
+  background: #fff;
+  color: #6c7886;
+  font-size: 10.5px;
   line-height: 1.45;
+}
+
+.mts-section-help strong {
+  color: #334a67;
+}
+
+.mts-builder-helper {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  border-top: 1px solid #edf0f4;
+  padding-top: 12px;
+}
+
+.mts-builder-helper > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  align-items: start;
+  border: 1px solid #e1e7ed;
+  border-radius: 10px;
+  padding: 11px;
+  background: #f9fbfc;
+}
+
+.mts-builder-helper b {
+  grid-row: 1 / 3;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e5edf5;
+  color: #45628e;
+  font-size: 10px;
 }
 
 .mts-builder-helper strong {
   color: #334a67;
+  font-size: 10.5px;
 }
 
-/* Make the actual Decap form feel less dense when editing pages. */
-body:has(.mts-page-edit-guide) #nc-root {
+.mts-builder-helper span {
+  color: #718092;
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+/* Make the Decap form calmer and easier to scan while editing a page. */
+body.mts-focused-page-editor #nc-root {
   background: #f7f9fc;
 }
 
-body:has(.mts-page-edit-guide) #nc-root label {
+body.mts-focused-page-editor #nc-root label {
   color: #334a67;
+  font-weight: 700;
 }
 
-body:has(.mts-page-edit-guide) #nc-root input,
-body:has(.mts-page-edit-guide) #nc-root textarea,
-body:has(.mts-page-edit-guide) #nc-root select {
-  border-radius: 9px !important;
+body.mts-focused-page-editor #nc-root input,
+body.mts-focused-page-editor #nc-root textarea,
+body.mts-focused-page-editor #nc-root select {
+  border-radius: 10px !important;
 }
 
-body:has(.mts-page-edit-guide) #nc-root textarea {
-  line-height: 1.55;
+body.mts-focused-page-editor #nc-root input:focus,
+body.mts-focused-page-editor #nc-root textarea:focus,
+body.mts-focused-page-editor #nc-root select:focus {
+  outline: 3px solid rgba(69, 98, 142, .1) !important;
+}
+
+body.mts-focused-page-editor #nc-root textarea {
+  line-height: 1.58;
+}
+
+body.mts-focused-page-editor [data-mts-page-field="true"] {
+  scroll-margin-top: 230px;
+}
+
+@media (max-width: 1020px) {
+  .mts-builder-helper {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 900px) {
@@ -304,12 +475,14 @@ body:has(.mts-page-edit-guide) #nc-root textarea {
 }
 
 @media (max-width: 620px) {
-  .mts-page-picker-grid {
+  .mts-page-picker-grid,
+  .mts-builder-helper {
     grid-template-columns: 1fr;
   }
 
   .mts-create-page-callout,
-  .mts-page-edit-guide-main {
+  .mts-page-edit-guide-main,
+  .mts-section-chooser-head {
     align-items: flex-start;
   }
 
@@ -330,5 +503,18 @@ body:has(.mts-page-edit-guide) #nc-root textarea {
     width: fit-content;
     border-right: 0;
     padding-right: 0;
+  }
+
+  .mts-section-chooser-head {
+    display: grid;
+  }
+
+  .mts-section-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .mts-section-tabs button {
+    justify-content: flex-start;
   }
 }
