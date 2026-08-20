@@ -1,7 +1,122 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Sora:wght@600;700;800&display=swap");
 
-.admin-site-preview {
+html,
+body {
+  margin: 0;
+  background: #eef1f5;
+}
+
+.preview-browser {
   min-height: 100vh;
+  background: #fff;
+  color: #2b3036;
+  font-family: "Proxima Nova", Manrope, Arial, sans-serif;
+}
+
+.preview-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(221, 220, 215, 0.78);
+  background: rgba(255, 255, 255, 0.97);
+}
+
+.preview-header-inner {
+  display: flex;
+  width: calc(100% - 48px);
+  min-height: 80px;
+  margin-inline: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.preview-brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.preview-brand img {
+  display: block;
+  width: 184px;
+  height: auto;
+}
+
+.preview-top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(14px, 2vw, 30px);
+  align-items: center;
+  font-family: Manrope, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.preview-top-nav a {
+  color: #000;
+  text-decoration: none;
+}
+
+.preview-top-nav a:hover {
+  color: #45628e;
+}
+
+.preview-site-main {
+  min-height: 60vh;
+}
+
+.preview-site-footer {
+  padding: 58px 0 34px;
+  background: #1a2b46;
+  color: #fff;
+}
+
+.preview-site-footer h2 {
+  margin: 0 0 36px;
+  color: #fff !important;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.08;
+  text-align: center;
+}
+
+.preview-site-footer h2 em {
+  color: #45628e;
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+}
+
+.preview-footer-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 34px;
+  align-items: start;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-top: 26px;
+}
+
+.preview-footer-row img {
+  width: 178px;
+  max-width: 100%;
+}
+
+.preview-footer-row div {
+  display: grid;
+  gap: 7px;
+}
+
+.preview-footer-row strong {
+  font-family: Manrope, Arial, sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.preview-footer-row span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.admin-site-preview {
   background: #fff;
   color: #2b3036;
   font-family: "Proxima Nova", Manrope, Arial, sans-serif;
@@ -49,27 +164,32 @@
 
 .navy .preview-eyebrow,
 .theme-navy .preview-eyebrow {
-  color: rgba(255,255,255,.74);
+  color: rgba(255, 255, 255, 0.74);
 }
 
 .admin-site-preview h1,
 .admin-site-preview h2,
-.admin-site-preview h3 {
+.admin-site-preview h3,
+.preview-whitepaper-page h1,
+.preview-whitepaper-page h2,
+.preview-whitepaper-page h3 {
   font-family: Sora, Manrope, Arial, sans-serif;
   font-weight: 700;
 }
 
-.admin-site-preview h1 {
+.admin-site-preview h1,
+.preview-library-title {
   max-width: 980px;
   margin: 0 0 22px;
   color: #000;
   font-size: clamp(42px, 5.5vw, 68px);
-  letter-spacing: -.04em;
+  letter-spacing: -0.04em;
   line-height: 1.03;
 }
 
 .admin-site-preview h1 em,
-.admin-site-preview h2 em {
+.admin-site-preview h2 em,
+.preview-library-title em {
   color: #45628e;
   font-family: "Playfair Display", Georgia, serif;
   font-style: italic;
@@ -83,7 +203,7 @@
 }
 
 .preview-lede,
-.preview-site-preview p,
+.admin-site-preview p,
 .preview-builder-copy p {
   max-width: 880px;
   font-size: 16px;
@@ -97,7 +217,7 @@
 
 .navy .preview-lede,
 .theme-navy p {
-  color: rgba(255,255,255,.82);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .preview-firm-grid,
@@ -276,15 +396,43 @@
   overflow-wrap: anywhere;
 }
 
+.preview-whitepaper-page {
+  padding: 64px 0 80px;
+  background: #fff;
+}
+
 .preview-paper-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+@media (max-width: 900px) {
+  .preview-header-inner {
+    min-height: 70px;
+  }
+
+  .preview-top-nav {
+    gap: 12px;
+    font-size: 11px;
+  }
+}
+
 @media (max-width: 760px) {
   .preview-site-container {
     width: min(calc(100% - 28px), 1180px);
+  }
+
+  .preview-header-inner {
+    width: calc(100% - 28px);
+  }
+
+  .preview-brand img {
+    width: 158px;
+  }
+
+  .preview-top-nav {
+    display: none;
   }
 
   .preview-firm-grid,
@@ -296,12 +444,17 @@
   .preview-mini-grid,
   .preview-builder-cards,
   .preview-builder-cards.columns-2,
-  .preview-builder-cards.columns-4 {
+  .preview-builder-cards.columns-4,
+  .preview-footer-row {
     grid-template-columns: 1fr;
   }
 
   .preview-builder-split.image-right .preview-builder-image,
   .preview-builder-split.image-right .preview-builder-copy {
     order: initial;
+  }
+
+  .preview-site-footer h2 {
+    text-align: left;
   }
 }
