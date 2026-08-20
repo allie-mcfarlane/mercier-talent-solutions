@@ -1,4 +1,7 @@
 ---
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
 interface Props {
   src: string;
   alt: string;
@@ -15,10 +18,14 @@ const {
   eager = false,
 } = Astro.props;
 
-const isAdminUpload = src.startsWith("/images/uploads/");
 const optimizedBase = src.replace(/^\/images\//, "/images/optimized/").replace(/\.[^.]+$/, "");
-const fallbackSrc = isAdminUpload ? src : `${optimizedBase}-1400.jpg`;
-const srcset = isAdminUpload ? undefined : `${optimizedBase}-900.jpg 900w, ${optimizedBase}-1400.jpg 1400w`;
+const optimized900 = `${optimizedBase}-900.jpg`;
+const optimized1400 = `${optimizedBase}-1400.jpg`;
+const publicPath = (webPath: string) => join(process.cwd(), "public", webPath.replace(/^\//, ""));
+const has900 = existsSync(publicPath(optimized900));
+const has1400 = existsSync(publicPath(optimized1400));
+const fallbackSrc = has1400 ? optimized1400 : src;
+const srcset = has900 && has1400 ? `${optimized900} 900w, ${optimized1400} 1400w` : undefined;
 ---
 
 <img
