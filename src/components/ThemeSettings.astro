@@ -1,0 +1,41 @@
+---
+import { getEntry } from "astro:content";
+
+const appearance = await getEntry("settings", "appearance");
+const settings = appearance?.data;
+
+const pageTitleSizes = {
+  smaller: "clamp(2.25rem, 4.15vw, 3.35rem)",
+  default: "clamp(2.55rem, 4.7vw, 3.76rem)",
+  larger: "clamp(2.85rem, 5.2vw, 4.2rem)",
+};
+
+const sectionTitleSizes = {
+  smaller: "clamp(1.75rem, 3.25vw, 3.1rem)",
+  default: "clamp(2rem, 3.8vw, 3.6rem)",
+  larger: "clamp(2.25rem, 4.25vw, 4rem)",
+};
+
+const pageTitleSize = pageTitleSizes[settings?.pageTitleSize ?? "default"];
+const sectionTitleSize = sectionTitleSizes[settings?.sectionTitleSize ?? "default"];
+---
+
+<style is:global define:vars={{
+  mtsAccent: settings?.accentColor ?? "#45628e",
+  mtsDark: settings?.darkColor ?? "#1a2b46",
+  mtsText: settings?.bodyTextColor ?? "#2b3036",
+  mtsMuted: settings?.mutedTextColor ?? "#66707c",
+  mtsBodySize: `${settings?.bodyFontSize ?? 16}px`,
+  mtsPageTitle: pageTitleSize,
+  mtsSectionTitle: sectionTitleSize,
+}}>
+  :root {
+    --color-blue: var(--mtsAccent);
+    --color-blue-dark: var(--mtsDark);
+    --color-text: var(--mtsText);
+    --color-muted: var(--mtsMuted);
+    --paragraph-size: var(--mtsBodySize);
+    --page-title-size: var(--mtsPageTitle);
+    --section-title-size: var(--mtsSectionTitle);
+  }
+</style>
