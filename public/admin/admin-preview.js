@@ -3,6 +3,26 @@
 
   const { CMS, createClass, h } = window;
 
+  const SITE_NAV = [
+    ["Home", "/"],
+    ["About", "/about/"],
+    ["Services", "/services/"],
+    ["White Papers", "/whitepapers/"],
+    ["News & Insights", "/news/"],
+    ["Contact Us", "/contactus/"],
+  ];
+
+  const TEAM_AUTHORS = {
+    "Julia Mercier": {
+      role: "Principal",
+      image: "/images/julia-mercier-headshot.jpg",
+    },
+    "Allie McFarlane": {
+      role: "Practice Manager",
+      image: "/images/allie-mcfarlane-gray.png",
+    },
+  };
+
   const value = (entry, name, fallback = "") =>
     entry.getIn(["data", name]) ?? fallback;
 
@@ -38,50 +58,84 @@
   const heading = (title, accent, className = "") =>
     h("h1", { className }, title || "Page title", accent ? [" ", h("em", { key: "accent" }, accent)] : null);
 
+  const previewHeader = () =>
+    h("header", { className: "preview-site-header" },
+      h("div", { className: "preview-header-inner" },
+        h("a", { className: "preview-brand", href: "/" },
+          h("img", { src: "/images/mercier-logo-color.png", alt: "Mercier Talent Solutions" }),
+        ),
+        h("nav", { className: "preview-top-nav", "aria-label": "Website navigation preview" },
+          SITE_NAV.map(([label, href]) => h("a", { href, key: href }, label)),
+        ),
+      ),
+    );
+
+  const previewFooter = () =>
+    h("footer", { className: "preview-site-footer" },
+      h("div", { className: "preview-site-container" },
+        h("h2", {}, ["Let's do our best work ", h("em", { key: "together" }, "together")]),
+        h("div", { className: "preview-footer-row" },
+          h("img", { src: "/images/mercier-logo-white.png", alt: "Mercier Talent Solutions" }),
+          h("div", {}, h("strong", {}, "Firm"), h("span", {}, "About · Services · White Papers · News & Insights")),
+          h("div", {}, h("strong", {}, "Contact"), h("span", {}, "julia@merciertalentsolutions.com · (917) 808-5668")),
+        ),
+      ),
+    );
+
+  const withSiteChrome = (content) =>
+    h("div", { className: "preview-browser" },
+      previewHeader(),
+      h("main", { className: "preview-site-main" }, content),
+      previewFooter(),
+    );
+
   const PostPreview = createClass({
     render() {
       const entry = this.props.entry;
       const title = value(entry, "title", "Article title");
       const subtitle = value(entry, "subtitle");
       const author = value(entry, "author", "Julia Mercier");
-      const authorTitle = value(entry, "authorTitle", "Principal");
+      const profile = TEAM_AUTHORS[author] || {};
+      const authorTitle = profile.role || value(entry, "authorTitle", "Principal");
       const category = value(entry, "category", "Insight");
       const pubDate = formatDate(value(entry, "pubDate"));
-      const authorImage = value(entry, "authorImage", "/images/julia-mercier.jpg");
+      const authorImage = profile.image || value(entry, "authorImage", "/images/julia-mercier-headshot.jpg");
       const references = toJS(entry.getIn(["data", "references"]));
 
-      return h("article", { className: "admin-post-preview" },
-        h("header", { className: "preview-article-hero" },
-          h("div", { className: "preview-article-shell" },
-            h("span", { className: "preview-pill" }, category),
-            h("h1", { className: subtitle ? "has-subtitle" : "" }, title),
-            subtitle ? h("p", { className: "preview-article-subtitle" }, subtitle) : null,
-            h("div", { className: "preview-article-meta" },
-              h("div", { className: "preview-author" },
-                h("img", {
-                  src: assetUrl(this, authorImage, "/images/julia-mercier.jpg"),
-                  alt: "",
-                }),
-                h("div", {},
-                  h("strong", {}, author),
-                  h("span", {}, authorTitle),
+      return withSiteChrome(
+        h("article", { className: "admin-post-preview" },
+          h("header", { className: "preview-article-hero" },
+            h("div", { className: "preview-article-shell" },
+              h("span", { className: "preview-pill" }, category),
+              h("h1", { className: subtitle ? "has-subtitle" : "" }, title),
+              subtitle ? h("p", { className: "preview-article-subtitle" }, subtitle) : null,
+              h("div", { className: "preview-article-meta" },
+                h("div", { className: "preview-author" },
+                  h("img", {
+                    src: assetUrl(this, authorImage, "/images/julia-mercier-headshot.jpg"),
+                    alt: author,
+                  }),
+                  h("div", {},
+                    h("strong", {}, author),
+                    h("span", {}, authorTitle),
+                  ),
                 ),
+                pubDate ? h("time", {}, pubDate) : null,
               ),
-              pubDate ? h("time", {}, pubDate) : null,
             ),
           ),
-        ),
-        h("div", { className: "preview-article-content" },
-          h("div", { className: "preview-article-body" },
-            this.props.widgetFor("body"),
-            references.length
-              ? h("section", { className: "preview-references" },
-                  h("h2", {}, "References"),
-                  h("ol", {}, references.map((reference, index) =>
-                    h("li", { key: index }, reference.text || reference.url || "Reference"),
-                  )),
-                )
-              : null,
+          h("div", { className: "preview-article-content" },
+            h("div", { className: "preview-article-body" },
+              this.props.widgetFor("body"),
+              references.length
+                ? h("section", { className: "preview-references" },
+                    h("h2", {}, "References"),
+                    h("ol", {}, references.map((reference, index) =>
+                      h("li", { key: index }, reference.text || reference.url || "Reference"),
+                    )),
+                  )
+                : null,
+            ),
           ),
         ),
       );
@@ -97,27 +151,32 @@
       const date = formatDate(value(entry, "date"));
       const image = value(entry, "image");
 
-      return h("article", { className: "admin-whitepaper-preview" },
-        h("div", { className: "preview-paper-cover" },
-          image
-            ? h("img", { className: "preview-paper-image", src: assetUrl(this, image), alt: "" })
-            : h("div", { className: "preview-paper-cover-inner" },
-                h("div", { className: "preview-paper-cover-meta" },
-                  h("span", {}, "Mercier Talent Solutions"),
-                  h("span", {}, `White Paper No. ${number}`),
-                ),
-                h("h1", {}, title),
-                h("div", { className: "preview-paper-orbits", "aria-hidden": "true" },
-                  h("span", {}),
-                  h("span", {}),
-                ),
+      return withSiteChrome(
+        h("section", { className: "preview-whitepaper-page" },
+          h("div", { className: "preview-site-container" },
+            h("p", { className: "preview-eyebrow" }, "White Papers"),
+            h("h1", { className: "preview-library-title" }, ["Ideas and insight for ", h("em", { key: "accent" }, "legal leaders")]),
+            h("article", { className: "admin-whitepaper-preview" },
+              h("div", { className: "preview-paper-cover" },
+                image
+                  ? h("img", { className: "preview-paper-image", src: assetUrl(this, image), alt: "" })
+                  : h("div", { className: "preview-paper-cover-inner" },
+                      h("div", { className: "preview-paper-cover-meta" },
+                        h("span", {}, "Mercier Talent Solutions"),
+                        h("span", {}, `White Paper No. ${number}`),
+                      ),
+                      h("h1", {}, title),
+                      h("div", { className: "preview-paper-orbits", "aria-hidden": "true" }, h("span", {}), h("span", {})),
+                    ),
               ),
-        ),
-        h("div", { className: "preview-paper-copy" },
-          date ? h("time", {}, date) : null,
-          h("h2", {}, title),
-          description ? h("p", { className: "preview-paper-subtitle" }, description) : null,
-          h("div", { className: "preview-paper-body" }, this.props.widgetFor("body")),
+              h("div", { className: "preview-paper-copy" },
+                date ? h("time", {}, date) : null,
+                h("h2", {}, title),
+                description ? h("p", { className: "preview-paper-subtitle" }, description) : null,
+                h("div", { className: "preview-paper-body" }, this.props.widgetFor("body")),
+              ),
+            ),
+          ),
         ),
       );
     },
@@ -137,10 +196,12 @@
       const contacts = toJS(entry.getIn(["data", "contacts"]));
       const updated = value(entry, "updated");
       const requestOptions = toJS(entry.getIn(["data", "requestOptions"]));
+      const extraSections = toJS(entry.getIn(["data", "sections"]));
+      let content;
 
       if (team.length) {
         const firm = toJS(entry.getIn(["data", "firm"]), {});
-        return h("div", { className: "admin-site-preview preview-about-page" },
+        content = h("div", { className: "admin-site-preview preview-about-page" },
           h("section", { className: "preview-site-hero navy" },
             h("div", { className: "preview-site-container" },
               h("p", { className: "preview-eyebrow" }, eyebrow),
@@ -168,11 +229,9 @@
             ),
           ),
         );
-      }
-
-      if (services.length) {
+      } else if (services.length) {
         const heroImage = value(entry, "heroImage");
-        return h("div", { className: "admin-site-preview preview-services-page" },
+        content = h("div", { className: "admin-site-preview preview-services-page" },
           h("section", { className: "preview-site-hero split" },
             h("div", { className: "preview-site-container preview-split-grid" },
               h("div", {}, h("p", { className: "preview-eyebrow" }, eyebrow), heading(title, accent), lede ? h("p", { className: "preview-lede" }, lede) : null),
@@ -193,11 +252,9 @@
             ),
           ),
         );
-      }
-
-      if (proof.length) {
+      } else if (proof.length) {
         const approach = toJS(entry.getIn(["data", "approach"]), {});
-        return h("div", { className: "admin-site-preview preview-home-page" },
+        content = h("div", { className: "admin-site-preview preview-home-page" },
           h("section", { className: "preview-site-hero" },
             h("div", { className: "preview-site-container" },
               h("p", { className: "preview-eyebrow" }, eyebrow),
@@ -218,10 +275,8 @@
             ),
           ) : null,
         );
-      }
-
-      if (contacts.length) {
-        return h("div", { className: "admin-site-preview" },
+      } else if (contacts.length) {
+        content = h("div", { className: "admin-site-preview" },
           h("section", { className: "preview-site-hero" }, h("div", { className: "preview-site-container" }, h("p", { className: "preview-eyebrow" }, eyebrow), heading(title, accent))),
           h("section", { className: "preview-site-section paper" },
             h("div", { className: "preview-site-container preview-mini-grid" },
@@ -229,10 +284,8 @@
             ),
           ),
         );
-      }
-
-      if (updated || requestOptions.length) {
-        return h("div", { className: "admin-site-preview" },
+      } else if (updated || requestOptions.length) {
+        content = h("div", { className: "admin-site-preview" },
           h("section", { className: "preview-site-section" },
             h("div", { className: "preview-site-container preview-reading" },
               h("p", { className: "preview-eyebrow" }, eyebrow),
@@ -246,12 +299,18 @@
             ),
           ),
         );
+      } else {
+        content = h("div", { className: "admin-site-preview" },
+          h("section", { className: "preview-site-hero" }, h("div", { className: "preview-site-container" }, h("p", { className: "preview-eyebrow" }, eyebrow), heading(title, accent), lede ? h("p", { className: "preview-lede" }, lede) : null)),
+          h("section", { className: "preview-site-section" }, h("div", { className: "preview-site-container preview-reading" }, this.props.widgetFor("body"))),
+        );
       }
 
-      return h("div", { className: "admin-site-preview" },
-        h("section", { className: "preview-site-hero" }, h("div", { className: "preview-site-container" }, h("p", { className: "preview-eyebrow" }, eyebrow), heading(title, accent), lede ? h("p", { className: "preview-lede" }, lede) : null)),
-        h("section", { className: "preview-site-section" }, h("div", { className: "preview-site-container preview-reading" }, this.props.widgetFor("body"))),
-      );
+      if (extraSections.length) {
+        content = h("div", {}, content, extraSections.map((section, index) => CustomPagePreview.prototype.renderSection.call(this, section, index)));
+      }
+
+      return withSiteChrome(content);
     },
   });
 
@@ -312,11 +371,12 @@
     render() {
       const entry = this.props.entry;
       const sections = toJS(entry.getIn(["data", "sections"]));
-      return h("div", { className: "admin-site-preview admin-builder-preview" },
+      const content = h("div", { className: "admin-site-preview admin-builder-preview" },
         sections.length
           ? sections.map((section, index) => this.renderSection(section, index))
           : h("section", { className: "preview-site-section" }, h("div", { className: "preview-site-container" }, h("p", {}, "Add a section to begin building this page."))),
       );
+      return withSiteChrome(content);
     },
   });
 
