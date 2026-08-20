@@ -1,0 +1,20 @@
+/* Visual editor usability fixes: independent scrolling and always-visible publishing controls. */
+@media (min-width:1121px){
+  .ve-editor{height:calc(100vh - 116px);min-height:0;overflow:hidden}
+  .ve-sidebar,.ve-editor-pane,.ve-preview-pane{position:relative;top:auto;height:100%;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+  .ve-preview-pane{overflow:hidden}
+  .ve-preview-frame{height:calc(100% - 48px)}
+  .ve-editor-head{position:sticky;top:-22px;z-index:25;margin:-22px -22px 15px;padding:16px 22px 14px;border-bottom:1px solid var(--line);background:rgba(246,248,251,.97);backdrop-filter:blur(10px)}
+}
+.ve-preview-bar{position:relative;z-index:8}
+.ve-preview-tools{display:flex!important;grid-auto-flow:column;align-items:center;gap:7px!important}
+.ve-preview-top,.ve-editor-top{display:inline-flex;min-height:30px;align-items:center;justify-content:center;border:1px solid var(--line-dark);border-radius:8px;padding:0 9px;background:#fff;color:#45628e;font-size:9.5px;font-weight:800;cursor:pointer}
+.ve-preview-top:hover,.ve-editor-top:hover{border-color:#9fb0c2;background:#f7f9fb}
+.ve-publish-dock{position:fixed;right:24px;bottom:22px;z-index:90;display:flex;align-items:center;gap:8px;border:1px solid #cfd8e2;border-radius:14px;padding:9px 10px;background:rgba(255,255,255,.98);box-shadow:0 18px 48px rgba(26,43,70,.16);backdrop-filter:blur(12px)}
+.ve-publish-dock-copy{display:grid;gap:1px;padding:0 7px 0 4px}
+.ve-publish-dock-copy strong{color:#1a2b46;font-size:10.5px}.ve-publish-dock-copy span{color:#758397;font-size:8.5px;white-space:nowrap}
+.ve-publish-dock .ve-button{min-height:34px;padding:0 11px;font-size:10px}
+.ve-save-note{margin:8px 0 0;color:#7b8999;font-size:9px;line-height:1.45}
+.ve-save-note strong{color:#45628e}
+@media(max-width:1120px){.ve-publish-dock{right:14px;bottom:14px}.ve-publish-dock-copy{display:none}}
+@media(max-width:620px){.ve-publish-dock{left:10px;right:10px;justify-content:flex-end}.ve-publish-dock .ve-button{flex:1}}
