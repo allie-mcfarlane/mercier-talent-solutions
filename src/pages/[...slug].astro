@@ -18,7 +18,12 @@ const pageTitle = [page.data.title, page.data.titleAccent].filter(Boolean).join(
 const description = page.data.seoDescription ?? page.data.lede ?? "Mercier Talent Solutions";
 ---
 
-<BaseLayout title={`${pageTitle} | Mercier Talent Solutions`} description={description}>
+<BaseLayout
+  title={`${pageTitle} | Mercier Talent Solutions`}
+  description={description}
+  visualStyles={page.data.visualStyles ?? {}}
+  visualBuilderSections={sections}
+>
   {sections.length ? (
     <PageBuilder sections={sections} />
   ) : (
