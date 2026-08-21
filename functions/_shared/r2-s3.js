@@ -1,5 +1,6 @@
+import { AwsClient } from "aws4fetch";
+
 const DEFAULT_BUCKET = "mercier-website-media";
-const encoder = new TextEncoder();
 
 const awsEncode = (value) => encodeURIComponent(String(value))
   .replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
@@ -8,36 +9,6 @@ const encodePath = (value) => String(value || "")
   .split("/")
   .map(awsEncode)
   .join("/");
-
-const toBytes = (value) => {
-  if (value == null) return new Uint8Array();
-  if (value instanceof Uint8Array) return value;
-  if (value instanceof ArrayBuffer) return new Uint8Array(value);
-  if (ArrayBuffer.isView(value)) return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
-  return encoder.encode(String(value));
-};
-
-const toHex = (buffer) => [...new Uint8Array(buffer)]
-  .map((byte) => byte.toString(16).padStart(2, "0"))
-  .join("");
-
-const sha256 = async (value) => crypto.subtle.digest("SHA-256", toBytes(value));
-
-const hmac = async (key, value) => {
-  const cryptoKey = await crypto.subtle.importKey(
-    "raw",
-    toBytes(key),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  return crypto.subtle.sign("HMAC", cryptoKey, toBytes(value));
-};
-
-const dateParts = (date = new Date()) => {
-  const iso = date.toISOString().replace(/[:-]|\.\d{3}/g, "");
-  return { amzDate: iso, dateStamp: iso.slice(0, 8) };
-};
 
 const config = (env) => {
   const accountId = String(env?.R2_ACCOUNT_ID || "").trim();
@@ -56,50 +27,36 @@ const config = (env) => {
 
 export const hasR2S3 = (env) => Boolean(config(env));
 
-const canonicalQuery = (query = {}) => Object.entries(query)
-  .filter(([, value]) => value !== undefined && value !== null)
-  .map(([key, value]) => [awsEncode(key), awsEncode(value)])
-  .sort(([aKey, aValue], [bKey, bValue]) => aKey.localeCompare(bKey) || aValue.localeCompare(bValue))
-  .map(([key, value]) => `${key}=${value}`)
-  .join("&");
-
-const signedFetch = async (env, { method = "GET", key = "", query = {}, body = null, headers = {} } = {}) => {
+const clientFor = (env) => {
   const cfg = config(env);
   if (!cfg) throw new Error("R2 S3 credentials are not configured.");
+  return {
+    cfg,
+    client: new AwsClient({
+      accessKeyId: cfg.accessKeyId,
+      secretAccessKey: cfg.secretAccessKey,
+      service: "s3",
+      region: "auto",
+    }),
+  };
+};
 
-  const { amzDate, dateStamp } = dateParts();
-  const region = "auto";
-  const service = "s3";
-  const payloadBytes = toBytes(body);
-  const payloadHash = toHex(await sha256(payloadBytes));
-  const canonicalUri = `/${awsEncode(cfg.bucket)}${key ? `/${encodePath(key)}` : ""}`;
-  const queryString = canonicalQuery(query);
-  const host = new URL(cfg.endpoint).host;
-  const canonicalHeaders = `host:${host}\nx-amz-content-sha256:${payloadHash}\nx-amz-date:${amzDate}\n`;
-  const signedHeaders = "host;x-amz-content-sha256;x-amz-date";
-  const canonicalRequest = `${method}\n${canonicalUri}\n${queryString}\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
-  const scope = `${dateStamp}/${region}/${service}/aws4_request`;
-  const stringToSign = `AWS4-HMAC-SHA256\n${amzDate}\n${scope}\n${toHex(await sha256(canonicalRequest))}`;
+const objectUrl = (cfg, key = "", query = {}) => {
+  const base = `${cfg.endpoint}/${awsEncode(cfg.bucket)}${key ? `/${encodePath(key)}` : ""}`;
+  const url = new URL(base);
+  for (const [name, value] of Object.entries(query)) {
+    if (value !== undefined && value !== null) url.searchParams.set(name, String(value));
+  }
+  return url.toString();
+};
 
-  const kDate = await hmac(encoder.encode(`AWS4${cfg.secretAccessKey}`), dateStamp);
-  const kRegion = await hmac(kDate, region);
-  const kService = await hmac(kRegion, service);
-  const kSigning = await hmac(kService, "aws4_request");
-  const signature = toHex(await hmac(kSigning, stringToSign));
-
-  const requestHeaders = new Headers(headers);
-  requestHeaders.set("x-amz-content-sha256", payloadHash);
-  requestHeaders.set("x-amz-date", amzDate);
-  requestHeaders.set(
-    "Authorization",
-    `AWS4-HMAC-SHA256 Credential=${cfg.accessKeyId}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`,
-  );
-
-  const url = `${cfg.endpoint}${canonicalUri}${queryString ? `?${queryString}` : ""}`;
-  return fetch(url, {
+const signedFetch = async (env, { method = "GET", key = "", query = {}, body, headers = {} } = {}) => {
+  const { cfg, client } = clientFor(env);
+  const url = objectUrl(cfg, key, query);
+  return client.fetch(url, {
     method,
-    headers: requestHeaders,
-    ...(method === "GET" || method === "HEAD" ? {} : { body: payloadBytes }),
+    headers,
+    ...(body === undefined || method === "GET" || method === "HEAD" ? {} : { body }),
   });
 };
 
@@ -118,9 +75,17 @@ const xmlValue = (block, tag) => {
 export async function r2List(env, prefix = "", limit = 500) {
   const response = await signedFetch(env, {
     method: "GET",
-    query: { "list-type": "2", prefix, "max-keys": Math.min(Math.max(Number(limit) || 500, 1), 1000) },
+    query: {
+      "list-type": "2",
+      prefix,
+      "max-keys": Math.min(Math.max(Number(limit) || 500, 1), 1000),
+    },
   });
-  if (!response.ok) throw new Error(`R2 list failed (${response.status}).`);
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    const code = xmlValue(text, "Code");
+    throw new Error(`R2 list failed (${response.status}${code ? ` ${code}` : ""}).`);
+  }
   const xml = await response.text();
   return [...xml.matchAll(/<Contents>([\s\S]*?)<\/Contents>/g)].map((match) => ({
     key: xmlValue(match[1], "Key"),
@@ -148,4 +113,12 @@ export async function r2Put(env, key, body, { contentType = "application/octet-s
 
 export async function r2Delete(env, key) {
   return signedFetch(env, { method: "DELETE", key });
+}
+
+export async function r2ErrorDetails(response) {
+  if (!response || response.ok) return "";
+  const text = await response.clone().text().catch(() => "");
+  const code = xmlValue(text, "Code");
+  const message = xmlValue(text, "Message");
+  return [code, message].filter(Boolean).join(": ");
 }
