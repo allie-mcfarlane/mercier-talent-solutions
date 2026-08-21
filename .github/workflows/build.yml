@@ -4,14 +4,10 @@ on:
   push:
     branches:
       - main
-      - editor/visual-drag-drop
   pull_request:
     branches:
       - main
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   build:
@@ -21,8 +17,6 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'push' && github.ref_name || github.event.pull_request.head.sha }}
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -40,18 +34,6 @@ jobs:
           node --check public/admin/editor/visual-builder.js
           node --check public/admin/editor/visual-fixed-sections.js
           node --check public/admin/editor/visual-safety.js
-
-      - name: Refresh stale lockfile on editor branch
-        if: github.event_name == 'push' && github.ref_name == 'editor/visual-drag-drop'
-        run: |
-          pnpm install --no-frozen-lockfile
-          if ! git diff --quiet -- pnpm-lock.yaml; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add pnpm-lock.yaml
-            git commit -m "Sync pnpm lockfile"
-            git push origin HEAD:editor/visual-drag-drop
-          fi
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
