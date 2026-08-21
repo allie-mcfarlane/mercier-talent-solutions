@@ -91,6 +91,65 @@ main .about-hero h1 {
   margin: 1.55rem 0 1.5rem !important;
 }
 
+/* Services: match the eyebrow/title/paragraph rhythm used by the other page heroes. */
+main .services-hero .hero-copy .eyebrow {
+  margin-bottom: 1.15rem !important;
+}
+
+main .services-hero .hero-copy h1 {
+  gap: 0.08em !important;
+}
+
+main .services-hero .hero-copy > p:last-child {
+  margin-top: 1.05rem !important;
+}
+
+/* News & Insights: remove the stray rule in the first hero and keep intentional spacing. */
+main .news-hero .hero-rule {
+  display: none !important;
+}
+
+main .news-hero .hero-copy h1 {
+  margin-top: 1.55rem !important;
+}
+
+@media (min-width: 1081px) {
+  /* About: give the title enough width to resolve to two balanced lines. */
+  main .about-hero .about-hero-inner {
+    grid-template-columns: minmax(0, 1.5fr) minmax(180px, 0.5fr) !important;
+  }
+
+  main .about-hero .about-hero-copy,
+  main .about-hero h1 {
+    max-width: 1150px !important;
+  }
+
+  /* White Papers: keep “development seriously” together on the second title line. */
+  main .wp-hero .wp-hero-grid {
+    grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.35fr) !important;
+    gap: clamp(2.5rem, 5vw, 5.5rem) !important;
+  }
+
+  main .wp-hero .wp-hero-copy,
+  main .wp-hero h1 {
+    max-width: 1260px !important;
+  }
+}
+
+@media (max-width: 700px) {
+  main .services-hero .hero-copy .eyebrow {
+    margin-bottom: 1rem !important;
+  }
+
+  main .services-hero .hero-copy > p:last-child {
+    margin-top: 0.9rem !important;
+  }
+
+  main .news-hero .hero-copy h1 {
+    margin-top: 1.3rem !important;
+  }
+}
+
 @media (max-width: 620px) {
   main .about-hero h1 {
     margin: 1.4rem 0 1.4rem !important;
