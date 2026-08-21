@@ -5,6 +5,12 @@
     return "pill-insight";
   };
 
+  const serviceAnchor = (title) =>
+    `/services/#${String(title || "")
+      .trim()
+      .toLowerCase()
+      .replaceAll(" ", "-")}`;
+
   document.querySelectorAll("main a.eyebrow-link").forEach((link) => {
     const label = document.createElement("p");
     label.className = "eyebrow home-static-eyebrow";
@@ -17,7 +23,12 @@
     pill.classList.add(categoryClass(category));
   });
 
-  document.querySelectorAll("main .services-preview .card .button.text").forEach((link) => {
+  document.querySelectorAll("main .services-preview .card").forEach((card) => {
+    const link = card.querySelector(".button.text");
+    const heading = card.querySelector("h3");
+    if (!(link instanceof HTMLAnchorElement) || !heading) return;
+
     link.textContent = "Learn more";
+    link.href = serviceAnchor(heading.textContent);
   });
 })();
