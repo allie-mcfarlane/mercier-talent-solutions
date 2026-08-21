@@ -1,6 +1,6 @@
 ---
 eyebrow: Talent development for law firms
-title: Let's do our best work
+title: Let's do our best wor
 titleAccent: together
 lede: Mercier Talent Solutions partners with law firms and legal professionals to strengthen the leadership, communication, and practice management capabilities that sustain excellence over time.
 heroImage: /images/waiting-area.png
