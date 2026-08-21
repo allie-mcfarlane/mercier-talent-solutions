@@ -38,11 +38,11 @@ services:
     imageAlt: Assessment visual from Mercier Talent Solutions
     highlights:
       - title: 360 Degree Feedback Assessments
-        text: Confidential interviews with partners, associates, and colleagues-synthesized into a clear, narrative report on strengths, perception, and the most consequential development opportunities.
+        text: Confidential interviews with partners, associates, and colleagues—synthesized into a clear, narrative report on strengths, perception, and the most consequential development opportunities.
       - title: DISC Assessments
-        text: Practical insight into communication style and behavioral tendencies-how individuals work, collaborate, and respond under pressure.
+        text: Practical insight into communication style and behavioral tendencies—how individuals work, collaborate, and respond under pressure.
       - title: Hogan Assessments
-        text: Deep insight into personality, values, and potential derailers-how stress shapes behavior, and what drives decision-making in high-pressure environments.
+        text: Deep insight into personality, values, and potential derailers—how stress shapes behavior, and what drives decision-making in high-pressure environments.
   - eyebrow: 03 - TRAINING
     number: "03"
     title: Training
@@ -67,7 +67,7 @@ training:
       items:
         - title: Leadership Skills for Lawyers
           text: "Lawyers are trained to advise, not necessarily to lead. This program builds the practical leadership behaviors that earn trust and followership: setting direction, holding people accountable, and creating the conditions for teams to do their best work under pressure."
-        - title: Emotional Intellegence for Law Firm Leaders
+        - title: Emotional Intelligence for Law Firm Leaders
           text: Self-awareness, empathy, and composure are decisive in high-stakes legal environments. Participants learn to read team dynamics, manage their own reactions under stress, and navigate the interpersonal complexity of firm life with greater skill.
         - title: Emerging Leadership
           text: The skills that make a great associate are not the ones that make a great leader. Designed for those stepping into supervisory roles, this session covers the mindset shift from doing the work to enabling it - delegation, oversight, and developing others.
@@ -77,7 +77,7 @@ training:
       items:
         - title: The Feedback Deficit
           text: Explores why capable leaders hesitate to give candid feedback, and the quiet cost of that avoidance to performance, trust, and retention. Sets the case for feedback as a firm-wide discipline rather than an annual event.
-        - title: Recieving Feedback Without Defensiveness
+        - title: Receiving Feedback Without Defensiveness
           text: Feedback only works if it can be received. This session builds the skills to listen, process, and respond to feedback in ways that keep dialogue open and model the behavior leaders want to see across their teams.
         - title: Feedback Across Generations
           text: Different generations bring different expectations to feedback. This program helps leaders adapt their approach across levels and age groups, reducing friction and building mutual understanding within mixed teams.
@@ -89,7 +89,7 @@ training:
       items:
         - title: Strategic Time Management and Prioritization
           text: For lawyers managing competing demands, this session builds systems for setting priorities under pressure and making deliberate tradeoffs - protecting focus and judgment in high-volume, high-stakes work.
-        - title: Reducing Friction in Team Colaboration
+        - title: Reducing Friction in Team Collaboration
           text: Identifies where unclear expectations and clumsy handoffs slow legal teams down, and offers practical ways to simplify processes, clarify ownership, and make collaboration smoother across a matter.
         - title: Concise Communication for High Stakes Environments
           text: Senior audiences want the answer first. Participants learn to structure messages for clarity and impact, lead with the conclusion, and improve decision-making by cutting through detail without losing rigor.
