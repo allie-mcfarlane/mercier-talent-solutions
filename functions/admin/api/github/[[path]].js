@@ -1,4 +1,4 @@
-import { hasR2S3, r2Delete, r2Get, r2List, r2Put } from "../../../_shared/r2-s3.js";
+import { hasR2S3, r2Delete, r2ErrorDetails, r2Get, r2List, r2Put } from "../../../_shared/r2-s3.js";
 
 const REPOSITORY = "allie-mcfarlane/mercier-talent-solutions";
 const REPOSITORY_PREFIX = `repos/${REPOSITORY}`;
@@ -47,7 +47,7 @@ const mediaRoute = (path) => {
   if (!path.startsWith(prefix)) return null;
   const rest = path.slice(prefix.length);
   const [kind, ...parts] = rest.split("/");
-  if (!['images', 'documents'].includes(kind)) return null;
+  if (!["images", "documents"].includes(kind)) return null;
   return { kind, key: parts.join("/"), repoPath: `public/${rest}` };
 };
 
@@ -122,7 +122,7 @@ const copyResponseHeaders = (upstreamHeaders, requestUrl) => {
     const rewritten = name === "link" || name === "location"
       ? value.replaceAll("https://api.github.com", proxyRoot)
       : value;
-    headers.set(name, rewritten);
+    headers.set(name, value === rewritten ? value : rewritten);
   }
 
   headers.set("Cache-Control", "no-store");
@@ -135,32 +135,17 @@ export async function onRequest({ request, env, params }) {
   const requestUrl = new URL(request.url);
   const user = getUser(request);
 
-  if (!user) {
-    return json({ message: "Access denied." }, 403);
-  }
-
-  if (request.headers.get("authorization") !== ACCESS_TOKEN) {
-    return json({ message: "Invalid admin session." }, 401);
-  }
-
-  if (!env.GITHUB_ADMIN_TOKEN) {
-    return json({ message: "Website publishing is not configured yet." }, 503);
-  }
-
-  if (!["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"].includes(method)) {
-    return json({ message: "Method not allowed." }, 405);
-  }
+  if (!user) return json({ message: "Access denied." }, 403);
+  if (request.headers.get("authorization") !== ACCESS_TOKEN) return json({ message: "Invalid admin session." }, 401);
+  if (!env.GITHUB_ADMIN_TOKEN) return json({ message: "Website publishing is not configured yet." }, 503);
+  if (!["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"].includes(method)) return json({ message: "Method not allowed." }, 405);
 
   const path = getPath(params);
-  if (!path || !allowedPath(path, method, requestUrl)) {
-    return json({ message: "GitHub API route not allowed." }, 403);
-  }
+  if (!path || !allowedPath(path, method, requestUrl)) return json({ message: "GitHub API route not allowed." }, 403);
 
   if (!["GET", "HEAD"].includes(method)) {
     const origin = request.headers.get("origin");
-    if (origin && origin !== requestUrl.origin) {
-      return json({ message: "Cross-origin request blocked." }, 403);
-    }
+    if (origin && origin !== requestUrl.origin) return json({ message: "Cross-origin request blocked." }, 403);
   }
 
   if (path === "user" && method === "GET") {
@@ -189,7 +174,10 @@ export async function onRequest({ request, env, params }) {
     if (bytes.byteLength > 25 * 1024 * 1024) return json({ message: "File is too large. Maximum size is 25 MB." }, 413);
     try {
       const uploaded = await r2Put(env, `${media.kind}/${media.key}`, bytes, { contentType });
-      if (!uploaded.ok) return json({ message: `R2 upload failed (${uploaded.status}).` }, 502);
+      if (!uploaded.ok) {
+        const detail = await r2ErrorDetails(uploaded);
+        return json({ message: `R2 upload failed (${uploaded.status})${detail ? `: ${detail}` : "."}` }, 502);
+      }
       const stamp = Date.now();
       const item = syntheticMediaItem(requestUrl, {
         key: `${media.kind}/${media.key}`,
@@ -242,28 +230,17 @@ export async function onRequest({ request, env, params }) {
 
   const contentType = request.headers.get("content-type");
   if (contentType) headers.set("Content-Type", contentType);
-
   for (const conditionalHeader of ["if-match", "if-none-match"]) {
     const value = request.headers.get(conditionalHeader);
     if (value) headers.set(conditionalHeader, value);
   }
 
-  const init = {
-    method,
-    headers,
-    redirect: "manual",
-  };
-
-  if (!["GET", "HEAD"].includes(method)) {
-    init.body = await request.arrayBuffer();
-  }
+  const init = { method, headers, redirect: "manual" };
+  if (!["GET", "HEAD"].includes(method)) init.body = await request.arrayBuffer();
 
   let upstream;
-  try {
-    upstream = await fetch(upstreamUrl, init);
-  } catch {
-    return json({ message: "GitHub could not be reached." }, 502);
-  }
+  try { upstream = await fetch(upstreamUrl, init); }
+  catch { return json({ message: "GitHub could not be reached." }, 502); }
 
   if (media && !media.key && method === "GET" && upstream.ok && hasR2S3(env)) {
     try {
@@ -277,9 +254,7 @@ export async function onRequest({ request, env, params }) {
         map.set(item.name, item);
       }
       return json([...map.values()]);
-    } catch {
-      // If R2 listing fails, keep the existing GitHub media library available.
-    }
+    } catch {}
   }
 
   return new Response(upstream.body, {
