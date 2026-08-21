@@ -34,9 +34,76 @@ const existingPageByPath: Record<string, string> = {
   "/data-requests/": "data-requests",
 };
 
+const fixedStyleSelectors: Record<string, Record<string, string>> = {
+  home: {
+    hero: ".hero",
+    proof: ".proof",
+    approach: ".approach",
+    news: ".news-band",
+  },
+  about: {
+    hero: ".about-hero",
+    firm: ".firm-band",
+    team: ".team-band",
+  },
+  services: {
+    hero: ".services-hero",
+    focus: ".coaching-focus",
+    services: ".service-section",
+    training: ".training-section",
+    consulting: ".consulting-section",
+  },
+};
+
 const pageEntryId = existingPageByPath[Astro.url.pathname];
 const pageEntry = pageEntryId ? await getEntry("pages", pageEntryId) : undefined;
 const additionalSections = (pageEntry?.data.sections ?? []) as Record<string, unknown>[];
+const fixedVisualStyles = (pageEntry?.data.visualStyles ?? {}) as Record<string, Record<string, unknown>>;
+
+const finiteNumber = (value: unknown, min: number, max: number) => {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : null;
+};
+const safeColor = (value: unknown) =>
+  typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value) ? value : null;
+
+const fixedDesktopRules: string[] = [];
+const fixedMobileRules: string[] = [];
+const sectionSelectors = pageEntryId ? fixedStyleSelectors[pageEntryId] ?? {} : {};
+
+Object.entries(sectionSelectors).forEach(([sectionId, selector]) => {
+  const style = fixedVisualStyles[sectionId] ?? {};
+  const paddingTop = finiteNumber(style.paddingTop, 0, 220);
+  const paddingBottom = finiteNumber(style.paddingBottom, 0, 220);
+  const headingSize = finiteNumber(style.headingFontSize, 22, 88);
+  const bodySize = finiteNumber(style.bodyFontSize, 12, 26);
+  const headingColor = safeColor(style.headingColor);
+  const bodyColor = safeColor(style.bodyColor);
+  const preserveHomeHeroSpacing = pageEntryId === "home" && sectionId === "hero";
+
+  const sectionRules: string[] = [];
+  if (!preserveHomeHeroSpacing && paddingTop !== null) sectionRules.push(`padding-top:${paddingTop}px!important`);
+  if (!preserveHomeHeroSpacing && paddingBottom !== null) sectionRules.push(`padding-bottom:${paddingBottom}px!important`);
+  if (sectionRules.length) fixedDesktopRules.push(`${selector}{${sectionRules.join(";")}}`);
+
+  const headingRules: string[] = [];
+  if (headingSize !== null) headingRules.push(`font-size:${headingSize}px!important`);
+  if (headingColor) headingRules.push(`color:${headingColor}!important`);
+  if (headingRules.length) fixedDesktopRules.push(`${selector} h1,${selector} h2,${selector} h3{${headingRules.join(";")}}`);
+
+  const bodyRules: string[] = [];
+  if (bodySize !== null) bodyRules.push(`font-size:${bodySize}px!important`);
+  if (bodyColor) bodyRules.push(`color:${bodyColor}!important`);
+  if (bodyRules.length) fixedDesktopRules.push(`${selector} p:not(.eyebrow):not(.service-number),${selector} li{${bodyRules.join(";")}}`);
+
+  if (!preserveHomeHeroSpacing && paddingTop !== null) fixedMobileRules.push(`${selector}{padding-top:min(${paddingTop}px,64px)!important}`);
+  if (!preserveHomeHeroSpacing && paddingBottom !== null) fixedMobileRules.push(`${selector}{padding-bottom:min(${paddingBottom}px,64px)!important}`);
+  if (headingSize !== null) fixedMobileRules.push(`${selector} h1,${selector} h2,${selector} h3{font-size:min(${headingSize}px,56px)!important}`);
+});
+
+const fixedVisualCss = fixedDesktopRules.length
+  ? `${fixedDesktopRules.join("\n")}\n${fixedMobileRules.length ? `@media(max-width:820px){${fixedMobileRules.join("\n")}}` : ""}`
+  : "";
 
 const aboutEntry = await getEntry("pages", "about");
 const teamAuthors = Object.fromEntries(
@@ -93,6 +160,7 @@ const teamAuthors = Object.fromEntries(
     {Astro.url.pathname.startsWith("/post/") && <link rel="stylesheet" href="/article-final-fixes.css" />}
     {Astro.url.pathname.startsWith("/post/") && <script is:inline src="/article-pdf-download.js" defer></script>}
     <link rel="stylesheet" href="/full-width-fixes.css" />
+    {fixedVisualCss && <style is:inline set:html={fixedVisualCss}></style>}
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
