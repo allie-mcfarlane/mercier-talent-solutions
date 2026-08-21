@@ -65,6 +65,8 @@ const mediaContentType = (kind, key) => {
   return "";
 };
 
+const mediaStoreConfigured = (env) => Boolean(env.MEDIA_BUCKET || hasR2S3(env));
+
 const decodeBase64 = (input) => {
   const binary = atob(String(input || "").replace(/\n/g, ""));
   const bytes = new Uint8Array(binary.length);
@@ -161,7 +163,7 @@ export async function onRequest({ request, env, params }) {
   }
 
   const media = mediaRoute(path);
-  if (media && media.key && hasR2S3(env) && method === "PUT") {
+  if (media && media.key && mediaStoreConfigured(env) && method === "PUT") {
     if (!safeMediaKey(media.key)) return json({ message: "Invalid media path." }, 400);
     const contentType = mediaContentType(media.kind, media.key);
     if (!contentType) return json({ message: "Only website images and PDF documents are allowed." }, 415);
@@ -173,17 +175,29 @@ export async function onRequest({ request, env, params }) {
     catch { return json({ message: "Media file could not be read." }, 400); }
     if (bytes.byteLength > 25 * 1024 * 1024) return json({ message: "File is too large. Maximum size is 25 MB." }, 413);
     try {
-      const uploaded = await r2Put(env, `${media.kind}/${media.key}`, bytes, { contentType });
-      if (!uploaded.ok) {
-        const detail = await r2ErrorDetails(uploaded);
-        return json({ message: `R2 upload failed (${uploaded.status})${detail ? `: ${detail}` : "."}` }, 502);
+      let etag = String(Date.now());
+      if (env.MEDIA_BUCKET) {
+        const stored = await env.MEDIA_BUCKET.put(`${media.kind}/${media.key}`, bytes, {
+          httpMetadata: {
+            contentType,
+            cacheControl: "public, max-age=0, must-revalidate",
+          },
+        });
+        etag = stored?.httpEtag || stored?.etag || etag;
+      } else {
+        const uploaded = await r2Put(env, `${media.kind}/${media.key}`, bytes, { contentType });
+        if (!uploaded.ok) {
+          const detail = await r2ErrorDetails(uploaded);
+          return json({ message: `R2 upload failed (${uploaded.status})${detail ? `: ${detail}` : "."}` }, 502);
+        }
+        etag = (uploaded.headers.get("etag") || etag).replace(/^"|"$/g, "");
       }
       const stamp = Date.now();
       const item = syntheticMediaItem(requestUrl, {
         key: `${media.kind}/${media.key}`,
         size: bytes.byteLength,
         uploaded: new Date().toISOString(),
-        etag: String(stamp),
+        etag,
       });
       return json({ content: item, commit: { sha: `r2-${stamp}` } }, 201);
     } catch (error) {
@@ -191,13 +205,17 @@ export async function onRequest({ request, env, params }) {
     }
   }
 
-  if (media && media.key && hasR2S3(env) && method === "DELETE") {
+  if (media && media.key && mediaStoreConfigured(env) && method === "DELETE") {
     let payload = {};
     try { payload = await request.json(); } catch {}
     if (String(payload?.sha || "").startsWith("r2-")) {
       try {
-        const removed = await r2Delete(env, `${media.kind}/${media.key}`);
-        if (!removed.ok && removed.status !== 404) return json({ message: `R2 delete failed (${removed.status}).` }, 502);
+        if (env.MEDIA_BUCKET) {
+          await env.MEDIA_BUCKET.delete(`${media.kind}/${media.key}`);
+        } else {
+          const removed = await r2Delete(env, `${media.kind}/${media.key}`);
+          if (!removed.ok && removed.status !== 404) return json({ message: `R2 delete failed (${removed.status}).` }, 502);
+        }
         return json({ content: null, commit: { sha: `r2-${Date.now()}` } });
       } catch (error) {
         return json({ message: error?.message || "Media file could not be deleted." }, 500);
@@ -205,18 +223,32 @@ export async function onRequest({ request, env, params }) {
     }
   }
 
-  if (media && media.key && hasR2S3(env) && method === "GET") {
+  if (media && media.key && mediaStoreConfigured(env) && method === "GET") {
     try {
-      const stored = await r2Get(env, `${media.kind}/${media.key}`);
-      if (stored.ok) {
-        const bytes = new Uint8Array(await stored.arrayBuffer());
-        const item = syntheticMediaItem(requestUrl, {
-          key: `${media.kind}/${media.key}`,
-          size: bytes.byteLength,
-          uploaded: stored.headers.get("last-modified") || "",
-          etag: (stored.headers.get("etag") || "").replace(/^"|"$/g, ""),
-        });
-        return json({ ...item, content: encodeBase64(bytes), encoding: "base64" });
+      if (env.MEDIA_BUCKET) {
+        const stored = await env.MEDIA_BUCKET.get(`${media.kind}/${media.key}`);
+        if (stored) {
+          const bytes = new Uint8Array(await stored.arrayBuffer());
+          const item = syntheticMediaItem(requestUrl, {
+            key: `${media.kind}/${media.key}`,
+            size: bytes.byteLength,
+            uploaded: stored.uploaded instanceof Date ? stored.uploaded.toISOString() : String(stored.uploaded || ""),
+            etag: stored.httpEtag || stored.etag || "",
+          });
+          return json({ ...item, content: encodeBase64(bytes), encoding: "base64" });
+        }
+      } else {
+        const stored = await r2Get(env, `${media.kind}/${media.key}`);
+        if (stored.ok) {
+          const bytes = new Uint8Array(await stored.arrayBuffer());
+          const item = syntheticMediaItem(requestUrl, {
+            key: `${media.kind}/${media.key}`,
+            size: bytes.byteLength,
+            uploaded: stored.headers.get("last-modified") || "",
+            etag: (stored.headers.get("etag") || "").replace(/^"|"$/g, ""),
+          });
+          return json({ ...item, content: encodeBase64(bytes), encoding: "base64" });
+        }
       }
     } catch {}
   }
@@ -242,11 +274,22 @@ export async function onRequest({ request, env, params }) {
   try { upstream = await fetch(upstreamUrl, init); }
   catch { return json({ message: "GitHub could not be reached." }, 502); }
 
-  if (media && !media.key && method === "GET" && upstream.ok && hasR2S3(env)) {
+  if (media && !media.key && method === "GET" && upstream.ok && mediaStoreConfigured(env)) {
     try {
       const existing = await upstream.clone().json();
       const map = new Map((Array.isArray(existing) ? existing : []).map((item) => [item.name, item]));
-      const stored = await r2List(env, `${media.kind}/`, 500);
+      let stored;
+      if (env.MEDIA_BUCKET) {
+        const listed = await env.MEDIA_BUCKET.list({ prefix: `${media.kind}/`, limit: 500 });
+        stored = listed.objects.map((object) => ({
+          key: object.key,
+          size: object.size,
+          uploaded: object.uploaded instanceof Date ? object.uploaded.toISOString() : String(object.uploaded || ""),
+          etag: object.httpEtag || object.etag || "",
+        }));
+      } else {
+        stored = await r2List(env, `${media.kind}/`, 500);
+      }
       for (const object of stored) {
         const relative = object.key.slice(`${media.kind}/`.length);
         if (!relative || relative.includes("/")) continue;
