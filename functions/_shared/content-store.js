@@ -22,26 +22,28 @@ export const jsonResponse = (value, status = 200, extraHeaders = {}) =>
 export async function ensureContentSchema(env) {
   if (!hasContentStore(env)) return false;
   if (!schemaReadyPromise) {
-    schemaReadyPromise = env.CONTENT_DB.exec(`
-      CREATE TABLE IF NOT EXISTS content_entries (
-        type TEXT NOT NULL,
-        slug TEXT NOT NULL,
-        draft_data TEXT,
-        draft_body TEXT,
-        draft_html TEXT,
-        draft_branch TEXT,
-        published_data TEXT,
-        published_body TEXT,
-        published_html TEXT,
-        updated_at TEXT NOT NULL,
-        published_at TEXT,
-        updated_by TEXT,
-        PRIMARY KEY (type, slug)
-      );
-      CREATE INDEX IF NOT EXISTS idx_content_entries_type ON content_entries(type);
-      CREATE INDEX IF NOT EXISTS idx_content_entries_branch ON content_entries(draft_branch);
-      CREATE INDEX IF NOT EXISTS idx_content_entries_published ON content_entries(type, published_at);
-    `).catch((error) => {
+    schemaReadyPromise = env.CONTENT_DB.batch([
+      env.CONTENT_DB.prepare(`
+        CREATE TABLE IF NOT EXISTS content_entries (
+          type TEXT NOT NULL,
+          slug TEXT NOT NULL,
+          draft_data TEXT,
+          draft_body TEXT,
+          draft_html TEXT,
+          draft_branch TEXT,
+          published_data TEXT,
+          published_body TEXT,
+          published_html TEXT,
+          updated_at TEXT NOT NULL,
+          published_at TEXT,
+          updated_by TEXT,
+          PRIMARY KEY (type, slug)
+        )
+      `),
+      env.CONTENT_DB.prepare("CREATE INDEX IF NOT EXISTS idx_content_entries_type ON content_entries(type)"),
+      env.CONTENT_DB.prepare("CREATE INDEX IF NOT EXISTS idx_content_entries_branch ON content_entries(draft_branch)"),
+      env.CONTENT_DB.prepare("CREATE INDEX IF NOT EXISTS idx_content_entries_published ON content_entries(type, published_at)"),
+    ]).catch((error) => {
       schemaReadyPromise = null;
       throw error;
     });
