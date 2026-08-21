@@ -1,0 +1,198 @@
+---
+type VisualStyleMap = Record<string, any>;
+type BuilderSection = Record<string, any>;
+
+const {
+  visualStyles = {},
+  builderSections = [],
+} = Astro.props as {
+  visualStyles?: VisualStyleMap;
+  builderSections?: BuilderSection[];
+};
+
+const inlineStyles =
+  visualStyles?.__inline?.scopes && typeof visualStyles.__inline.scopes === "object"
+    ? visualStyles.__inline.scopes
+    : {};
+const sectionOrder = Array.isArray(visualStyles?.__order?.items)
+  ? visualStyles.__order.items.map(String)
+  : [];
+const builderInline = Object.fromEntries(
+  (builderSections ?? []).map((section, index) => [
+    String(section?.editorId ?? `index-${index}`),
+    section?.inlineStyles && typeof section.inlineStyles === "object" ? section.inlineStyles : {},
+  ]),
+);
+---
+
+<script is:inline define:vars={{ inlineStyles, sectionOrder, builderInline }}>
+  (() => {
+    const GENERIC_CLASSES = new Set(["section", "shaded", "container", "is-visible", "motion-image"]);
+    const TEXT_SELECTOR = "h1,h2,h3,h4,p,li,a.button,a.eyebrow-link";
+
+    const topBlocks = () => {
+      const main = document.querySelector("main#main-content");
+      if (!main) return [];
+      return [...main.children].filter((node) => node instanceof Element && node.matches("section,nav,article"));
+    };
+
+    const preferredClass = (node, siblings) => {
+      const candidates = [...node.classList].filter(
+        (name) => !GENERIC_CLASSES.has(name) && !name.startsWith("mts-") && !name.startsWith("ve-"),
+      );
+      const unique = candidates.find(
+        (name) => siblings.filter((item) => item.classList.contains(name)).length === 1,
+      );
+      return unique || candidates[0] || "";
+    };
+
+    const staticToken = (node, siblings) => {
+      if (node.id) return `fixed:id:${node.id}`;
+      const className = preferredClass(node, siblings);
+      if (className) {
+        const matches = siblings.filter((item) => item.classList.contains(className));
+        return `fixed:class:${className}:${matches.indexOf(node)}`;
+      }
+      const matches = siblings.filter((item) => item.tagName === node.tagName);
+      return `fixed:tag:${node.tagName.toLowerCase()}:${matches.indexOf(node)}`;
+    };
+
+    const assignTokens = () => {
+      const blocks = topBlocks();
+      blocks.forEach((block) => {
+        const builderId = block.getAttribute("data-mts-builder-id");
+        block.dataset.mtsPageToken = builderId ? `builder:${builderId}` : staticToken(block, blocks);
+      });
+      return blocks;
+    };
+
+    const applyOrder = () => {
+      if (!Array.isArray(sectionOrder) || !sectionOrder.length) return assignTokens();
+      const main = document.querySelector("main#main-content");
+      const blocks = assignTokens();
+      const byToken = new Map(blocks.map((block) => [block.dataset.mtsPageToken, block]));
+      const wanted = sectionOrder.filter((token) => byToken.has(token));
+      blocks.forEach((block) => {
+        const token = block.dataset.mtsPageToken;
+        if (token && !wanted.includes(token)) wanted.push(token);
+      });
+      const current = blocks.map((block) => block.dataset.mtsPageToken);
+      if (current.join("\u0000") !== wanted.join("\u0000")) {
+        wanted.forEach((token) => {
+          const block = byToken.get(token);
+          if (block) main?.append(block);
+        });
+      }
+      return topBlocks();
+    };
+
+    const textNodes = (element) => {
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          return node.nodeValue ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        },
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      return nodes;
+    };
+
+    const styleAt = (formats, start, end) => {
+      const style = { colorSet: false, color: null, sizeSet: false, fontSize: null };
+      formats.forEach((format) => {
+        if (Number(format.start) > start || Number(format.end) < end) return;
+        if (Object.prototype.hasOwnProperty.call(format, "color")) {
+          style.colorSet = true;
+          style.color = format.color;
+        }
+        if (Object.prototype.hasOwnProperty.call(format, "fontSize")) {
+          style.sizeSet = true;
+          style.fontSize = format.fontSize;
+        }
+      });
+      return style;
+    };
+
+    const applyRecord = (element, record) => {
+      if (!record || !Array.isArray(record.formats) || !record.formats.length) return;
+      const source = element.textContent || "";
+      if (record.source !== source) return;
+      let cursor = 0;
+      textNodes(element).forEach((node) => {
+        const text = node.nodeValue || "";
+        const nodeStart = cursor;
+        const nodeEnd = cursor + text.length;
+        cursor = nodeEnd;
+        const boundaries = new Set([nodeStart, nodeEnd]);
+        record.formats.forEach((format) => {
+          const start = Math.max(nodeStart, Number(format.start));
+          const end = Math.min(nodeEnd, Number(format.end));
+          if (start < end) {
+            boundaries.add(start);
+            boundaries.add(end);
+          }
+        });
+        const sorted = [...boundaries].sort((a, b) => a - b);
+        if (
+          sorted.length <= 2 &&
+          !record.formats.some(
+            (format) => Number(format.start) < nodeEnd && Number(format.end) > nodeStart,
+          )
+        ) return;
+        const fragment = document.createDocumentFragment();
+        for (let index = 0; index < sorted.length - 1; index += 1) {
+          const start = sorted[index];
+          const end = sorted[index + 1];
+          const piece = text.slice(start - nodeStart, end - nodeStart);
+          const style = styleAt(record.formats, start, end);
+          const hasColor = style.colorSet && style.color;
+          const hasSize = style.sizeSet && Number(style.fontSize) > 0;
+          if (!hasColor && !hasSize) {
+            fragment.append(document.createTextNode(piece));
+            continue;
+          }
+          const span = document.createElement("span");
+          span.dataset.mtsInlineFormat = "true";
+          if (hasColor) span.style.setProperty("--mts-inline-color", style.color);
+          if (hasSize) {
+            const size = Math.max(10, Math.min(96, Number(style.fontSize)));
+            span.style.setProperty("--mts-inline-size", `${size}px`);
+          }
+          span.textContent = piece;
+          fragment.append(span);
+        }
+        node.replaceWith(fragment);
+      });
+    };
+
+    const applyInlineStyles = () => {
+      assignTokens().forEach((block) => {
+        const token = block.dataset.mtsPageToken || "";
+        const scope = token.startsWith("builder:")
+          ? builderInline[token.slice("builder:".length)] || {}
+          : inlineStyles[token] || {};
+        [...block.querySelectorAll(TEXT_SELECTOR)].forEach((element, index) => {
+          const record = scope[String(index)];
+          if (record) applyRecord(element, record);
+        });
+      });
+    };
+
+    const style = document.createElement("style");
+    style.textContent = `
+      span[data-mts-inline-format="true"]{
+        color:var(--mts-inline-color,inherit);
+        font-size:var(--mts-inline-size,inherit);
+      }
+      @media(max-width:820px){
+        span[data-mts-inline-format="true"]{
+          font-size:min(var(--mts-inline-size,1em),1.15em);
+        }
+      }
+    `;
+    document.head.append(style);
+
+    applyOrder();
+    applyInlineStyles();
+  })();
+</script>
