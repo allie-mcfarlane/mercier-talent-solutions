@@ -1,6 +1,6 @@
 const DATA_REQUESTS_PATH = "/data-requests/";
 const FORMSUBMIT_ENDPOINT =
-  "https://formsubmit.co/ajax/julia@merciertalentsolutions.com";
+  "https://formsubmit.co/julia@merciertalentsolutions.com";
 
 const redirectToDataRequests = (request, params) => {
   const url = new URL(DATA_REQUESTS_PATH, request.url);
@@ -21,6 +21,64 @@ const textValue = (formData, name, maxLength = 10000) => {
   const value = formData.get(name);
   if (typeof value !== "string") return "";
   return value.trim().slice(0, maxLength);
+};
+
+const escapeHtml = (value) =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+const hiddenInput = (name, value) =>
+  `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`;
+
+const browserDeliveryResponse = (request, payload) => {
+  const successUrl = new URL(DATA_REQUESTS_PATH, request.url);
+  successUrl.searchParams.set("sent", "1");
+
+  const fields = [
+    hiddenInput("_subject", payload._subject),
+    hiddenInput("_template", payload._template),
+    hiddenInput("_captcha", payload._captcha),
+    hiddenInput("_replyto", payload._replyto),
+    hiddenInput("_next", successUrl.toString()),
+    hiddenInput("_url", payload._url),
+    hiddenInput("form_name", payload.form_name),
+    hiddenInput("name", payload.name),
+    hiddenInput("email", payload.email),
+    hiddenInput("request_type", payload.request_type),
+    `<textarea name="message" hidden>${escapeHtml(payload.message)}</textarea>`,
+  ].join("\n");
+
+  const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sending request…</title>
+  </head>
+  <body>
+    <form id="privacy-delivery" action="${escapeHtml(FORMSUBMIT_ENDPOINT)}" method="POST">
+      ${fields}
+      <noscript>
+        <p>Your security check passed. Select Continue to submit your request.</p>
+        <button type="submit">Continue</button>
+      </noscript>
+    </form>
+    <script>document.getElementById("privacy-delivery").submit();</script>
+  </body>
+</html>`;
+
+  return new Response(html, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+    },
+  });
 };
 
 export async function onRequestPost(context) {
@@ -94,30 +152,7 @@ export async function onRequestPost(context) {
       message: textValue(formData, "message", 10000),
     };
 
-    const sendResponse = await fetch(FORMSUBMIT_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    let sendResult = null;
-    try {
-      sendResult = await sendResponse.json();
-    } catch {
-      // A successful HTTP response is enough if FormSubmit does not return JSON.
-    }
-
-    if (!sendResponse.ok || sendResult?.success === false) {
-      console.error("FormSubmit rejected privacy submission.", {
-        status: sendResponse.status,
-      });
-      return redirectToDataRequests(request, { error: "send" });
-    }
-
-    return redirectToDataRequests(request, { sent: "1" });
+    return browserDeliveryResponse(request, payload);
   } catch (error) {
     console.error("Privacy form submission failed.", error);
     return redirectToDataRequests(request, { error: "send" });
