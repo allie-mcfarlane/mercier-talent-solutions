@@ -1,0 +1,14 @@
+/* Direct-manipulation controls for page-builder sections. Editor-only styles. */
+.ve-visual-builder-mode .ve-preview-bar{align-items:flex-start}
+.mts-visual-hint{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px;color:#66778b;font-size:9px;line-height:1.4}
+.mts-visual-hint strong{color:#45628e;font-size:9px}
+.ve-add-menu button[draggable="true"]{cursor:grab;user-select:none}
+.ve-add-menu button[draggable="true"]:active,.mts-side-drag-handle:active{cursor:grabbing}
+.mts-side-drag-handle{cursor:grab!important;letter-spacing:-2px}
+.ve-section-card.mts-drop-target{border-color:#7890ae;box-shadow:0 0 0 3px rgba(69,98,142,.09)}
+@media (min-width:1320px){
+  .ve-visual-builder-mode .ve-editor{grid-template-columns:205px minmax(320px,.62fr) minmax(650px,1.8fr)}
+}
+@media (max-width:760px){
+  .mts-visual-hint{display:none}
+}

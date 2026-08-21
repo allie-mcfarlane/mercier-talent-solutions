@@ -17,10 +17,36 @@ const sectionClass = (section: BuilderSection) =>
     `builder-theme-${section.theme ?? "white"}`,
     `builder-align-${section.align ?? "left"}`,
   ].join(" ");
+
+const finiteNumber = (value: unknown, min: number, max: number) => {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : null;
+};
+
+const safeColor = (value: unknown) =>
+  typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value) ? value : null;
+
+const sectionStyle = (section: BuilderSection) => {
+  const values: string[] = [];
+  const paddingTop = finiteNumber(section.paddingTop, 0, 220);
+  const paddingBottom = finiteNumber(section.paddingBottom, 0, 220);
+  const headingFontSize = finiteNumber(section.headingFontSize, 22, 88);
+  const bodyFontSize = finiteNumber(section.bodyFontSize, 12, 26);
+  const headingColor = safeColor(section.headingColor);
+  const bodyColor = safeColor(section.bodyColor);
+
+  if (paddingTop !== null) values.push(`--builder-padding-top:${paddingTop}px`);
+  if (paddingBottom !== null) values.push(`--builder-padding-bottom:${paddingBottom}px`);
+  if (headingFontSize !== null) values.push(`--builder-heading-size:${headingFontSize}px`);
+  if (bodyFontSize !== null) values.push(`--builder-body-size:${bodyFontSize}px`);
+  if (headingColor) values.push(`--builder-heading-color:${headingColor}`);
+  if (bodyColor) values.push(`--builder-body-color:${bodyColor}`);
+  return values.join(";");
+};
 ---
 
 {sections.map((section) => (
-  <section class={sectionClass(section)}>
+  <section class={sectionClass(section)} style={sectionStyle(section)}>
     {section.type === "hero" && (
       <div class={`container builder-hero-grid ${section.image ? "has-image" : ""}`}>
         <div class="builder-copy">
@@ -106,7 +132,8 @@ const sectionClass = (section: BuilderSection) =>
 
 <style>
   .builder-section {
-    padding: clamp(4rem, 7vw, 6.5rem) 0;
+    padding-top: var(--builder-padding-top, clamp(4rem, 7vw, 6.5rem));
+    padding-bottom: var(--builder-padding-bottom, clamp(4rem, 7vw, 6.5rem));
   }
 
   .builder-theme-white { background: var(--color-white); }
@@ -114,8 +141,7 @@ const sectionClass = (section: BuilderSection) =>
   .builder-theme-navy { background: var(--color-blue-dark); color: var(--color-white); }
   .builder-theme-navy :global(h1),
   .builder-theme-navy :global(h2),
-  .builder-theme-navy :global(h3),
-  .builder-theme-navy :global(p) { color: var(--color-white); }
+  .builder-theme-navy :global(h3) { color: var(--builder-heading-color, var(--color-white)); }
   .builder-theme-navy .eyebrow { color: rgba(255,255,255,.72); }
   .builder-theme-navy .button { border-color: var(--color-white); background: var(--color-white); color: var(--color-blue-dark); }
 
@@ -140,23 +166,42 @@ const sectionClass = (section: BuilderSection) =>
   }
 
   .builder-copy { max-width: 760px; }
-  .builder-copy h1 { margin: .55rem 0 1.25rem; font-size: var(--page-title-size); line-height: 1.02; }
+  .builder-copy h1 {
+    margin: .55rem 0 1.25rem;
+    color: var(--builder-heading-color, inherit);
+    font-size: var(--builder-heading-size, var(--page-title-size));
+    line-height: 1.02;
+  }
   .builder-copy h2,
   .builder-reading h2,
-  .builder-callout h2 { margin: .55rem 0 1.25rem; font-size: var(--section-title-size); line-height: 1.08; }
+  .builder-callout h2,
+  .section-heading h2 {
+    margin: .55rem 0 1.25rem;
+    color: var(--builder-heading-color, inherit);
+    font-size: var(--builder-heading-size, var(--section-title-size));
+    line-height: 1.08;
+  }
   .builder-copy p,
   .builder-reading p,
-  .builder-callout p { color: var(--color-muted); line-height: 1.65; }
+  .builder-callout p {
+    color: var(--builder-body-color, var(--color-muted));
+    font-size: var(--builder-body-size, inherit);
+    line-height: 1.65;
+  }
+  .builder-card-grid .card p {
+    color: var(--builder-body-color, inherit);
+    font-size: var(--builder-body-size, inherit);
+  }
   .builder-theme-navy .builder-copy p,
   .builder-theme-navy .builder-reading p,
-  .builder-theme-navy .builder-callout p { color: rgba(255,255,255,.82); }
+  .builder-theme-navy .builder-callout p { color: var(--builder-body-color, rgba(255,255,255,.82)); }
   .builder-copy .button,
   .builder-callout .button { margin-top: .6rem; }
 
   .builder-reading { max-width: var(--reading-width); }
   .builder-prose { max-width: 860px; }
-  .builder-heading-small { font-size: clamp(1.55rem, 2.6vw, 2.4rem) !important; }
-  .builder-heading-large { font-size: clamp(2.4rem, 4.5vw, 4.2rem) !important; }
+  .builder-heading-small { font-size: var(--builder-heading-size, clamp(1.55rem, 2.6vw, 2.4rem)) !important; }
+  .builder-heading-large { font-size: var(--builder-heading-size, clamp(2.4rem, 4.5vw, 4.2rem)) !important; }
 
   .builder-image-frame { min-height: 320px; }
   .builder-image-frame :global(img),
@@ -176,12 +221,21 @@ const sectionClass = (section: BuilderSection) =>
 
   .builder-image-only .media-frame { max-height: 760px; }
   .builder-image-only :global(img) { width: 100%; max-height: 760px; object-fit: cover; }
-  .builder-caption { margin: .8rem 0 0; color: var(--color-muted); font-size: .9rem; }
+  .builder-caption { margin: .8rem 0 0; color: var(--builder-body-color, var(--color-muted)); font-size: var(--builder-body-size, .9rem); }
 
   .builder-callout { max-width: 980px; }
   .builder-html { max-width: var(--content-wide); }
 
   @media (max-width: 820px) {
+    .builder-section {
+      padding-top: min(var(--builder-padding-top, 4rem), 4rem);
+      padding-bottom: min(var(--builder-padding-bottom, 4rem), 4rem);
+    }
+    .builder-copy h1 { font-size: min(var(--builder-heading-size, var(--page-title-size)), 3.5rem); }
+    .builder-copy h2,
+    .builder-reading h2,
+    .builder-callout h2,
+    .section-heading h2 { font-size: min(var(--builder-heading-size, var(--section-title-size)), 3rem); }
     .builder-hero-grid.has-image,
     .builder-image-text { grid-template-columns: 1fr; }
     .builder-image-text.image-right .builder-image-frame,

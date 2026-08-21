@@ -50,6 +50,7 @@ const pages = defineCollection({
     navTitle: z.string().optional(),
     seoDescription: z.string().optional(),
     sections: z.array(z.record(z.unknown())).optional(),
+    visualStyles: z.record(z.record(z.unknown())).optional(),
     primaryCta: z
       .object({
         label: z.string(),
