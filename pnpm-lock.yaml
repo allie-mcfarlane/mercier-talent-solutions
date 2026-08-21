@@ -10,13 +10,16 @@ importers:
     dependencies:
       '@astrojs/mdx':
         specifier: ^4.0.0
-        version: 4.3.14(astro@5.18.2(@types/node@24.13.3)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0))
+        version: 4.3.14(astro@5.18.2(@types/node@24.13.3)(aws4fetch@1.0.20)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0))
       '@astrojs/sitemap':
         specifier: ^3.0.0
         version: 3.7.3
       astro:
         specifier: ^5.0.0
-        version: 5.18.2(@types/node@24.13.3)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0)
+        version: 5.18.2(@types/node@24.13.3)(aws4fetch@1.0.20)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0)
+      aws4fetch:
+        specifier: ^1.0.20
+        version: 1.0.20
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.10
@@ -914,6 +917,9 @@ packages:
     resolution: {integrity: sha512-TnFwLnAXty5MXKPDGuKXqK4AMBXG+FH6RUdK7Oyc3gyfNoFIthT+4eRbzOK43bdRlLaZuxgciDSjgtggZ3OtGQ==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
+
+  aws4fetch@1.0.20:
+    resolution: {integrity: sha512-/djoAN709iY65ETD6LKCtyyEI04XIBP5xVvfmNxsEP0uJB5tyaGBztSryRr4HqMStr9R06PisQE7m9zDTXKu6g==}
 
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
@@ -2248,12 +2254,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.3.14(astro@5.18.2(@types/node@24.13.3)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0))':
+  '@astrojs/mdx@4.3.14(astro@5.18.2(@types/node@24.13.3)(aws4fetch@1.0.20)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.11
       '@mdx-js/mdx': 3.1.1
       acorn: 8.18.0
-      astro: 5.18.2(@types/node@24.13.3)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0)
+      astro: 5.18.2(@types/node@24.13.3)(aws4fetch@1.0.20)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -2886,7 +2892,7 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro@5.18.2(@types/node@24.13.3)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0):
+  astro@5.18.2(@types/node@24.13.3)(aws4fetch@1.0.20)(rollup@4.62.4)(typescript@5.9.3)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler': 2.13.1
       '@astrojs/internal-helpers': 0.7.6
@@ -2941,7 +2947,7 @@ snapshots:
       ultrahtml: 1.7.0
       unifont: 0.7.5
       unist-util-visit: 5.1.0
-      unstorage: 1.17.5
+      unstorage: 1.17.5(aws4fetch@1.0.20)
       vfile: 6.0.3
       vite: 6.4.3(@types/node@24.13.3)(yaml@2.9.0)
       vitefu: 1.1.3(vite@6.4.3(@types/node@24.13.3)(yaml@2.9.0))
@@ -2987,6 +2993,8 @@ snapshots:
       - typescript
       - uploadthing
       - yaml
+
+  aws4fetch@1.0.20: {}
 
   axobject-query@4.1.0: {}
 
@@ -4445,7 +4453,7 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  unstorage@1.17.5:
+  unstorage@1.17.5(aws4fetch@1.0.20):
     dependencies:
       anymatch: 3.1.3
       chokidar: 5.0.0
@@ -4455,6 +4463,8 @@ snapshots:
       node-fetch-native: 1.6.7
       ofetch: 1.5.1
       ufo: 1.6.4
+    optionalDependencies:
+      aws4fetch: 1.0.20
 
   vfile-location@5.0.3:
     dependencies:
