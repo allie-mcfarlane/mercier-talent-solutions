@@ -35,6 +35,7 @@ jobs:
           node --check public/admin/editor/visual-fixed-sections.js
           node --check public/admin/editor/visual-safety.js
           node --check public/admin/editor/direct-canvas.js
+          node --check public/admin/editor/direct-canvas-controls-fix.js
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
