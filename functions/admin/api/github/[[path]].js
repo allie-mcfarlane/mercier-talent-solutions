@@ -1,4 +1,4 @@
-import { hasR2S3, r2Delete, r2ErrorDetails, r2Get, r2List, r2Put } from "../../../_shared/r2-s3.js";
+import { hasR2S3, r2Delete, r2Get, r2List } from "../../../_shared/r2-s3.js";
 
 const REPOSITORY = "allie-mcfarlane/mercier-talent-solutions";
 const REPOSITORY_PREFIX = `repos/${REPOSITORY}`;
@@ -163,7 +163,7 @@ export async function onRequest({ request, env, params }) {
   }
 
   const media = mediaRoute(path);
-  if (media && media.key && mediaStoreConfigured(env) && method === "PUT") {
+  if (media && media.key && env.MEDIA_BUCKET && method === "PUT") {
     if (!safeMediaKey(media.key)) return json({ message: "Invalid media path." }, 400);
     const contentType = mediaContentType(media.kind, media.key);
     if (!contentType) return json({ message: "Only website images and PDF documents are allowed." }, 415);
@@ -175,29 +175,18 @@ export async function onRequest({ request, env, params }) {
     catch { return json({ message: "Media file could not be read." }, 400); }
     if (bytes.byteLength > 25 * 1024 * 1024) return json({ message: "File is too large. Maximum size is 25 MB." }, 413);
     try {
-      let etag = String(Date.now());
-      if (env.MEDIA_BUCKET) {
-        const stored = await env.MEDIA_BUCKET.put(`${media.kind}/${media.key}`, bytes, {
-          httpMetadata: {
-            contentType,
-            cacheControl: "public, max-age=0, must-revalidate",
-          },
-        });
-        etag = stored?.httpEtag || stored?.etag || etag;
-      } else {
-        const uploaded = await r2Put(env, `${media.kind}/${media.key}`, bytes, { contentType });
-        if (!uploaded.ok) {
-          const detail = await r2ErrorDetails(uploaded);
-          return json({ message: `R2 upload failed (${uploaded.status})${detail ? `: ${detail}` : "."}` }, 502);
-        }
-        etag = (uploaded.headers.get("etag") || etag).replace(/^"|"$/g, "");
-      }
+      const stored = await env.MEDIA_BUCKET.put(`${media.kind}/${media.key}`, bytes, {
+        httpMetadata: {
+          contentType,
+          cacheControl: "public, max-age=0, must-revalidate",
+        },
+      });
       const stamp = Date.now();
       const item = syntheticMediaItem(requestUrl, {
         key: `${media.kind}/${media.key}`,
         size: bytes.byteLength,
         uploaded: new Date().toISOString(),
-        etag,
+        etag: stored?.httpEtag || stored?.etag || String(stamp),
       });
       return json({ content: item, commit: { sha: `r2-${stamp}` } }, 201);
     } catch (error) {
