@@ -12,7 +12,8 @@
   "dependencies": {
     "@astrojs/mdx": "^4.0.0",
     "@astrojs/sitemap": "^3.0.0",
-    "astro": "^5.0.0"
+    "astro": "^5.0.0",
+    "aws4fetch": "^1.0.20"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
