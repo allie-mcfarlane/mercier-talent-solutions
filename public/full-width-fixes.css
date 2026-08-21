@@ -89,6 +89,7 @@ main .wp-hero .eyebrow {
 /* About: tighten the hero label/title/body spacing to match the other page heroes. */
 main .about-hero h1 {
   margin: 1.55rem 0 1.5rem !important;
+  text-wrap: balance;
 }
 
 /* Services: match the eyebrow/title/paragraph rhythm used by the other page heroes. */
@@ -111,6 +112,10 @@ main .news-hero .hero-rule {
 
 main .news-hero .hero-copy h1 {
   margin-top: 1.55rem !important;
+}
+
+main .wp-hero h1 {
+  text-wrap: balance;
 }
 
 @media (min-width: 1081px) {
