@@ -29,6 +29,12 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Check visual editor scripts
+        run: |
+          node --check public/admin/editor/visual-builder.js
+          node --check public/admin/editor/visual-fixed-sections.js
+          node --check public/admin/editor/visual-safety.js
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
