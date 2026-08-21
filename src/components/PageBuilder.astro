@@ -45,8 +45,12 @@ const sectionStyle = (section: BuilderSection) => {
 };
 ---
 
-{sections.map((section) => (
-  <section class={sectionClass(section)} style={sectionStyle(section)}>
+{sections.map((section, index) => (
+  <section
+    class={sectionClass(section)}
+    style={sectionStyle(section)}
+    data-mts-builder-id={String(section.editorId ?? `index-${index}`)}
+  >
     {section.type === "hero" && (
       <div class={`container builder-hero-grid ${section.image ? "has-image" : ""}`}>
         <div class="builder-copy">
