@@ -22,10 +22,10 @@
     ['callout', 'Call to Action'],
   ];
   const stores = new Map();
-  let newPageSavedPath = '';
-  let parentRefreshQueued = false;
-
   const wrappedFetch = window.fetch.bind(window);
+  let newPageSavedPath = '';
+  let lastHash = location.hash || '#/';
+  let parentRefreshQueued = false;
 
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const clamp = (value, min, max) => Math.min(max, Math.max(min, Number(value) || 0));
@@ -93,6 +93,9 @@
     return '';
   };
 
+  const activeBuilder = () =>
+    Boolean(document.querySelector('[data-section-select="extra"].active')) || (location.hash || '') === '#/new-page';
+
   const extractStyles = (section = {}) => {
     const result = {};
     STYLE_KEYS.forEach((key) => {
@@ -121,12 +124,13 @@
 
   const mergeStylesIntoDocument = (data, store) => {
     if (!Array.isArray(data?.sections)) return;
-    while (store.length < data.sections.length) store.push({});
     data.sections.forEach((section, index) => {
-      const style = store[index] || {};
+      const style = store[index];
+      if (!style) return;
       STYLE_KEYS.forEach((key) => {
+        if (!Object.prototype.hasOwnProperty.call(style, key)) return;
         const value = style[key];
-        if (value === undefined || value === null || value === '') delete section[key];
+        if (value === null || value === '') delete section[key];
         else if (key.includes('Size') || key.startsWith('padding')) section[key] = Number(value);
         else section[key] = String(value);
       });
@@ -146,7 +150,8 @@
         if (payload?.content) {
           const parsed = parseDocument(decodeBase64(payload.content));
           const key = currentStoreKey() || contentPath;
-          const store = getStore(key, Array.isArray(parsed.data?.sections) ? parsed.data.sections.length : 0);
+          const count = Array.isArray(parsed.data?.sections) ? parsed.data.sections.length : 0;
+          const store = getStore(key, count);
           mergeStylesIntoDocument(parsed.data, store);
           payload.content = encodeBase64(serializeDocument(parsed.data, parsed.body));
           nextInit = { ...init, body: JSON.stringify(payload) };
@@ -159,14 +164,12 @@
     }
 
     const response = await wrappedFetch(input, nextInit);
-
     if (contentPath && method === 'GET' && response.ok) {
       try {
         const payload = await response.clone().json();
         if (payload?.content) captureDocument(contentPath, decodeBase64(payload.content));
       } catch (_) {}
     }
-
     return response;
   };
 
@@ -178,8 +181,7 @@
       input.dispatchEvent(new Event(input.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
       return;
     }
-    const lines = document.querySelector('#ve-form [data-lines]');
-    if (lines) lines.dispatchEvent(new Event('input', { bubbles: true }));
+    document.querySelector('#ve-form [data-lines]')?.dispatchEvent(new Event('input', { bubbles: true }));
   };
 
   const swapStore = (from, to) => {
@@ -207,10 +209,7 @@
   };
 
   const openExtraPanel = (callback) => {
-    if (document.querySelector('[data-action="add-section"]')) {
-      callback();
-      return;
-    }
+    if (document.querySelector('[data-action="add-section"]')) return callback();
     const extra = document.querySelector('[data-section-select="extra"]');
     if (!extra) return;
     extra.click();
@@ -219,7 +218,8 @@
 
   const addAt = (type, targetIndex = null) => {
     openExtraPanel(() => {
-      const button = document.querySelector(`[data-action="add-section"][data-type="${CSS.escape(type)}"]`);
+      const safeType = String(type || '').replace(/[^a-zA-Z]/g, '');
+      const button = document.querySelector(`[data-action="add-section"][data-type="${safeType}"]`);
       if (!button) return;
       button.click();
       const count = builderCardCount();
@@ -239,37 +239,28 @@
     const store = getStore(currentStoreKey(), count);
     const index = Number(button.dataset.index);
 
-    if (action === 'add-section') {
-      store.push({});
-    } else if (action === 'duplicate-section' && Number.isInteger(index)) {
-      store.splice(index + 1, 0, clone(store[index] || {}));
-    } else if (action === 'move-section-up' && index > 0) {
-      swapStore(index, index - 1);
-    } else if (action === 'move-section-down' && index >= 0 && index < count - 1) {
-      swapStore(index, index + 1);
-    } else if (action === 'delete-section' && Number.isInteger(index)) {
+    if (action === 'add-section') store.push({});
+    else if (action === 'duplicate-section' && Number.isInteger(index)) store.splice(index + 1, 0, clone(store[index] || {}));
+    else if (action === 'move-section-up' && index > 0) swapStore(index, index - 1);
+    else if (action === 'move-section-down' && index >= 0 && index < count - 1) swapStore(index, index + 1);
+    else if (action === 'delete-section' && Number.isInteger(index)) {
       const before = count;
       setTimeout(() => {
-        if (builderCardCount() === before - 1) {
-          const current = getStore(currentStoreKey());
-          current.splice(index, 1);
-        }
+        if (builderCardCount() !== before - 1) return;
+        const current = getStore(currentStoreKey());
+        current.splice(index, 1);
       }, 0);
     }
   }, true);
 
   const parseDragPayload = (event) => {
-    const raw = event.dataTransfer?.getData('text/plain') || '';
-    const [kind, value] = raw.split(':');
+    const [kind, value] = (event.dataTransfer?.getData('text/plain') || '').split(':');
     return { kind, value };
   };
 
   const dropPayloadAt = (payload, dropIndex) => {
     const count = builderCardCount();
-    if (payload.kind === 'new') {
-      addAt(payload.value, Math.max(0, Math.min(dropIndex, count)));
-      return;
-    }
+    if (payload.kind === 'new') return addAt(payload.value, Math.max(0, Math.min(dropIndex, count)));
     if (payload.kind !== 'section') return;
     const from = Number(payload.value);
     if (!Number.isInteger(from) || from < 0 || from >= count) return;
@@ -281,12 +272,12 @@
 
   const enhanceParent = () => {
     const cards = [...document.querySelectorAll('.ve-section-card')];
-    const activeBuilder = Boolean(document.querySelector('[data-section-select="extra"].active')) || (location.hash || '') === '#/new-page';
-    document.querySelector('.ve-editor')?.classList.toggle('ve-visual-builder-mode', activeBuilder);
-    getStore(currentStoreKey(), cards.length);
+    const builderOpen = activeBuilder();
+    document.querySelector('.ve-editor')?.classList.toggle('ve-visual-builder-mode', builderOpen);
+    if (cards.length || document.querySelector('[data-action="add-section"]')) getStore(currentStoreKey(), cards.length);
 
     const previewCopy = document.querySelector('.ve-preview-bar > div:first-child');
-    if (previewCopy && activeBuilder && !previewCopy.querySelector('.mts-visual-hint')) {
+    if (previewCopy && builderOpen && !previewCopy.querySelector('.mts-visual-hint')) {
       const hint = document.createElement('div');
       hint.className = 'mts-visual-hint';
       hint.innerHTML = '<strong>Visual editing:</strong> drag sections to move them · drag the spacing bars · use Style for font size and color';
@@ -306,7 +297,6 @@
     cards.forEach((card, index) => {
       card.dataset.mtsDraggable = 'true';
       if (!card.querySelector('.mts-side-drag-handle')) {
-        const head = card.querySelector('.ve-section-card-head');
         const handle = document.createElement('button');
         handle.type = 'button';
         handle.className = 'mts-side-drag-handle ve-icon-button';
@@ -318,7 +308,7 @@
           event.dataTransfer?.setData('text/plain', `section:${index}`);
           if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move';
         });
-        head?.querySelector('.ve-mini-actions')?.prepend(handle);
+        card.querySelector('.ve-section-card-head .ve-mini-actions')?.prepend(handle);
       }
       if (card.dataset.mtsDropWired) return;
       card.dataset.mtsDropWired = 'true';
@@ -361,20 +351,20 @@
 
   const applySectionStyle = (section, style = {}) => {
     if (!section) return;
-    if (style.paddingTop !== undefined && style.paddingTop !== '') section.style.setProperty('padding-top', `${clamp(style.paddingTop, 0, 220)}px`, 'important');
+    if (style.paddingTop !== undefined && style.paddingTop !== null && style.paddingTop !== '') section.style.setProperty('padding-top', `${clamp(style.paddingTop, 0, 220)}px`, 'important');
     else section.style.removeProperty('padding-top');
-    if (style.paddingBottom !== undefined && style.paddingBottom !== '') section.style.setProperty('padding-bottom', `${clamp(style.paddingBottom, 0, 220)}px`, 'important');
+    if (style.paddingBottom !== undefined && style.paddingBottom !== null && style.paddingBottom !== '') section.style.setProperty('padding-bottom', `${clamp(style.paddingBottom, 0, 220)}px`, 'important');
     else section.style.removeProperty('padding-bottom');
 
     const targets = textTargets(section);
     targets.heading.forEach((node) => {
-      if (style.headingFontSize !== undefined && style.headingFontSize !== '') node.style.setProperty('font-size', `${clamp(style.headingFontSize, 22, 88)}px`, 'important');
+      if (style.headingFontSize !== undefined && style.headingFontSize !== null && style.headingFontSize !== '') node.style.setProperty('font-size', `${clamp(style.headingFontSize, 22, 88)}px`, 'important');
       else node.style.removeProperty('font-size');
       if (style.headingColor) node.style.setProperty('color', style.headingColor, 'important');
       else node.style.removeProperty('color');
     });
     targets.body.forEach((node) => {
-      if (style.bodyFontSize !== undefined && style.bodyFontSize !== '') node.style.setProperty('font-size', `${clamp(style.bodyFontSize, 12, 26)}px`, 'important');
+      if (style.bodyFontSize !== undefined && style.bodyFontSize !== null && style.bodyFontSize !== '') node.style.setProperty('font-size', `${clamp(style.bodyFontSize, 12, 26)}px`, 'important');
       else node.style.removeProperty('font-size');
       if (style.bodyColor) node.style.setProperty('color', style.bodyColor, 'important');
       else node.style.removeProperty('color');
@@ -435,7 +425,7 @@
     panel.querySelector('[data-mts-body-color]').addEventListener('input', (event) => update('bodyColor', event.target.value));
     panel.querySelector('[data-mts-body-color]').addEventListener('change', signalDirty);
     panel.querySelector('[data-mts-reset-style]').addEventListener('click', () => {
-      ['headingFontSize', 'headingColor', 'bodyFontSize', 'bodyColor'].forEach((key) => delete style[key]);
+      ['headingFontSize', 'headingColor', 'bodyFontSize', 'bodyColor'].forEach((key) => { style[key] = null; });
       applySectionStyle(section, style);
       signalDirty();
       panel.remove();
@@ -489,7 +479,6 @@
       handle.removeEventListener('pointercancel', end);
       signalDirty();
     };
-
     handle.addEventListener('pointermove', move);
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);
@@ -497,20 +486,15 @@
 
   const buildFrameControls = (doc) => {
     const main = doc.querySelector('main');
-    if (!main) return;
+    if (!main || !activeBuilder()) return;
     const sections = [...doc.querySelectorAll('.ve-preview-builder[data-ve-section]')];
-    const activeBuilder = Boolean(document.querySelector('[data-section-select="extra"].active')) || (location.hash || '') === '#/new-page';
-    if (!activeBuilder && !sections.length) return;
-
     doc.querySelectorAll('[data-mts-control="true"]:not(.mts-style-panel)').forEach((node) => node.remove());
 
     const palette = doc.createElement('div');
     palette.className = 'mts-builder-palette';
     palette.dataset.mtsControl = 'true';
     palette.innerHTML = `<strong>Add section</strong><span>Drag a block onto the page</span><div>${SECTION_TYPES.map(([type, label]) => `<button type="button" draggable="true" data-mts-new="${type}">${label}</button>`).join('')}</div>`;
-    const firstSection = sections[0];
-    if (firstSection) firstSection.before(palette);
-    else main.append(palette);
+    if (sections[0]) sections[0].before(palette); else main.append(palette);
     palette.querySelectorAll('[data-mts-new]').forEach((button) => {
       button.addEventListener('dragstart', (event) => {
         event.dataTransfer?.setData('text/plain', `new:${button.dataset.mtsNew}`);
@@ -549,7 +533,8 @@
       const tools = doc.createElement('div');
       tools.className = 'mts-section-tools';
       tools.dataset.mtsControl = 'true';
-      tools.innerHTML = `<button type="button" draggable="true" data-mts-drag-section="${index}" title="Drag to move this section">⋮⋮ Move</button><button type="button" data-mts-style-section="${index}">Style text</button>`;
+      const hasText = Boolean(section.querySelector('h1,h2,p:not(.eyebrow)'));
+      tools.innerHTML = `<button type="button" draggable="true" data-mts-drag-section="${index}" title="Drag to move this section">⋮⋮ Move</button>${hasText ? `<button type="button" data-mts-style-section="${index}">Style text</button>` : ''}`;
       section.before(tools);
       const drag = tools.querySelector('[data-mts-drag-section]');
       drag.addEventListener('dragstart', (event) => {
@@ -558,7 +543,7 @@
         doc.documentElement.classList.add('mts-builder-dragging');
       });
       drag.addEventListener('dragend', () => doc.documentElement.classList.remove('mts-builder-dragging'));
-      tools.querySelector('[data-mts-style-section]').addEventListener('click', (event) => {
+      tools.querySelector('[data-mts-style-section]')?.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
         openStylePanel(doc, index);
@@ -598,7 +583,7 @@
     if (!doc?.documentElement || doc.readyState === 'loading') return;
     injectFrameStyle(doc);
     applyFrameStyles(doc);
-    if (doc.documentElement.dataset.mtsDecorating === 'true') return;
+    if (!activeBuilder() || doc.documentElement.dataset.mtsDecorating === 'true') return;
     doc.documentElement.dataset.mtsDecorating = 'true';
     buildFrameControls(doc);
     setTimeout(() => { delete doc.documentElement.dataset.mtsDecorating; }, 0);
@@ -624,7 +609,15 @@
   };
 
   new MutationObserver(queueParentRefresh).observe(document.documentElement, { childList: true, subtree: true });
-  window.addEventListener('hashchange', () => setTimeout(queueParentRefresh, 40));
+  window.addEventListener('hashchange', () => {
+    const nextHash = location.hash || '#/';
+    if (nextHash === '#/new-page' && lastHash !== '#/new-page') {
+      newPageSavedPath = '';
+      stores.set('__new__', []);
+    }
+    lastHash = nextHash;
+    setTimeout(queueParentRefresh, 40);
+  });
   window.addEventListener('load', queueParentRefresh);
   queueParentRefresh();
 })();
