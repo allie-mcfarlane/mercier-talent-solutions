@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Turnstile from "../../components/Turnstile.astro";
 import { getEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -15,6 +16,7 @@ export async function getStaticPaths() {
 const { role } = Astro.props;
 const description = role.summary || `Career opportunity: ${role.title} at Mercier Talent Solutions.`;
 const descriptionMarkup = (role.description ?? []).join("\n\n");
+const formEndpoint = "https://formsubmit.co/allie@merciertalentsolutions.com";
 
 const escapeHtml = (value: unknown = "") => String(value ?? "")
   .replaceAll("&", "&amp;")
@@ -119,6 +121,63 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
       <div class="container role-content">
         {role.summary && <p class="role-summary">{role.summary}</p>}
         {roleDescriptionHtml && <div class="role-rich-text" set:html={roleDescriptionHtml}></div>}
+
+        <section class="application-section" aria-labelledby="application-heading">
+          <div class="application-heading">
+            <p class="eyebrow">Apply</p>
+            <h2 id="application-heading">Submit your application</h2>
+            <p>Send us your details and attach your resume. PDF, DOC, and DOCX files are accepted.</p>
+          </div>
+
+          <form
+            class="application-form"
+            action={formEndpoint}
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <input type="hidden" name="_subject" value={`Career Application — ${role.title}`} />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="hidden" name="_cc" value="julia@merciertalentsolutions.com" />
+            <input type="hidden" name="form_name" value="Career Application" />
+            <input type="hidden" name="position" value={role.title} />
+            <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
+
+            <div class="form-grid">
+              <label class="full">
+                NAME*
+                <input type="text" name="name" autocomplete="name" required />
+              </label>
+
+              <label class="full">
+                EMAIL*
+                <input type="email" name="email" autocomplete="email" required />
+              </label>
+
+              <label class="full">
+                MESSAGE
+                <textarea name="message" rows="6"></textarea>
+              </label>
+
+              <label class="full file-field">
+                RESUME*
+                <input
+                  type="file"
+                  name="attachment"
+                  accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  required
+                />
+                <span class="file-note">Attach a PDF or Word document.</span>
+              </label>
+
+              <div class="full turnstile-wrap">
+                <Turnstile />
+              </div>
+
+              <button class="button submit-button full" type="submit">Submit application</button>
+            </div>
+          </form>
+        </section>
       </div>
     </section>
   </article>
@@ -160,7 +219,7 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     text-underline-offset: 4px;
   }
 
-  .role-hero .eyebrow {
+  .eyebrow {
     margin: 0 0 1.1rem;
     color: var(--color-blue);
     font-family: var(--font-label);
@@ -275,6 +334,160 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     color: #66707c;
   }
 
+  .application-section {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    margin-top: clamp(4.5rem, 8vw, 7rem);
+    padding-top: clamp(3.5rem, 6vw, 5rem);
+    border-top: 1px solid var(--color-line);
+    align-items: start;
+  }
+
+  .application-heading h2 {
+    margin: 0 0 1rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3.2vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+  }
+
+  .application-heading > p:last-child {
+    max-width: 430px;
+    margin: 0;
+    color: #66707c;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .application-form {
+    padding-left: clamp(2rem, 4vw, 4rem);
+    border-left: 1px solid var(--color-line);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.625rem 1.75rem;
+  }
+
+  .full {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    display: grid;
+    gap: 0.625rem;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid #bdb8ae;
+    border-radius: 0;
+    background: transparent;
+    padding: 0.75rem 0 0.8125rem;
+    color: #000;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: var(--color-blue);
+    outline: none;
+    background: rgba(232, 237, 244, 0.22);
+  }
+
+  textarea {
+    min-height: 135px;
+    resize: vertical;
+  }
+
+  input[type="file"] {
+    padding: 0.75rem 0 0.95rem;
+    cursor: pointer;
+  }
+
+  input[type="file"]::file-selector-button {
+    margin-right: 0.9rem;
+    border: 1px solid var(--color-blue-dark);
+    border-radius: 0;
+    background: transparent;
+    padding: 0.65rem 0.85rem;
+    color: var(--color-blue-dark);
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  .file-note {
+    color: #66707c;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.5;
+    text-transform: none;
+  }
+
+  .turnstile-wrap {
+    min-width: 0;
+  }
+
+  .turnstile-wrap :global(.form-note) {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .submit-button {
+    width: max-content;
+    min-width: 184px;
+    min-height: 45px;
+    border: 1px solid var(--color-blue-dark);
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+    cursor: pointer;
+  }
+
+  .submit-button:hover,
+  .submit-button:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--color-blue);
+    background: var(--color-blue);
+  }
+
+  .honeypot {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .application-section {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    .application-form {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+
   @media (max-width: 760px) {
     .role-hero-inner {
       padding-block: 3.25rem 3.75rem;
@@ -306,6 +519,22 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
 
     .role-rich-text :global(h3) {
       font-size: clamp(1.2rem, 5.5vw, 1.45rem);
+    }
+
+    .application-section {
+      margin-top: 3.75rem;
+      padding-top: 3rem;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: 1.35rem;
+    }
+
+    .submit-button {
+      width: max-content;
+      min-width: 0;
+      padding-inline: 1.15rem;
     }
   }
 </style>
