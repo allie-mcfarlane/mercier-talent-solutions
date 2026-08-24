@@ -73,11 +73,16 @@ const hasPlausibleFormTiming = (value) => {
   return age >= MIN_FORM_AGE_MS && age <= MAX_FORM_AGE_MS;
 };
 
-const deliveryLabel = (label) =>
-  `Application — ${String(label || "Field")
+const deliveryLabel = (label) => {
+  const clean = String(label || "Field")
+    .normalize("NFKD")
+    .replace(/[^\x20-\x7E]/g, "")
     .replace(/[\r\n\t]+/g, " ")
     .trim()
-    .slice(0, 120)}`;
+    .slice(0, 100);
+
+  return `Application - ${clean || "Field"}`;
+};
 
 const parseApplicationSchema = (raw) => {
   if (!raw) return null;
@@ -244,18 +249,26 @@ export async function onRequestPost(context) {
     }
 
     const delivery = new FormData();
-    delivery.append("_subject", `Career Application — ${position}`);
+    delivery.append("_subject", `Career Application - ${position}`);
     delivery.append("_template", "table");
     delivery.append("_captcha", "false");
     delivery.append("_cc", "julia@merciertalentsolutions.com");
     if (replyTo) delivery.append("_replyto", replyTo);
+    delivery.append("_url", new URL(returnPath, request.url).toString());
     delivery.append("form_name", "Career Application");
     delivery.append("Position", position);
 
+    let attachmentIndex = 0;
     for (const { field, value } of answers) {
       const key = deliveryLabel(field.label);
       if (field.type === "file") {
-        if (value) delivery.append(key, value, value.name);
+        if (!value) continue;
+
+        attachmentIndex += 1;
+        delivery.append(key, value.name);
+        const attachmentKey =
+          attachmentIndex === 1 ? "attachment" : `attachment_${attachmentIndex}`;
+        delivery.append(attachmentKey, value, value.name);
       } else {
         delivery.append(key, value);
       }
@@ -268,8 +281,13 @@ export async function onRequestPost(context) {
     });
 
     if (!deliveryResponse.ok) {
+      let responseText = "";
+      try {
+        responseText = (await deliveryResponse.text()).slice(0, 500);
+      } catch (_) {}
       console.error("Career application delivery failed.", {
         status: deliveryResponse.status,
+        response: responseText,
       });
       return redirectBack(request, returnPath, { error: "send" });
     }
