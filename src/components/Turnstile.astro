@@ -23,11 +23,24 @@ const {
         (() => {
           const widgets = document.querySelectorAll("[data-mts-turnstile]");
 
+          const ensureHidden = (form, name, value = "") => {
+            let input = form.querySelector(`[name="${name}"]`);
+            if (!input) {
+              input = document.createElement("input");
+              input.type = "hidden";
+              input.name = name;
+              form.appendChild(input);
+            }
+            input.value = value;
+            return input;
+          };
+
           widgets.forEach((widget) => {
             const form = widget.closest("form");
             if (!form) return;
 
             const endpoint = widget.getAttribute("data-mts-endpoint") || "/api/contact";
+            const formAction = widget.getAttribute("data-action") || "contact";
             form.setAttribute("action", endpoint);
             form.setAttribute("method", "POST");
 
@@ -60,6 +73,22 @@ const {
               honeypot.style.pointerEvents = "none";
               form.appendChild(honeypot);
             }
+
+            if (formAction === "career") {
+              const position = form.querySelector('[name="position"]')?.value || "Career Application";
+              ensureHidden(form, "_subject", `Career Application - ${position}`);
+              ensureHidden(form, "_template", "table");
+              ensureHidden(form, "_captcha", "false");
+              ensureHidden(form, "_cc", "julia@merciertalentsolutions.com");
+              ensureHidden(form, "_url", `${window.location.origin}${window.location.pathname}`);
+              ensureHidden(form, "_replyto", "");
+
+              form.addEventListener("submit", () => {
+                const emailInput = form.querySelector('input[type="email"]');
+                ensureHidden(form, "_replyto", emailInput?.value?.trim() || "");
+                ensureHidden(form, "_url", `${window.location.origin}${window.location.pathname}`);
+              });
+            }
           });
 
           const params = new URLSearchParams(window.location.search);
@@ -70,6 +99,7 @@ const {
           if (target && (sent || error)) {
             const note = document.createElement("p");
             note.className = "form-note turnstile-result";
+            const targetAction = target.getAttribute("data-action") || "contact";
 
             if (sent) {
               note.textContent = target.getAttribute("data-mts-success") || "Thank you. Your message has been sent.";
@@ -90,7 +120,9 @@ const {
               note.textContent = "Please attach a PDF, DOC, or DOCX resume under 10 MB and try again.";
               note.setAttribute("role", "alert");
             } else {
-              note.textContent = "We couldn't send your message. Please try again or email us directly.";
+              note.textContent = targetAction === "career"
+                ? "We couldn't send your application. Please try again or email us directly."
+                : "We couldn't send your message. Please try again or email us directly.";
               note.setAttribute("role", "alert");
             }
 
