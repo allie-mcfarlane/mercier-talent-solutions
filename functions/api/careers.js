@@ -86,7 +86,35 @@ export async function onRequestPost(context) {
 
     const name = textValue(formData, "name", 160);
     const email = textValue(formData, "email", 254);
-    const message = textValue(formData, "message", 10000);
+    const location = textValue(formData, "location", 240);
+    const relevantExperience = textValue(
+      formData,
+      "relevant_experience",
+      12000,
+    );
+    const programsExperience = textValue(
+      formData,
+      "programs_experience",
+      12000,
+    );
+    const credentialsEducation = textValue(
+      formData,
+      "credentials_education",
+      12000,
+    );
+    const interestInMercier = textValue(
+      formData,
+      "interest_in_mercier",
+      8000,
+    );
+    const availabilityArrangements = textValue(
+      formData,
+      "availability_arrangements",
+      8000,
+    );
+    const additionalNotes =
+      textValue(formData, "additional_notes", 10000) ||
+      textValue(formData, "message", 10000);
     const position = textValue(formData, "position", 240);
     const token = textValue(formData, "cf-turnstile-response", 2048);
     const formStartedAt = textValue(formData, "form_started_at", 40);
@@ -98,6 +126,8 @@ export async function onRequestPost(context) {
       !looksLikeHumanName(name) ||
       !EMAIL_PATTERN.test(email) ||
       !position ||
+      !relevantExperience ||
+      !credentialsEducation ||
       !token ||
       !hasPlausibleFormTiming(formStartedAt)
     ) {
@@ -167,10 +197,28 @@ export async function onRequestPost(context) {
     delivery.append("_cc", "julia@merciertalentsolutions.com");
     delivery.append("_replyto", email);
     delivery.append("form_name", "Career Application");
-    delivery.append("position", position);
-    delivery.append("name", name);
-    delivery.append("email", email);
-    delivery.append("message", message);
+    delivery.append("Position", position);
+    delivery.append("Name", name);
+    delivery.append("Email", email);
+    delivery.append("Location", location);
+    delivery.append(
+      "Relevant legal and coaching experience",
+      relevantExperience,
+    );
+    delivery.append(
+      "Programs and leadership development experience",
+      programsExperience,
+    );
+    delivery.append(
+      "Coaching credentials and education",
+      credentialsEducation,
+    );
+    delivery.append("Why Mercier Talent Solutions", interestInMercier);
+    delivery.append(
+      "Availability and preferred professional arrangement",
+      availabilityArrangements,
+    );
+    delivery.append("Anything else", additionalNotes);
     delivery.append("attachment", resume, resume.name);
 
     if (hasAdditionalMaterials) {
