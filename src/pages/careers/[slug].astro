@@ -125,13 +125,25 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
 </BaseLayout>
 
 <style>
+  .role-page {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
   .role-hero {
     border-bottom: 1px solid rgba(221, 220, 215, 0.9);
     background: linear-gradient(140deg, #fafaf8 0%, #f0f0ec 100%);
   }
 
+  .role-hero-inner,
+  .role-content {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
   .role-hero-inner {
-    max-width: 1380px;
     padding-block: clamp(4rem, 7vw, 6.5rem);
   }
 
@@ -181,11 +193,7 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
 
   .role-content-section {
     background: #fff;
-    padding: 0 0 clamp(5.5rem, 9vw, 9rem);
-  }
-
-  .role-content {
-    max-width: 1380px;
+    padding: clamp(0.75rem, 1.2vw, 1.25rem) 0 clamp(5.5rem, 9vw, 9rem);
   }
 
   .role-summary {
@@ -285,6 +293,7 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     }
 
     .role-content-section {
+      padding-top: 0.75rem;
       padding-bottom: 4.5rem;
     }
 
