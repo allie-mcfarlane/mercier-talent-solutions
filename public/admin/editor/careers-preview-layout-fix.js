@@ -25,6 +25,8 @@
           .mts-draft-role .role-rich-text h3{margin:1.75rem 0 .65rem!important}
           .mts-draft-role .role-rich-text h2:first-child,
           .mts-draft-role .role-rich-text h3:first-child{margin-top:0!important}
+          .mts-draft-role .field-note{color:#66707c;font-size:13px;font-weight:400;letter-spacing:0;line-height:1.5;text-transform:none}
+          .mts-draft-role [data-preview-guided-field] textarea{min-height:96px!important}
           @media(max-width:760px){
             .mts-draft-role .role-hero-inner{padding-block:3.25rem 3.75rem!important}
             .mts-draft-role .back-link{margin-bottom:1.75rem!important}
@@ -43,14 +45,77 @@
 
       const applicationCopy = role.querySelector('.application-heading > p:last-child');
       if (applicationCopy) {
-        applicationCopy.textContent = 'Send us your details and attach your resume or professional biography. You may also include one optional PDF or Word document with additional materials.';
+        applicationCopy.textContent = 'Tell us a little about your background, experience and availability, then attach your resume or professional biography. Additional materials are optional.';
       }
 
       const formGrid = role.querySelector('.application-form .form-grid');
       if (!formGrid) return;
 
-      const resumeLabel = [...formGrid.querySelectorAll('label')]
-        .find((label) => label.textContent?.includes('RESUME'));
+      const labels = [...formGrid.querySelectorAll('label')];
+      const resumeLabel = labels.find((label) => label.textContent?.includes('RESUME'));
+      const messageLabel = labels.find((label) => label.textContent?.trim().startsWith('MESSAGE'));
+
+      if (messageLabel && messageLabel.dataset.previewAdditionalNotes !== 'true') {
+        const textNode = [...messageLabel.childNodes]
+          .find((node) => node.nodeType === Node.TEXT_NODE && node.nodeValue?.trim());
+        if (textNode) textNode.nodeValue = "ANYTHING ELSE YOU'D LIKE US TO KNOW (OPTIONAL)";
+        messageLabel.dataset.previewAdditionalNotes = 'true';
+      }
+
+      if (messageLabel && !formGrid.querySelector('[data-preview-guided-fields]')) {
+        const createField = (labelText, kind = 'textarea', note = '', marker = '') => {
+          const label = doc.createElement('label');
+          label.dataset.previewGuidedField = 'true';
+          if (marker) label.dataset.previewGuidedFields = marker;
+
+          const control = doc.createElement(kind === 'input' ? 'input' : 'textarea');
+          control.disabled = true;
+          if (kind === 'input') control.type = 'text';
+
+          label.append(doc.createTextNode(labelText));
+          label.append(control);
+
+          if (note) {
+            const help = doc.createElement('span');
+            help.className = 'field-note';
+            help.textContent = note;
+            label.append(help);
+          }
+
+          return label;
+        };
+
+        const guidedFields = [
+          createField('LOCATION (OPTIONAL)', 'input', '', 'true'),
+          createField(
+            'RELEVANT LEGAL & COACHING EXPERIENCE*',
+            'textarea',
+            'Briefly summarize your legal practice background and experience coaching partners or senior leaders.',
+          ),
+          createField(
+            'PROGRAMS & LEADERSHIP DEVELOPMENT EXPERIENCE (OPTIONAL)',
+            'textarea',
+            'You may include training programs, workshops, retreats or other leadership-development work you have designed or led.',
+          ),
+          createField(
+            'COACHING CREDENTIALS & EDUCATION*',
+            'textarea',
+            'Include relevant coach training, credentials, education and assessment certifications.',
+          ),
+          createField(
+            'WHY MERCIER TALENT SOLUTIONS? (OPTIONAL)',
+            'textarea',
+            'Tell us briefly what interests you about becoming involved with the firm.',
+          ),
+          createField(
+            'AVAILABILITY & PREFERRED PROFESSIONAL ARRANGEMENT (OPTIONAL)',
+            'textarea',
+            'Share your general availability and the types of professional arrangements you would be open to considering.',
+          ),
+        ];
+
+        guidedFields.forEach((field) => messageLabel.before(field));
+      }
 
       if (resumeLabel && resumeLabel.dataset.previewResumeUpdated !== 'true') {
         const textNode = [...resumeLabel.childNodes]
