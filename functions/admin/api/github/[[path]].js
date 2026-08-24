@@ -1,3 +1,5 @@
+import { getAccessEmail } from "../../../_shared/access-user.js";
+
 const REPOSITORY = "allie-mcfarlane/mercier-talent-solutions";
 const REPOSITORY_PREFIX = `repos/${REPOSITORY}`;
 const ACCESS_TOKEN = "token mts-cloudflare-access";
@@ -17,8 +19,8 @@ const json = (value, status = 200) =>
     },
   });
 
-const getUser = (request) => {
-  const email = (request.headers.get("cf-access-authenticated-user-email") || "").trim().toLowerCase();
+const getUser = async (request) => {
+  const email = await getAccessEmail(request);
   const user = ALLOWED_USERS.get(email);
   return user ? { ...user, email } : null;
 };
@@ -75,7 +77,7 @@ const copyResponseHeaders = (upstreamHeaders, requestUrl) => {
 export async function onRequest({ request, env, params }) {
   const method = request.method.toUpperCase();
   const requestUrl = new URL(request.url);
-  const user = getUser(request);
+  const user = await getUser(request);
 
   if (!user) return json({ message: "Access denied." }, 403);
   if (request.headers.get("authorization") !== ACCESS_TOKEN) return json({ message: "Invalid admin session." }, 401);
