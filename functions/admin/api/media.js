@@ -1,3 +1,5 @@
+import { getAccessEmail } from "../../_shared/access-user.js";
+
 const ACCESS_TOKEN = "token mts-cloudflare-access";
 const REPOSITORY = "allie-mcfarlane/mercier-talent-solutions";
 const BRANCH = "main";
@@ -17,8 +19,8 @@ const json = (value, status = 200) => new Response(JSON.stringify(value), {
   },
 });
 
-const authorize = (request) => {
-  const email = (request.headers.get("cf-access-authenticated-user-email") || "").trim().toLowerCase();
+const authorize = async (request) => {
+  const email = await getAccessEmail(request);
   if (!ALLOWED_USERS.has(email)) return json({ message: "Access denied." }, 403);
   if (request.headers.get("authorization") !== ACCESS_TOKEN) return json({ message: "Invalid admin session." }, 401);
   const origin = request.headers.get("origin");
@@ -91,7 +93,7 @@ const listDirectory = async (env, prefix) => {
 };
 
 export async function onRequestGet({ request, env }) {
-  const denied = authorize(request);
+  const denied = await authorize(request);
   if (denied) return denied;
   if (!env.GITHUB_ADMIN_TOKEN) {
     return json({ configured: false, items: [], message: "Website media publishing is not configured yet." }, 503);
@@ -112,7 +114,7 @@ export async function onRequestGet({ request, env }) {
 }
 
 export async function onRequestPost({ request, env }) {
-  const denied = authorize(request);
+  const denied = await authorize(request);
   if (denied) return denied;
   if (!env.GITHUB_ADMIN_TOKEN) {
     return json({ configured: false, message: "Website media publishing is not configured yet." }, 503);
