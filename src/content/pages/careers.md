@@ -3,6 +3,63 @@ eyebrow: Careers
 title: Join our
 titleAccent: team
 rolesHeading: Open Roles
+applicationForm:
+  eyebrow: Apply
+  title: Submit your application
+  intro: Tell us a little about your background, experience and availability, then attach your resume or professional biography. Additional materials are optional.
+  submitLabel: Submit application
+  fields:
+    - id: name
+      type: text
+      label: Name
+      required: true
+    - id: email
+      type: email
+      label: Email
+      required: true
+    - id: location
+      type: text
+      label: Location
+      required: false
+    - id: relevant-experience
+      type: textarea
+      label: Relevant legal & coaching experience
+      required: true
+      help: Briefly summarize your legal practice background and experience coaching partners or senior leaders.
+    - id: programs-experience
+      type: textarea
+      label: Programs & leadership development experience
+      required: false
+      help: You may include training programs, workshops, retreats or other leadership-development work you have designed or led.
+    - id: credentials-education
+      type: textarea
+      label: Coaching credentials & education
+      required: true
+      help: Include relevant coach training, credentials, education and assessment certifications.
+    - id: interest-in-mercier
+      type: textarea
+      label: Why Mercier Talent Solutions?
+      required: false
+      help: Tell us briefly what interests you about becoming involved with the firm.
+    - id: availability-arrangements
+      type: textarea
+      label: Availability & preferred professional arrangement
+      required: false
+      help: Share your general availability and the types of professional arrangements you would be open to considering.
+    - id: additional-notes
+      type: textarea
+      label: Anything else you'd like us to know
+      required: false
+    - id: resume
+      type: file
+      label: Resume or Professional Biography
+      required: true
+      help: Attach a PDF or Word document.
+    - id: additional-materials
+      type: file
+      label: Additional Materials
+      required: false
+      help: Optional: attach one PDF or Word document with any additional information you would like us to consider.
 roles:
   - title: Senior Executive Coach — Legal Industry
     slug: senior-executive-coach
