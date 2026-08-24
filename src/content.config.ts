@@ -45,6 +45,19 @@ const pages = defineCollection({
     title: z.string().optional(),
     titleAccent: z.string().optional(),
     lede: z.string().optional(),
+    rolesHeading: z.string().optional(),
+    roles: z
+      .array(
+        z.object({
+          title: z.string(),
+          slug: z.string(),
+          location: z.string().optional(),
+          employmentType: z.string().optional(),
+          summary: z.string().optional(),
+          description: z.array(z.string()).default([]),
+        }),
+      )
+      .optional(),
     pageBuilder: z.boolean().optional(),
     slug: z.string().optional(),
     navTitle: z.string().optional(),
