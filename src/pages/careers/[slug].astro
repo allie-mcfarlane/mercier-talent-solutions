@@ -185,7 +185,7 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
   }
 
   .role-content {
-    max-width: 960px;
+    max-width: 1380px;
   }
 
   .role-summary {
@@ -268,5 +268,38 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
 
   .role-rich-text :global(.role-text-gray) {
     color: #66707c;
+  }
+
+  @media (max-width: 760px) {
+    .role-hero-inner {
+      padding-block: 3.25rem 3.75rem;
+    }
+
+    .back-link {
+      margin-bottom: 2.25rem;
+    }
+
+    .role-hero h1 {
+      font-size: clamp(2.35rem, 11vw, 3.5rem);
+      line-height: 1.04;
+    }
+
+    .role-content-section {
+      padding-bottom: 4.5rem;
+    }
+
+    .role-rich-text :global(p),
+    .role-rich-text :global(li) {
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .role-rich-text :global(h2) {
+      font-size: clamp(1.45rem, 7vw, 1.9rem);
+    }
+
+    .role-rich-text :global(h3) {
+      font-size: clamp(1.2rem, 5.5vw, 1.45rem);
+    }
   }
 </style>
