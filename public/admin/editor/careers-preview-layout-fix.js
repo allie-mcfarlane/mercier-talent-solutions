@@ -1,13 +1,23 @@
 (() => {
   'use strict';
 
+  const escapeHtml = (value = '') => String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+
   const openRolePreviewFallback = (index, frame) => {
     let attempts = 0;
 
     const tryOpen = () => {
       try {
         const currentDoc = frame?.contentDocument;
-        if (currentDoc?.querySelector('.mts-draft-role')) return;
+        if (currentDoc?.querySelector('.mts-draft-role')) {
+          patchPreview(frame);
+          return;
+        }
       } catch (_) {}
 
       const buttons = [...document.querySelectorAll('.mts-preview-role')];
@@ -25,7 +35,7 @@
       if (attempts < 24) setTimeout(tryOpen, 100);
     };
 
-    setTimeout(tryOpen, 450);
+    setTimeout(tryOpen, 250);
   };
 
   const wireRoleLinks = (frame, doc) => {
@@ -38,6 +48,53 @@
         openRolePreviewFallback(index, frame);
       });
     });
+  };
+
+  const previewControl = (field) => {
+    if (field.type === 'textarea') return '<textarea disabled></textarea>';
+    if (field.type === 'file') return '<input type="file" disabled>';
+    return `<input type="${field.type === 'email' ? 'email' : 'text'}" disabled>`;
+  };
+
+  const patchConfigurableForm = (role, doc) => {
+    const config = window.__MTS_CAREERS_APPLICATION_FORM__;
+    if (!config || !Array.isArray(config.fields)) return;
+
+    const heading = role.querySelector('.application-heading');
+    if (heading) {
+      const eyebrow = heading.querySelector('.eyebrow');
+      const title = heading.querySelector('h2');
+      const copy = heading.querySelector('p:last-child');
+      if (eyebrow) eyebrow.textContent = config.eyebrow || '';
+      if (title) title.textContent = config.title || 'Submit your application';
+      if (copy) {
+        copy.textContent = config.intro || '';
+        copy.style.display = config.intro ? '' : 'none';
+      }
+    }
+
+    const form = role.querySelector('.application-form');
+    const formGrid = form?.querySelector('.form-grid');
+    if (!formGrid) return;
+
+    const signature = JSON.stringify(config);
+    if (formGrid.dataset.applicationFormSignature === signature) return;
+    formGrid.dataset.applicationFormSignature = signature;
+    form?.setAttribute('data-configurable-careers-form', 'true');
+
+    const fieldsHtml = config.fields.map((field) => {
+      const label = escapeHtml(field.label || 'Field');
+      const required = field.required ? '*' : '';
+      const help = field.help
+        ? `<span class="field-note">${escapeHtml(field.help)}</span>`
+        : '';
+      return `<label class="full form-field${field.type === 'file' ? ' file-field' : ''}"><span class="field-label">${label}${required}</span>${previewControl(field)}${help}</label>`;
+    }).join('');
+
+    formGrid.innerHTML = `${fieldsHtml}
+      <span class="preview-form-note">Security check appears here on the live page.</span>
+      <button class="preview-submit" type="button" disabled>${escapeHtml(config.submitLabel || 'Submit application')}</button>
+      <span class="preview-form-note">Preview only — applications are not sent from the editor.</span>`;
   };
 
   const patchPreview = (frame) => {
@@ -68,7 +125,8 @@
           .mts-draft-role .role-rich-text h2:first-child,
           .mts-draft-role .role-rich-text h3:first-child{margin-top:0!important}
           .mts-draft-role .field-note{color:#66707c;font-size:13px;font-weight:400;letter-spacing:0;line-height:1.5;text-transform:none}
-          .mts-draft-role [data-preview-guided-field] textarea{min-height:96px!important}
+          .mts-draft-role .field-label{display:block}
+          .mts-draft-role .form-field textarea{min-height:96px!important}
           @media(max-width:760px){
             .mts-draft-role .role-hero-inner{padding-block:3.25rem 3.75rem!important}
             .mts-draft-role .back-link{margin-bottom:1.75rem!important}
@@ -84,94 +142,7 @@
 
       const role = doc.querySelector('.mts-draft-role');
       if (!role) return;
-
-      const applicationCopy = role.querySelector('.application-heading > p:last-child');
-      if (applicationCopy) {
-        applicationCopy.textContent = 'Tell us a little about your background, experience and availability, then attach your resume or professional biography. Additional materials are optional.';
-      }
-
-      const formGrid = role.querySelector('.application-form .form-grid');
-      if (!formGrid) return;
-
-      const labels = [...formGrid.querySelectorAll('label')];
-      const resumeLabel = labels.find((label) => label.textContent?.includes('RESUME'));
-      const messageLabel = labels.find((label) => label.textContent?.trim().startsWith('MESSAGE'));
-
-      if (messageLabel && messageLabel.dataset.previewAdditionalNotes !== 'true') {
-        const textNode = [...messageLabel.childNodes]
-          .find((node) => node.nodeType === Node.TEXT_NODE && node.nodeValue?.trim());
-        if (textNode) textNode.nodeValue = "ANYTHING ELSE YOU'D LIKE US TO KNOW (OPTIONAL)";
-        messageLabel.dataset.previewAdditionalNotes = 'true';
-      }
-
-      if (messageLabel && !formGrid.querySelector('[data-preview-guided-fields]')) {
-        const createField = (labelText, kind = 'textarea', note = '', marker = '') => {
-          const label = doc.createElement('label');
-          label.dataset.previewGuidedField = 'true';
-          if (marker) label.dataset.previewGuidedFields = marker;
-
-          const control = doc.createElement(kind === 'input' ? 'input' : 'textarea');
-          control.disabled = true;
-          if (kind === 'input') control.type = 'text';
-
-          label.append(doc.createTextNode(labelText));
-          label.append(control);
-
-          if (note) {
-            const help = doc.createElement('span');
-            help.className = 'field-note';
-            help.textContent = note;
-            label.append(help);
-          }
-
-          return label;
-        };
-
-        const guidedFields = [
-          createField('LOCATION (OPTIONAL)', 'input', '', 'true'),
-          createField(
-            'RELEVANT LEGAL & COACHING EXPERIENCE*',
-            'textarea',
-            'Briefly summarize your legal practice background and experience coaching partners or senior leaders.',
-          ),
-          createField(
-            'PROGRAMS & LEADERSHIP DEVELOPMENT EXPERIENCE (OPTIONAL)',
-            'textarea',
-            'You may include training programs, workshops, retreats or other leadership-development work you have designed or led.',
-          ),
-          createField(
-            'COACHING CREDENTIALS & EDUCATION*',
-            'textarea',
-            'Include relevant coach training, credentials, education and assessment certifications.',
-          ),
-          createField(
-            'WHY MERCIER TALENT SOLUTIONS? (OPTIONAL)',
-            'textarea',
-            'Tell us briefly what interests you about becoming involved with the firm.',
-          ),
-          createField(
-            'AVAILABILITY & PREFERRED PROFESSIONAL ARRANGEMENT (OPTIONAL)',
-            'textarea',
-            'Share your general availability and the types of professional arrangements you would be open to considering.',
-          ),
-        ];
-
-        guidedFields.forEach((field) => messageLabel.before(field));
-      }
-
-      if (resumeLabel && resumeLabel.dataset.previewResumeUpdated !== 'true') {
-        const textNode = [...resumeLabel.childNodes]
-          .find((node) => node.nodeType === Node.TEXT_NODE && node.nodeValue?.trim());
-        if (textNode) textNode.nodeValue = 'RESUME OR PROFESSIONAL BIOGRAPHY*';
-        resumeLabel.dataset.previewResumeUpdated = 'true';
-      }
-
-      if (resumeLabel && !formGrid.querySelector('[data-preview-additional-materials]')) {
-        const label = doc.createElement('label');
-        label.dataset.previewAdditionalMaterials = 'true';
-        label.innerHTML = 'ADDITIONAL MATERIALS (OPTIONAL)<input type="file" disabled><span class="file-note">Optional: attach one PDF or Word document with any additional information you would like us to consider.</span>';
-        resumeLabel.after(label);
-      }
+      patchConfigurableForm(role, doc);
     } catch (_) {}
   };
 
@@ -198,6 +169,19 @@
     frame.addEventListener('load', () => setTimeout(() => watchFrameDocument(frame), 80));
     setTimeout(() => watchFrameDocument(frame), 100);
   };
+
+  document.addEventListener('mts:preview-career-role', (event) => {
+    const frame = document.getElementById('careers-preview');
+    if (!frame) return;
+    const index = Number(event.detail?.index ?? 0);
+    try {
+      if (frame.contentDocument?.querySelector('.mts-draft-role')) {
+        patchPreview(frame);
+        return;
+      }
+    } catch (_) {}
+    openRolePreviewFallback(Number.isFinite(index) ? index : 0, frame);
+  });
 
   new MutationObserver(() => requestAnimationFrame(wire)).observe(document.documentElement, { childList: true, subtree: true });
   window.addEventListener('load', wire);
