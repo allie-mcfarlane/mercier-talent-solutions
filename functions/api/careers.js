@@ -1,7 +1,7 @@
 const FORMSUBMIT_ENDPOINT =
   "https://formsubmit.co/allie@merciertalentsolutions.com";
 
-const MAX_RESUME_BYTES = 10 * 1024 * 1024;
+const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = new Set(["pdf", "doc", "docx"]);
 const ALLOWED_TYPES = new Set([
   "application/pdf",
@@ -41,9 +41,9 @@ const fileExtension = (name) => {
   return match ? match[1] : "";
 };
 
-const isAllowedResume = (file) => {
+const isAllowedDocument = (file) => {
   if (!(file instanceof File) || !file.name || file.size <= 0) return false;
-  if (file.size > MAX_RESUME_BYTES) return false;
+  if (file.size > MAX_ATTACHMENT_BYTES) return false;
 
   const extension = fileExtension(file.name);
   if (!ALLOWED_EXTENSIONS.has(extension)) return false;
@@ -51,6 +51,9 @@ const isAllowedResume = (file) => {
   const type = String(file.type || "").toLowerCase();
   return !type || ALLOWED_TYPES.has(type);
 };
+
+const hasFile = (file) =>
+  file instanceof File && Boolean(file.name) && file.size > 0;
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -69,12 +72,28 @@ export async function onRequestPost(context) {
     const position = textValue(formData, "position", 240);
     const token = textValue(formData, "cf-turnstile-response", 2048);
     const resume = formData.get("attachment");
+    const additionalMaterials = formData.get("additional_materials");
+    const hasAdditionalMaterials = hasFile(additionalMaterials);
 
     if (!name || !email || !email.includes("@") || !position || !token) {
       return redirectBack(request, returnPath, { error: "verification" });
     }
 
-    if (!isAllowedResume(resume)) {
+    if (!isAllowedDocument(resume)) {
+      return redirectBack(request, returnPath, { error: "resume" });
+    }
+
+    if (
+      hasAdditionalMaterials &&
+      !isAllowedDocument(additionalMaterials)
+    ) {
+      return redirectBack(request, returnPath, { error: "resume" });
+    }
+
+    const totalAttachmentBytes =
+      resume.size + (hasAdditionalMaterials ? additionalMaterials.size : 0);
+
+    if (totalAttachmentBytes > MAX_ATTACHMENT_BYTES) {
       return redirectBack(request, returnPath, { error: "resume" });
     }
 
@@ -131,6 +150,14 @@ export async function onRequestPost(context) {
     delivery.append("email", email);
     delivery.append("message", message);
     delivery.append("attachment", resume, resume.name);
+
+    if (hasAdditionalMaterials) {
+      delivery.append(
+        "additional_materials",
+        additionalMaterials,
+        additionalMaterials.name,
+      );
+    }
 
     const deliveryResponse = await fetch(FORMSUBMIT_ENDPOINT, {
       method: "POST",
