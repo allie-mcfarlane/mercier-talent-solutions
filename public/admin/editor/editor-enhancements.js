@@ -56,6 +56,7 @@
         text-transform: uppercase;
       }
       .ve-careers-spotlight h2 { margin: 0 0 7px; color: #1a2b46; font-size: clamp(22px,2.4vw,30px); }
+      .ve-careers-spotlight h2 em { color:#45628e; font-family:Georgia,serif; font-style:italic; }
       .ve-careers-spotlight p { margin: 0; color: #66707c; font-size: 13px; line-height: 1.6; }
       .ve-careers-spotlight a {
         position: relative;
@@ -91,12 +92,33 @@
     spotlight.innerHTML = `
       <div class="ve-careers-spotlight-copy">
         <span class="ve-careers-spotlight-kicker">Careers page</span>
-        <h2>Join Our <em>team</em></h2>
-        <p>The Careers page is available on the website, with space for role links and individual role descriptions.</p>
+        <h2>Join our <em>team</em></h2>
+        <p>Edit the Careers heading, add open roles, and manage each role description from one place.</p>
       </div>
-      <a href="/careers/" target="_blank" rel="noopener">View Careers →</a>
+      <a href="/admin/editor/careers.html">Edit Careers →</a>
     `;
     home.before(spotlight);
+  };
+
+  const ensureCareersPageCard = () => {
+    const grid = document.querySelector('.ve-page-grid');
+    if (!grid || grid.querySelector('[data-careers-page-card]')) return;
+
+    const card = document.createElement('a');
+    card.className = 've-page-card';
+    card.href = '/admin/editor/careers.html';
+    card.dataset.careersPageCard = 'true';
+    card.innerHTML = `
+      <strong>Careers</strong>
+      <p>Edit the hero, add open roles, and manage the description page for each role.</p>
+      <span class="ve-card-action">Edit page →</span>
+    `;
+
+    const contactCard = [...grid.querySelectorAll('.ve-page-card')].find((item) =>
+      item.querySelector('strong')?.textContent?.trim() === 'Contact'
+    );
+    if (contactCard) contactCard.after(card);
+    else grid.append(card);
   };
 
   const scrollEditorTop = () => {
@@ -188,6 +210,7 @@
     rewritePublishMessages();
     ensureCareersStyles();
     ensureCareersSpotlight();
+    ensureCareersPageCard();
     ensurePreviewTopButton();
     ensureEditorTopButton();
     ensurePublishDock();
