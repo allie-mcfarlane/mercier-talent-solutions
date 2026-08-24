@@ -6,7 +6,6 @@ rolesHeading: Open Roles
 roles:
   - title: Senior Executive Coach — Legal Industry
     slug: senior-executive-coach
-    employmentType: Full Time
     description:
       - "## An opportunity to help shape the next stage of Mercier Talent Solutions"
       - Mercier Talent Solutions is conducting a selective search for a senior executive coach to join our growing practice.
@@ -42,7 +41,7 @@ roles:
       - Our work is grounded in a deep understanding of the legal profession and a belief that highly accomplished professionals benefit from coaching that is both psychologically informed and firmly connected to the realities of their work.
       - "### To Express Interest"
       - "Please submit:"
-      - A résumé or detailed professional biographyA brief description of your experience practicing lawA summary of your experience coaching Am Law 100 partners and senior leaders, including the general nature and scope of that workA summary of training programs, workshops, or leadership initiatives you have designed and led for lawyers or other senior professional audiencesYour executive-coaching training, credentials, and relevant assessment certificationsA brief explanation of why you are interested in becoming meaningfully involved with Mercier Talent SolutionsYour current professional affiliations and any restrictions or potential conflicts that could affect your ability to work with the firmYour general availability, location, and the types of professional arrangements you would be interested in consideringFormal cover letters are not required. All inquiries will be treated confidentially.
+      - A résumé or detailed professional biographyA brief description of your experience practicing lawA summary of your experience coaching Am Law 100 partners and senior leaders, including the general nature and scope of that workA summary of training programs, workshops, or leadership initiatives you have designed and led for lawyers or other senior professional audiencesYour executive-coaching training, credentials, and relevant assessment certificationsA brief explanation of why you are interested in becoming meaningfully involved with Mercier Talent SolutionsYour current professional affiliations and any restrictions or potential conflicts that could affect your ability to work with the firmYour general availability, location, and the types of professional arrangements you would be interested in consideringFormal cover letters are not required. All inquiries will be treated confidentially
       - "Please send materials to **allie@merciertalentsolutions** with the subject line: **Senior Executive Coach.**"
       - Mercier Talent Solutions is committed to considering qualified candidates from a wide range of backgrounds. All client information and discussions concerning potential engagements must be treated as **strictly confidential**.
 sections: []
