@@ -1,6 +1,6 @@
 const CONTACT_PATH = "/contactus/";
-const FORMSUBMIT_ENDPOINT =
-  "https://formsubmit.co/allie@merciertalentsolutions.com";
+const FORMSUBMIT_AJAX_ENDPOINT =
+  "https://formsubmit.co/ajax/allie@merciertalentsolutions.com";
 
 const ALLOWED_INTERESTS = new Set([
   "Executive Coaching",
@@ -61,9 +61,12 @@ const escapeHtml = (value) =>
 const hiddenInput = (name, value) =>
   `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`;
 
-const browserDeliveryResponse = (request, payload) => {
+const browserAjaxDeliveryResponse = (request, payload) => {
   const successUrl = new URL(CONTACT_PATH, request.url);
   successUrl.searchParams.set("sent", "1");
+
+  const errorUrl = new URL(CONTACT_PATH, request.url);
+  errorUrl.searchParams.set("error", "send");
 
   const fields = [
     hiddenInput("_subject", payload._subject),
@@ -71,7 +74,6 @@ const browserDeliveryResponse = (request, payload) => {
     hiddenInput("_captcha", payload._captcha),
     hiddenInput("_cc", payload._cc),
     hiddenInput("_replyto", payload._replyto),
-    hiddenInput("_next", successUrl.toString()),
     hiddenInput("_url", payload._url),
     hiddenInput("form_name", payload.form_name),
     hiddenInput("browser_privacy_signal", payload.browser_privacy_signal),
@@ -87,17 +89,60 @@ const browserDeliveryResponse = (request, payload) => {
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="origin">
     <title>Sending message…</title>
   </head>
   <body>
-    <form id="contact-delivery" action="${escapeHtml(FORMSUBMIT_ENDPOINT)}" method="POST">
+    <form
+      id="contact-delivery"
+      action="${escapeHtml(FORMSUBMIT_AJAX_ENDPOINT)}"
+      method="POST"
+      data-success-url="${escapeHtml(successUrl.toString())}"
+      data-error-url="${escapeHtml(errorUrl.toString())}"
+    >
       ${fields}
       <noscript>
-        <p>Your security check passed. Select Continue to send your message.</p>
-        <button type="submit">Continue</button>
+        <p>JavaScript is required to finish sending this message.</p>
       </noscript>
     </form>
-    <script>document.getElementById("contact-delivery").submit();</script>
+    <script>
+      (() => {
+        const form = document.getElementById("contact-delivery");
+        if (!form) return;
+
+        const successUrl = form.dataset.successUrl || "/contactus/?sent=1";
+        const errorUrl = form.dataset.errorUrl || "/contactus/?error=send";
+
+        const send = async () => {
+          try {
+            const payload = Object.fromEntries(new FormData(form).entries());
+            const response = await fetch(form.action, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            let result = null;
+            try {
+              result = await response.json();
+            } catch (_) {}
+
+            const accepted =
+              response.ok &&
+              String(result?.success ?? "true").toLowerCase() !== "false";
+
+            window.location.replace(accepted ? successUrl : errorUrl);
+          } catch (_) {
+            window.location.replace(errorUrl);
+          }
+        };
+
+        send();
+      })();
+    </script>
   </body>
 </html>`;
 
@@ -106,7 +151,7 @@ const browserDeliveryResponse = (request, payload) => {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "Cache-Control": "no-store",
-      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Referrer-Policy": "origin",
     },
   });
 };
@@ -213,7 +258,7 @@ export async function onRequestPost(context) {
       message,
     };
 
-    return browserDeliveryResponse(request, payload);
+    return browserAjaxDeliveryResponse(request, payload);
   } catch (error) {
     console.error("Contact form submission failed.", error);
     return redirectToContact(request, { error: "send" });
