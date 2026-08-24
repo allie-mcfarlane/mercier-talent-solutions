@@ -24,11 +24,30 @@ roles:
       - Some travel for client meetings, retreats, programs, or other in-person work will be part of the role.
       - "### Essential Qualifications"
       - "Candidates must have:"
-      - "- Practiced law in a law firm or similarly sophisticated legal environment\n- Significant experience coaching partners and senior leaders in Am Law 100 firms\n- A strong understanding of law-firm culture, partnership dynamics, client demands, and professional expectations\n- Formal coach training through a respected executive-coaching program\n- Experience designing and facilitating sophisticated training programs for lawyers or other senior professional audiences\n- A record of establishing credibility with highly accomplished and discerning professionals\n- Excellent judgment and the ability to navigate sensitive, confidential, and politically complex situations\n- A thoughtful, practical, and candid coaching style\n- The ability to understand both the coachee’s objectives and the sponsoring organization’s interests\n- Exceptional communication, relationship-management, and organizational skills"
+      - |-
+        - Practiced law in a law firm or similarly sophisticated legal environment
+        - Significant experience coaching partners and senior leaders in Am Law 100 firms
+        - A strong understanding of law-firm culture, partnership dynamics, client demands, and professional expectations
+        - Formal coach training through a respected executive-coaching program
+        - Experience designing and facilitating sophisticated training programs for lawyers or other senior professional audiences
+        - A record of establishing credibility with highly accomplished and discerning professionals
+        - Excellent judgment and the ability to navigate sensitive, confidential, and politically complex situations
+        - A thoughtful, practical, and candid coaching style
+        - The ability to understand both the coachee’s objectives and the sponsoring organization’s interests
+        - Exceptional communication, relationship-management, and organizational skills
       - This is not an entry-level coaching opportunity. Applicants must already have substantial experience coaching senior lawyers and leaders.
       - "### Additional Experience We Value"
       - "The following experience would be particularly useful:"
-      - "- Coaching law-firm managing partners, practice leaders, office leaders, committee chairs, or other senior firm leaders\n- Parth to partner coaching and senior associate coaching\n- Conducting or debriefing 360-degree assessments\n- Coaching senior business-services professionals\n- Designing and leading leadership-development programs, workshops, retreats, and other professional-development initiatives for law firms\n- Working with performance, interpersonal, or leadership challenges requiring particularly careful judgment\n- Supporting business development, succession, or leadership transitions\n- Experience with Hogan, DiSC, MBTI, or other established assessment tools\n- Experience in law-firm talent management, professional development, or organizational leadership"
+      - |-
+        - Coaching law-firm managing partners, practice leaders, office leaders, committee chairs, or other senior firm leaders
+        - Parth to partner coaching and senior associate coaching
+        - Conducting or debriefing 360-degree assessments
+        - Coaching senior business-services professionals
+        - Designing and leading leadership-development programs, workshops, retreats, and other professional-development initiatives for law firms
+        - Working with performance, interpersonal, or leadership challenges requiring particularly careful judgment
+        - Supporting business development, succession, or leadership transitions
+        - Experience with Hogan, DiSC, MBTI, or other established assessment tools
+        - Experience in law-firm talent management, professional development, or organizational leadership
       - "### How We Work"
       - Our clients expect a high degree of sophistication, responsiveness, discretion, and care. We do not apply a standard coaching formula to every engagement. We work to understand the individual, the organization, and the context in which development must occur.
       - Our approach is warm and supportive, but also candid and focused on meaningful progress. We help clients translate insight into specific changes in behavior, relationships, and performance.
@@ -42,9 +61,17 @@ roles:
       - Our work is grounded in a deep understanding of the legal profession and a belief that highly accomplished professionals benefit from coaching that is both psychologically informed and firmly connected to the realities of their work.
       - "### To Express Interest"
       - "Please submit:"
-      - "- A résumé or detailed professional biography\n- A brief description of your experience practicing law\n- A summary of your experience coaching Am Law 100 partners and senior leaders, including the general nature and scope of that work\n- A summary of training programs, workshops, or leadership initiatives you have designed and led for lawyers or other senior professional audiences\n- Your executive-coaching training, credentials, and relevant assessment certifications\n- A brief explanation of why you are interested in becoming meaningfully involved with Mercier Talent Solutions\n- Your current professional affiliations and any restrictions or potential conflicts that could affect your ability to work with the firm\n- Your general availability, location, and the types of professional arrangements you would be interested in considering"
-      - Formal cover letters are not required. All inquiries will be treated confidentially
-      - "Please send materials to **allie@merciertalentsolutions** with the subject line: **Senior Executive Coach.**"
+      - |-
+        - A résumé or detailed professional biography
+        - A brief description of your experience practicing law
+        - A summary of your experience coaching Am Law 100 partners and senior leaders, including the general nature and scope of that work
+        - A summary of training programs, workshops, or leadership initiatives you have designed and led for lawyers or other senior professional audiences
+        - Your executive-coaching training, credentials, and relevant assessment certifications
+        - A brief explanation of why you are interested in becoming meaningfully involved with Mercier Talent Solutions
+        - Your current professional affiliations and any restrictions or potential conflicts that could affect your ability to work with the firm
+        - Your general availability, location, and the types of professional arrangements you would be interested in considering
+      - Formal cover letters are not required. All applications and inquiries will be treated confidentially.
+      - Please submit your materials using the form below.
       - Mercier Talent Solutions is committed to considering qualified candidates from a wide range of backgrounds. All client information and discussions concerning potential engagements must be treated as **strictly confidential**.
 sections: []
 ---
