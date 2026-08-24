@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Turnstile from "../components/Turnstile.astro";
-import { site } from "../data/site";
 import { getEntry } from "astro:content";
 
 type PrivacyFormData = {
@@ -21,7 +20,7 @@ if (!page || !page.data.requestOptions) {
 
 const pageData = page.data as PrivacyFormData;
 const { Content } = await page.render();
-const formEndpoint = `https://formsubmit.co/${site.privacyEmail}`;
+const formEndpoint = "/api/privacy";
 const description = "Submit a privacy request or appeal to Mercier Talent Solutions.";
 const successMessage = "Thank you. Your privacy request has been submitted to Mercier Talent Solutions. We will review your request and respond as required by applicable law.";
 ---
@@ -35,26 +34,23 @@ const successMessage = "Thank you. Your privacy request has been submitted to Me
         <div class="intro"><Content /></div>
       </div>
       <form action={formEndpoint} method="POST">
-        <input type="hidden" name="_subject" value={pageData.formSubject} />
-        <input type="hidden" name="_template" value="table" />
-        <input type="hidden" name="_captcha" value="false" />
         <input type="hidden" name="form_name" value={pageData.formName} />
-        <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
+        <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
         {pageData.includeName && (
           <label>
             NAME
-            <input type="text" name="name" />
+            <input type="text" name="name" autocomplete="name" />
           </label>
         )}
         <label>
           EMAIL ADDRESS
-          <input type="email" name="email" required />
+          <input type="email" name="email" autocomplete="email" required />
         </label>
         <label>
           REQUEST TYPE
           <select name="request_type" required>
             <option value="">Select one</option>
-            {pageData.requestOptions.map((option) => <option>{option}</option>)}
+            {pageData.requestOptions.map((option) => <option value={option}>{option}</option>)}
           </select>
         </label>
         <label>
@@ -62,7 +58,7 @@ const successMessage = "Thank you. Your privacy request has been submitted to Me
           <textarea name="message" rows="6"></textarea>
         </label>
         <p class="sensitive-note"><strong>Please do not include sensitive personal information in this form.</strong></p>
-        <Turnstile action="privacy" endpoint="/api/privacy" successMessage={successMessage} />
+        <Turnstile action="privacy" endpoint={formEndpoint} successMessage={successMessage} />
         <button class="button" type="submit">Submit Request</button>
       </form>
     </div>
@@ -139,7 +135,13 @@ const successMessage = "Thank you. Your privacy request has been submitted to Me
   }
 
   .honeypot {
-    display: none;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
   }
 
   @media (max-width: 800px) {
