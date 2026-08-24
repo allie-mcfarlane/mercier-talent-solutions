@@ -1,6 +1,6 @@
 ---
 eyebrow: Careers
-title: Join Our
+title: Join our
 titleAccent: team
 rolesHeading: Open Roles
 roles: []
