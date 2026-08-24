@@ -1,10 +1,51 @@
 (() => {
   'use strict';
 
+  const openRolePreviewFallback = (index, frame) => {
+    let attempts = 0;
+
+    const tryOpen = () => {
+      try {
+        const currentDoc = frame?.contentDocument;
+        if (currentDoc?.querySelector('.mts-draft-role')) return;
+      } catch (_) {}
+
+      const buttons = [...document.querySelectorAll('.mts-preview-role')];
+      if (buttons[index]) {
+        buttons[index].click();
+        return;
+      }
+
+      const rolesButton = document.querySelector('[data-section="roles"]');
+      if (rolesButton && !rolesButton.classList.contains('active')) {
+        rolesButton.click();
+      }
+
+      attempts += 1;
+      if (attempts < 24) setTimeout(tryOpen, 100);
+    };
+
+    setTimeout(tryOpen, 450);
+  };
+
+  const wireRoleLinks = (frame, doc) => {
+    doc.querySelectorAll('.role-link').forEach((link, index) => {
+      if (link.dataset.editorRolePreviewWired === 'true') return;
+      link.dataset.editorRolePreviewWired = 'true';
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        openRolePreviewFallback(index, frame);
+      });
+    });
+  };
+
   const patchPreview = (frame) => {
     try {
       const doc = frame?.contentDocument;
       if (!doc) return;
+
+      wireRoleLinks(frame, doc);
 
       if (!doc.getElementById('mts-careers-role-layout-fix')) {
         const style = doc.createElement('style');
