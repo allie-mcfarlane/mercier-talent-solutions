@@ -1,0 +1,123 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const careersPage = await getEntry("pages", "careers");
+  const roles = careersPage?.data.roles ?? [];
+
+  return roles.map((role) => ({
+    params: { slug: role.slug },
+    props: { role },
+  }));
+}
+
+const { role } = Astro.props;
+const description = role.summary || `Career opportunity: ${role.title} at Mercier Talent Solutions.`;
+---
+
+<BaseLayout title={`${role.title} | Careers | Mercier Talent Solutions`} description={description}>
+  <article class="role-page">
+    <header class="role-hero">
+      <div class="container role-hero-inner">
+        <a class="back-link" href="/careers/">← Careers</a>
+        <p class="eyebrow">Careers</p>
+        <h1>{role.title}</h1>
+        {(role.location || role.employmentType) && (
+          <p class="role-meta">
+            {[role.location, role.employmentType].filter(Boolean).join(" · ")}
+          </p>
+        )}
+      </div>
+    </header>
+
+    <section class="role-content-section">
+      <div class="container role-content">
+        {role.summary && <p class="role-summary">{role.summary}</p>}
+        {role.description.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .role-hero {
+    border-bottom: 1px solid rgba(221, 220, 215, 0.9);
+    background: linear-gradient(140deg, #fafaf8 0%, #f0f0ec 100%);
+  }
+
+  .role-hero-inner {
+    max-width: 1380px;
+    padding-block: clamp(4rem, 7vw, 6.5rem);
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: clamp(2.6rem, 4vw, 4rem);
+    color: #66707c;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: var(--color-blue-dark);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .role-hero .eyebrow {
+    margin: 0 0 1.1rem;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4.5px;
+    text-transform: uppercase;
+  }
+
+  .role-hero h1 {
+    max-width: 1120px;
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 1.02;
+  }
+
+  .role-meta {
+    margin: 1.5rem 0 0;
+    color: #66707c;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .role-content-section {
+    background: #fff;
+    padding: clamp(4rem, 7vw, 7rem) 0 clamp(5.5rem, 9vw, 9rem);
+  }
+
+  .role-content {
+    max-width: 960px;
+  }
+
+  .role-content p {
+    margin: 0 0 1.45rem;
+    color: var(--color-ink);
+    font-size: clamp(1rem, 1.15vw, 1.12rem);
+    line-height: 1.85;
+  }
+
+  .role-content .role-summary {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    color: var(--color-blue-dark);
+    font-family: var(--font-heading);
+    font-size: clamp(1.45rem, 2.3vw, 2.05rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.45;
+  }
+</style>
