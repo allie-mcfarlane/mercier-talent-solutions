@@ -125,7 +125,7 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
           <div class="application-heading">
             <p class="eyebrow">Apply</p>
             <h2 id="application-heading">Submit your application</h2>
-            <p>Send us your details and attach your resume or professional biography. You may also include one optional PDF or Word document with additional materials.</p>
+            <p>Tell us a little about your background, experience and availability, then attach your resume or professional biography. Additional materials are optional.</p>
           </div>
 
           <form
@@ -151,8 +151,43 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
               </label>
 
               <label class="full">
-                MESSAGE
-                <textarea name="message" rows="6"></textarea>
+                LOCATION (OPTIONAL)
+                <input type="text" name="location" autocomplete="address-level2" />
+              </label>
+
+              <label class="full guided-field">
+                RELEVANT LEGAL &amp; COACHING EXPERIENCE*
+                <textarea name="relevant_experience" rows="5" required></textarea>
+                <span class="field-note">Briefly summarize your legal practice background and experience coaching partners or senior leaders.</span>
+              </label>
+
+              <label class="full guided-field">
+                PROGRAMS &amp; LEADERSHIP DEVELOPMENT EXPERIENCE (OPTIONAL)
+                <textarea name="programs_experience" rows="5"></textarea>
+                <span class="field-note">You may include training programs, workshops, retreats or other leadership-development work you have designed or led.</span>
+              </label>
+
+              <label class="full guided-field">
+                COACHING CREDENTIALS &amp; EDUCATION*
+                <textarea name="credentials_education" rows="5" required></textarea>
+                <span class="field-note">Include relevant coach training, credentials, education and assessment certifications.</span>
+              </label>
+
+              <label class="full guided-field">
+                WHY MERCIER TALENT SOLUTIONS? (OPTIONAL)
+                <textarea name="interest_in_mercier" rows="4"></textarea>
+                <span class="field-note">Tell us briefly what interests you about becoming involved with the firm.</span>
+              </label>
+
+              <label class="full guided-field">
+                AVAILABILITY &amp; PREFERRED PROFESSIONAL ARRANGEMENT (OPTIONAL)
+                <textarea name="availability_arrangements" rows="4"></textarea>
+                <span class="field-note">Share your general availability and the types of professional arrangements you would be open to considering.</span>
+              </label>
+
+              <label class="full guided-field">
+                ANYTHING ELSE YOU'D LIKE US TO KNOW (OPTIONAL)
+                <textarea name="additional_notes" rows="4"></textarea>
               </label>
 
               <label class="full file-field">
@@ -446,6 +481,10 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     resize: vertical;
   }
 
+  .guided-field textarea {
+    min-height: 112px;
+  }
+
   input[type="file"] {
     padding: 0.75rem 0 0.95rem;
     cursor: pointer;
@@ -465,7 +504,8 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     cursor: pointer;
   }
 
-  .file-note {
+  .file-note,
+  .field-note {
     color: #66707c;
     font-family: var(--font-body);
     font-size: 13px;
