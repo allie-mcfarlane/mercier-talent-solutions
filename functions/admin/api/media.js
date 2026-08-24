@@ -1,11 +1,12 @@
-import { hasR2S3, r2List, r2Put } from "../../_shared/r2-s3.js";
-
 const ACCESS_TOKEN = "token mts-cloudflare-access";
+const REPOSITORY = "allie-mcfarlane/mercier-talent-solutions";
+const BRANCH = "main";
 const ALLOWED_USERS = new Set([
   "allie@merciertalentsolutions.com",
   "julia@merciertalentsolutions.com",
 ]);
 const MAX_BYTES = 25 * 1024 * 1024;
+const IMAGE_EXTENSIONS = /\.(png|jpe?g|webp|gif|svg|avif)$/i;
 
 const json = (value, status = 200) => new Response(JSON.stringify(value), {
   status,
@@ -37,37 +38,74 @@ const allowedPath = (path) =>
   /^documents\/[a-zA-Z0-9._/-]+$/.test(path) ||
   /^images\/[a-zA-Z0-9._/-]+$/.test(path);
 
-const mediaConfigured = (env) => Boolean(env.MEDIA_BUCKET || hasR2S3(env));
-
 const mediaUrl = (key) => `/${key}`;
+
+const githubHeaders = (env) => ({
+  Accept: "application/vnd.github+json",
+  Authorization: `Bearer ${env.GITHUB_ADMIN_TOKEN}`,
+  "User-Agent": "Mercier-Talent-Solutions-Admin",
+  "X-GitHub-Api-Version": "2022-11-28",
+});
+
+const githubContentsUrl = (repoPath, ref = "") => {
+  const base = `https://api.github.com/repos/${REPOSITORY}/contents/${repoPath}`;
+  return ref ? `${base}?ref=${encodeURIComponent(ref)}` : base;
+};
+
+const encodeBase64 = (buffer) => {
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(binary);
+};
+
+const getExisting = async (env, repoPath) => {
+  const response = await fetch(githubContentsUrl(repoPath, BRANCH), {
+    headers: githubHeaders(env),
+  });
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`Website media could not be checked (${response.status}).`);
+  return response.json();
+};
+
+const listDirectory = async (env, prefix) => {
+  const trimmed = prefix.replace(/\/+$/, "");
+  const repoPath = `public/${trimmed || "images"}`;
+  const response = await fetch(githubContentsUrl(repoPath, BRANCH), {
+    headers: githubHeaders(env),
+  });
+  if (response.status === 404) return [];
+  if (!response.ok) throw new Error(`Website media could not be read (${response.status}).`);
+  const items = await response.json();
+  if (!Array.isArray(items)) return [];
+  return items
+    .filter((item) => item?.type === "file")
+    .map((item) => ({
+      key: item.path.replace(/^public\//, ""),
+      size: item.size || 0,
+      uploaded: null,
+      url: mediaUrl(item.path.replace(/^public\//, "")),
+    }));
+};
 
 export async function onRequestGet({ request, env }) {
   const denied = authorize(request);
   if (denied) return denied;
-  if (!mediaConfigured(env)) return json({ configured: false, items: [], message: "R2 media storage is not configured yet." }, 503);
+  if (!env.GITHUB_ADMIN_TOKEN) {
+    return json({ configured: false, items: [], message: "Website media publishing is not configured yet." }, 503);
+  }
 
   const url = new URL(request.url);
   const prefix = cleanPath(url.searchParams.get("prefix") || "images/");
-  try {
-    let objects;
-    if (env.MEDIA_BUCKET) {
-      const listed = await env.MEDIA_BUCKET.list({ prefix, limit: 500 });
-      objects = listed.objects.map((object) => ({
-        key: object.key,
-        size: object.size,
-        uploaded: object.uploaded,
-      }));
-    } else {
-      objects = await r2List(env, prefix, 500);
-    }
+  if (!prefix || !/^(images|documents)(\/|$)/.test(prefix)) {
+    return json({ message: "Invalid media folder." }, 400);
+  }
 
-    const items = objects.map((object) => ({
-      key: object.key,
-      size: object.size,
-      uploaded: object.uploaded,
-      url: mediaUrl(object.key),
-    }));
-    return json({ configured: true, items });
+  try {
+    const items = await listDirectory(env, prefix);
+    return json({ configured: true, storage: "github", items });
   } catch (error) {
     return json({ message: error?.message || "Media storage could not be read." }, 500);
   }
@@ -76,7 +114,9 @@ export async function onRequestGet({ request, env }) {
 export async function onRequestPost({ request, env }) {
   const denied = authorize(request);
   if (denied) return denied;
-  if (!mediaConfigured(env)) return json({ configured: false, message: "R2 media storage is not configured yet." }, 503);
+  if (!env.GITHUB_ADMIN_TOKEN) {
+    return json({ configured: false, message: "Website media publishing is not configured yet." }, 503);
+  }
 
   const url = new URL(request.url);
   const path = cleanPath(url.searchParams.get("path") || request.headers.get("x-media-path"));
@@ -86,28 +126,44 @@ export async function onRequestPost({ request, env }) {
   if (length > MAX_BYTES) return json({ message: "File is too large. Maximum size is 25 MB." }, 413);
 
   const contentType = request.headers.get("content-type") || "application/octet-stream";
-  const isPdf = path.startsWith("documents/") && contentType.includes("pdf");
-  const isImage = path.startsWith("images/") && contentType.startsWith("image/");
+  const isPdf = path.startsWith("documents/") && path.toLowerCase().endsWith(".pdf") && (contentType.includes("pdf") || contentType === "application/octet-stream");
+  const isImage = path.startsWith("images/") && IMAGE_EXTENSIONS.test(path) && (contentType.startsWith("image/") || contentType === "application/octet-stream");
   if (!isPdf && !isImage) return json({ message: "Only PDF documents and image files are allowed." }, 415);
 
   const bytes = await request.arrayBuffer();
   if (bytes.byteLength > MAX_BYTES) return json({ message: "File is too large. Maximum size is 25 MB." }, 413);
 
+  const repoPath = `public/${path}`;
   try {
-    if (env.MEDIA_BUCKET) {
-      await env.MEDIA_BUCKET.put(path, bytes, {
-        httpMetadata: {
-          contentType,
-          cacheControl: "public, max-age=0, must-revalidate",
-        },
-      });
-    } else {
-      const response = await r2Put(env, path, bytes, { contentType });
-      if (!response.ok) throw new Error(`R2 upload failed (${response.status}).`);
+    const existing = await getExisting(env, repoPath);
+    const payload = {
+      message: existing ? `Replace website media: ${path}` : `Upload website media: ${path}`,
+      content: encodeBase64(bytes),
+      branch: BRANCH,
+      ...(existing?.sha ? { sha: existing.sha } : {}),
+    };
+
+    const response = await fetch(githubContentsUrl(repoPath), {
+      method: "PUT",
+      headers: {
+        ...githubHeaders(env),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      let message = `Website media upload failed (${response.status}).`;
+      try {
+        const details = await response.json();
+        if (details?.message) message = details.message;
+      } catch {}
+      throw new Error(message);
     }
 
     return json({
       configured: true,
+      storage: "github",
       key: path,
       url: mediaUrl(path),
     }, 201);
