@@ -59,7 +59,7 @@ applicationForm:
       type: file
       label: Additional Materials
       required: false
-      help: Optional: attach one PDF or Word document with any additional information you would like us to consider.
+      help: "Optional: attach one PDF or Word document with any additional information you would like us to consider."
 roles:
   - title: Senior Executive Coach — Legal Industry
     slug: senior-executive-coach
