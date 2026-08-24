@@ -181,7 +181,7 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
 
   .role-content-section {
     background: #fff;
-    padding: clamp(4rem, 7vw, 7rem) 0 clamp(5.5rem, 9vw, 9rem);
+    padding: 0 0 clamp(5.5rem, 9vw, 9rem);
   }
 
   .role-content {
@@ -213,6 +213,11 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     font-weight: 700;
     letter-spacing: -0.035em;
     line-height: 1.2;
+  }
+
+  .role-rich-text :global(h2:first-child),
+  .role-rich-text :global(h3:first-child) {
+    margin-top: 0;
   }
 
   .role-rich-text :global(h3) {
