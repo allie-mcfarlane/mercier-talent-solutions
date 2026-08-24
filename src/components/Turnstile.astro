@@ -48,6 +48,16 @@ const {
               honeypot.autocomplete = "off";
               honeypot.setAttribute("aria-hidden", "true");
               honeypot.className = "honeypot";
+              honeypot.style.position = "absolute";
+              honeypot.style.left = "-10000px";
+              honeypot.style.top = "auto";
+              honeypot.style.width = "1px";
+              honeypot.style.height = "1px";
+              honeypot.style.margin = "0";
+              honeypot.style.padding = "0";
+              honeypot.style.border = "0";
+              honeypot.style.opacity = "0";
+              honeypot.style.pointerEvents = "none";
               form.appendChild(honeypot);
             }
           });
