@@ -58,6 +58,25 @@ const pages = defineCollection({
         }),
       )
       .optional(),
+    applicationForm: z
+      .object({
+        eyebrow: z.string().default("Apply"),
+        title: z.string().default("Submit your application"),
+        intro: z.string().default(""),
+        submitLabel: z.string().default("Submit application"),
+        fields: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.enum(["text", "textarea", "email", "file"]),
+              label: z.string(),
+              required: z.boolean().default(false),
+              help: z.string().optional(),
+            }),
+          )
+          .default([]),
+      })
+      .optional(),
     pageBuilder: z.boolean().optional(),
     slug: z.string().optional(),
     navTitle: z.string().optional(),
