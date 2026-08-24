@@ -15,6 +15,90 @@
     });
   };
 
+  const ensureCareersStyles = () => {
+    if (document.getElementById('ve-careers-spotlight-styles')) return;
+    const style = document.createElement('style');
+    style.id = 've-careers-spotlight-styles';
+    style.textContent = `
+      .ve-careers-spotlight {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 24px;
+        align-items: center;
+        margin: 28px 0;
+        padding: clamp(24px, 3vw, 34px);
+        border: 1px solid rgba(69,98,142,.2);
+        border-radius: 16px;
+        background: linear-gradient(135deg,#f7f7f4 0%,#eef1f5 100%);
+      }
+      .ve-careers-spotlight::after {
+        content: '';
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: -38px;
+        top: -62px;
+        border: 1px solid rgba(69,98,142,.18);
+        border-radius: 50%;
+        box-shadow: 0 0 0 28px rgba(69,98,142,.04),0 0 0 56px rgba(69,98,142,.025);
+        pointer-events: none;
+      }
+      .ve-careers-spotlight-copy { position: relative; z-index: 1; max-width: 680px; }
+      .ve-careers-spotlight-kicker {
+        display: block;
+        margin-bottom: 8px;
+        color: #45628e;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2.2px;
+        text-transform: uppercase;
+      }
+      .ve-careers-spotlight h2 { margin: 0 0 7px; color: #1a2b46; font-size: clamp(22px,2.4vw,30px); }
+      .ve-careers-spotlight p { margin: 0; color: #66707c; font-size: 13px; line-height: 1.6; }
+      .ve-careers-spotlight a {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 17px;
+        border-radius: 8px;
+        background: #1a2b46;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .ve-careers-spotlight a:hover,.ve-careers-spotlight a:focus-visible { background: #45628e; }
+      @media (max-width: 700px) {
+        .ve-careers-spotlight { grid-template-columns: 1fr; }
+        .ve-careers-spotlight a { justify-self: start; }
+      }
+    `;
+    document.head.append(style);
+  };
+
+  const ensureCareersSpotlight = () => {
+    const home = document.querySelector('.ve-main .ve-secondary-tools');
+    if (!home || home.parentElement?.querySelector(':scope > .ve-careers-spotlight')) return;
+    const spotlight = document.createElement('section');
+    spotlight.className = 've-careers-spotlight';
+    spotlight.setAttribute('aria-label', 'Careers page');
+    spotlight.innerHTML = `
+      <div class="ve-careers-spotlight-copy">
+        <span class="ve-careers-spotlight-kicker">Careers page</span>
+        <h2>Join Our <em>team</em></h2>
+        <p>The Careers page is available on the website, with space for role links and individual role descriptions.</p>
+      </div>
+      <a href="/careers/" target="_blank" rel="noopener">View Careers →</a>
+    `;
+    home.before(spotlight);
+  };
+
   const scrollEditorTop = () => {
     const pane = document.querySelector('.ve-editor-pane');
     if (pane) pane.scrollTo({ top: 0, behavior: 'smooth' });
@@ -102,6 +186,8 @@
   const refresh = () => {
     rewriteWhitePaperLinks();
     rewritePublishMessages();
+    ensureCareersStyles();
+    ensureCareersSpotlight();
     ensurePreviewTopButton();
     ensureEditorTopButton();
     ensurePublishDock();
