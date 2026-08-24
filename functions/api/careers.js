@@ -248,13 +248,14 @@ export async function onRequestPost(context) {
       return redirectBack(request, returnPath, { error: "verification" });
     }
 
+    const formUrl = new URL(returnPath, request.url).toString();
     const delivery = new FormData();
     delivery.append("_subject", `Career Application - ${position}`);
     delivery.append("_template", "table");
     delivery.append("_captcha", "false");
     delivery.append("_cc", "julia@merciertalentsolutions.com");
     if (replyTo) delivery.append("_replyto", replyTo);
-    delivery.append("_url", new URL(returnPath, request.url).toString());
+    delivery.append("_url", formUrl);
     delivery.append("form_name", "Career Application");
     delivery.append("Position", position);
 
@@ -276,6 +277,10 @@ export async function onRequestPost(context) {
 
     const deliveryResponse = await fetch(FORMSUBMIT_ENDPOINT, {
       method: "POST",
+      headers: {
+        Accept: "text/html,application/xhtml+xml",
+        Referer: formUrl,
+      },
       body: delivery,
       redirect: "follow",
     });
