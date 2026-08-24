@@ -2,6 +2,7 @@ const FORMSUBMIT_ENDPOINT =
   "https://formsubmit.co/allie@merciertalentsolutions.com";
 
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
+const MAX_FIELDS = 40;
 const ALLOWED_EXTENSIONS = new Set(["pdf", "doc", "docx"]);
 const ALLOWED_TYPES = new Set([
   "application/pdf",
@@ -9,6 +10,8 @@ const ALLOWED_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/octet-stream",
 ]);
+const ALLOWED_FIELD_TYPES = new Set(["text", "textarea", "email", "file"]);
+const FIELD_ID_PATTERN = /^[a-z0-9][a-z0-9-]{0,49}$/;
 const MIN_FORM_AGE_MS = 1500;
 const MAX_FORM_AGE_MS = 24 * 60 * 60 * 1000;
 const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}\s.'’\-]*$/u;
@@ -70,6 +73,52 @@ const hasPlausibleFormTiming = (value) => {
   return age >= MIN_FORM_AGE_MS && age <= MAX_FORM_AGE_MS;
 };
 
+const parseApplicationSchema = (raw) => {
+  if (!raw) return [];
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed?.fields)) return [];
+
+    const seen = new Set();
+    return parsed.fields
+      .slice(0, MAX_FIELDS)
+      .map((field) => {
+        const id = String(field?.id || "").trim().toLowerCase();
+        const type = String(field?.type || "text").trim().toLowerCase();
+        const label = String(field?.label || "Field").trim().slice(0, 120);
+        if (!FIELD_ID_PATTERN.test(id) || !ALLOWED_FIELD_TYPES.has(type) || !label) {
+          return null;
+        }
+        if (seen.has(id)) return null;
+        seen.add(id);
+        return {
+          id,
+          type,
+          label,
+          required: field?.required === true,
+        };
+      })
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+};
+
+const legacyFields = [
+  { id: "name", type: "text", label: "Name", required: true, legacyName: "name" },
+  { id: "email", type: "email", label: "Email", required: true, legacyName: "email" },
+  { id: "location", type: "text", label: "Location", required: false, legacyName: "location" },
+  { id: "relevant-experience", type: "textarea", label: "Relevant legal and coaching experience", required: true, legacyName: "relevant_experience" },
+  { id: "programs-experience", type: "textarea", label: "Programs and leadership development experience", required: false, legacyName: "programs_experience" },
+  { id: "credentials-education", type: "textarea", label: "Coaching credentials and education", required: true, legacyName: "credentials_education" },
+  { id: "interest-in-mercier", type: "textarea", label: "Why Mercier Talent Solutions", required: false, legacyName: "interest_in_mercier" },
+  { id: "availability-arrangements", type: "textarea", label: "Availability and preferred professional arrangement", required: false, legacyName: "availability_arrangements" },
+  { id: "additional-notes", type: "textarea", label: "Anything else", required: false, legacyName: "additional_notes" },
+  { id: "resume", type: "file", label: "Resume or Professional Biography", required: true, legacyName: "attachment" },
+  { id: "additional-materials", type: "file", label: "Additional Materials", required: false, legacyName: "additional_materials" },
+];
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -84,69 +133,67 @@ export async function onRequestPost(context) {
       return redirectBack(request, returnPath, { sent: "1" });
     }
 
-    const name = textValue(formData, "name", 160);
-    const email = textValue(formData, "email", 254);
-    const location = textValue(formData, "location", 240);
-    const relevantExperience = textValue(
-      formData,
-      "relevant_experience",
-      12000,
-    );
-    const programsExperience = textValue(
-      formData,
-      "programs_experience",
-      12000,
-    );
-    const credentialsEducation = textValue(
-      formData,
-      "credentials_education",
-      12000,
-    );
-    const interestInMercier = textValue(
-      formData,
-      "interest_in_mercier",
-      8000,
-    );
-    const availabilityArrangements = textValue(
-      formData,
-      "availability_arrangements",
-      8000,
-    );
-    const additionalNotes =
-      textValue(formData, "additional_notes", 10000) ||
-      textValue(formData, "message", 10000);
     const position = textValue(formData, "position", 240);
     const token = textValue(formData, "cf-turnstile-response", 2048);
     const formStartedAt = textValue(formData, "form_started_at", 40);
-    const resume = formData.get("attachment");
-    const additionalMaterials = formData.get("additional_materials");
-    const hasAdditionalMaterials = hasFile(additionalMaterials);
+    const schemaRaw = textValue(formData, "application_schema", 24000);
+    const parsedFields = parseApplicationSchema(schemaRaw);
+    const dynamicSchema = parsedFields.length > 0;
+    const fields = dynamicSchema ? parsedFields : legacyFields;
 
-    if (
-      !looksLikeHumanName(name) ||
-      !EMAIL_PATTERN.test(email) ||
-      !position ||
-      !relevantExperience ||
-      !credentialsEducation ||
-      !token ||
-      !hasPlausibleFormTiming(formStartedAt)
-    ) {
+    if (!position || !token || !hasPlausibleFormTiming(formStartedAt)) {
       return redirectBack(request, returnPath, { error: "verification" });
     }
 
-    if (!isAllowedDocument(resume)) {
-      return redirectBack(request, returnPath, { error: "resume" });
-    }
+    const answers = [];
+    let replyTo = "";
+    let totalAttachmentBytes = 0;
 
-    if (hasAdditionalMaterials && !isAllowedDocument(additionalMaterials)) {
-      return redirectBack(request, returnPath, { error: "resume" });
-    }
+    for (const field of fields) {
+      const inputName = dynamicSchema
+        ? `field_${field.id}`
+        : field.legacyName;
 
-    const totalAttachmentBytes =
-      resume.size + (hasAdditionalMaterials ? additionalMaterials.size : 0);
+      if (field.type === "file") {
+        const file = formData.get(inputName);
+        const present = hasFile(file);
 
-    if (totalAttachmentBytes > MAX_ATTACHMENT_BYTES) {
-      return redirectBack(request, returnPath, { error: "resume" });
+        if (field.required && !present) {
+          return redirectBack(request, returnPath, { error: "application" });
+        }
+
+        if (present) {
+          if (!isAllowedDocument(file)) {
+            return redirectBack(request, returnPath, { error: "attachment" });
+          }
+          totalAttachmentBytes += file.size;
+          if (totalAttachmentBytes > MAX_ATTACHMENT_BYTES) {
+            return redirectBack(request, returnPath, { error: "attachment" });
+          }
+        }
+
+        answers.push({ field, value: present ? file : null });
+        continue;
+      }
+
+      const value = textValue(formData, inputName, 12000);
+
+      if (field.required && !value) {
+        return redirectBack(request, returnPath, { error: "application" });
+      }
+
+      if (field.type === "email" && value) {
+        if (!EMAIL_PATTERN.test(value)) {
+          return redirectBack(request, returnPath, { error: "application" });
+        }
+        if (!replyTo) replyTo = value;
+      }
+
+      if (field.id === "name" && value && !looksLikeHumanName(value)) {
+        return redirectBack(request, returnPath, { error: "verification" });
+      }
+
+      answers.push({ field, value });
     }
 
     if (!env.TURNSTILE_SECRET_KEY) {
@@ -195,38 +242,16 @@ export async function onRequestPost(context) {
     delivery.append("_template", "table");
     delivery.append("_captcha", "false");
     delivery.append("_cc", "julia@merciertalentsolutions.com");
-    delivery.append("_replyto", email);
+    if (replyTo) delivery.append("_replyto", replyTo);
     delivery.append("form_name", "Career Application");
     delivery.append("Position", position);
-    delivery.append("Name", name);
-    delivery.append("Email", email);
-    delivery.append("Location", location);
-    delivery.append(
-      "Relevant legal and coaching experience",
-      relevantExperience,
-    );
-    delivery.append(
-      "Programs and leadership development experience",
-      programsExperience,
-    );
-    delivery.append(
-      "Coaching credentials and education",
-      credentialsEducation,
-    );
-    delivery.append("Why Mercier Talent Solutions", interestInMercier);
-    delivery.append(
-      "Availability and preferred professional arrangement",
-      availabilityArrangements,
-    );
-    delivery.append("Anything else", additionalNotes);
-    delivery.append("attachment", resume, resume.name);
 
-    if (hasAdditionalMaterials) {
-      delivery.append(
-        "additional_materials",
-        additionalMaterials,
-        additionalMaterials.name,
-      );
+    for (const { field, value } of answers) {
+      if (field.type === "file") {
+        if (value) delivery.append(field.label, value, value.name);
+      } else {
+        delivery.append(field.label, value);
+      }
     }
 
     const deliveryResponse = await fetch(FORMSUBMIT_ENDPOINT, {
