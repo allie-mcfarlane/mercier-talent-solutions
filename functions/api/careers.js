@@ -9,6 +9,10 @@ const ALLOWED_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/octet-stream",
 ]);
+const MIN_FORM_AGE_MS = 1500;
+const MAX_FORM_AGE_MS = 24 * 60 * 60 * 1000;
+const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}\s.'’\-]*$/u;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const textValue = (formData, name, maxLength = 10000) => {
   const value = formData.get(name);
@@ -55,6 +59,17 @@ const isAllowedDocument = (file) => {
 const hasFile = (file) =>
   file instanceof File && Boolean(file.name) && file.size > 0;
 
+const looksLikeHumanName = (value) =>
+  Boolean(value) && value.length <= 120 && NAME_PATTERN.test(value);
+
+const hasPlausibleFormTiming = (value) => {
+  const startedAt = Number(value);
+  if (!Number.isFinite(startedAt) || startedAt <= 0) return false;
+
+  const age = Date.now() - startedAt;
+  return age >= MIN_FORM_AGE_MS && age <= MAX_FORM_AGE_MS;
+};
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -62,7 +77,10 @@ export async function onRequestPost(context) {
     const formData = await request.formData();
     const returnPath = safeReturnPath(textValue(formData, "return_to", 200));
 
-    if (textValue(formData, "_honey", 200)) {
+    if (
+      textValue(formData, "_honey", 200) ||
+      textValue(formData, "company_website", 500)
+    ) {
       return redirectBack(request, returnPath, { sent: "1" });
     }
 
@@ -71,11 +89,18 @@ export async function onRequestPost(context) {
     const message = textValue(formData, "message", 10000);
     const position = textValue(formData, "position", 240);
     const token = textValue(formData, "cf-turnstile-response", 2048);
+    const formStartedAt = textValue(formData, "form_started_at", 40);
     const resume = formData.get("attachment");
     const additionalMaterials = formData.get("additional_materials");
     const hasAdditionalMaterials = hasFile(additionalMaterials);
 
-    if (!name || !email || !email.includes("@") || !position || !token) {
+    if (
+      !looksLikeHumanName(name) ||
+      !EMAIL_PATTERN.test(email) ||
+      !position ||
+      !token ||
+      !hasPlausibleFormTiming(formStartedAt)
+    ) {
       return redirectBack(request, returnPath, { error: "verification" });
     }
 
@@ -83,10 +108,7 @@ export async function onRequestPost(context) {
       return redirectBack(request, returnPath, { error: "resume" });
     }
 
-    if (
-      hasAdditionalMaterials &&
-      !isAllowedDocument(additionalMaterials)
-    ) {
+    if (hasAdditionalMaterials && !isAllowedDocument(additionalMaterials)) {
       return redirectBack(request, returnPath, { error: "resume" });
     }
 
