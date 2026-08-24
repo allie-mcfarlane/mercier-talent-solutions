@@ -177,6 +177,123 @@ main .news-card:focus-visible::after {
   letter-spacing: 0.03em;
 }
 
+/* Bottom-of-home Careers hero. */
+main .home-careers-promo {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(221, 220, 215, 0.95);
+  border-bottom: 1px solid rgba(221, 220, 215, 0.95);
+  background: linear-gradient(140deg, #fafaf8 0%, #eef1f4 100%);
+}
+
+main .home-careers-promo-inner {
+  position: relative;
+  display: grid;
+  min-height: clamp(245px, 20vw, 320px);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  max-width: 1600px;
+  padding-block: clamp(3.6rem, 5vw, 5.2rem);
+}
+
+main .home-careers-copy {
+  position: relative;
+  z-index: 2;
+}
+
+main .home-careers-promo .eyebrow {
+  margin: 0 0 1.2rem;
+  color: var(--color-blue);
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4.5px;
+  text-transform: uppercase;
+}
+
+main .home-careers-promo h2 {
+  max-width: 880px;
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-heading);
+  font-size: clamp(2.9rem, 4.6vw, 5.2rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+main .home-careers-promo h2 em {
+  color: var(--color-blue);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 700;
+}
+
+main .home-careers-button {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  border: 1px solid var(--color-blue-dark);
+  padding: 0.8rem 1.3rem;
+  background: var(--color-blue-dark);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+main .home-careers-button:hover,
+main .home-careers-button:focus-visible {
+  border-color: var(--color-blue);
+  background: var(--color-blue);
+  transform: translateY(-2px);
+}
+
+main .home-careers-mark {
+  position: absolute;
+  top: 50%;
+  right: clamp(12rem, 22vw, 25rem);
+  width: min(27vw, 330px);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+main .home-careers-mark span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgba(69, 98, 142, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+main .home-careers-mark span:nth-child(1) {
+  width: 100%;
+  height: 100%;
+}
+
+main .home-careers-mark span:nth-child(2) {
+  width: 68%;
+  height: 68%;
+  border-color: rgba(23, 37, 62, 0.18);
+}
+
+main .home-careers-mark span:nth-child(3) {
+  width: 31%;
+  height: 31%;
+  border-color: rgba(69, 98, 142, 0.42);
+  background: rgba(69, 98, 142, 0.04);
+}
+
 @media (max-width: 1200px) {
   main .approach .approach-grid {
     grid-template-columns: minmax(0, 1fr) minmax(350px, 420px) !important;
@@ -195,6 +312,30 @@ main .news-card:focus-visible::after {
 
   main .approach .chart-wrapper {
     width: min(100%, 430px) !important;
+  }
+
+  main .home-careers-mark {
+    right: 11rem;
+    width: 270px;
+  }
+}
+
+@media (max-width: 760px) {
+  main .home-careers-promo-inner {
+    min-height: 0;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-block: 3.6rem 4rem;
+  }
+
+  main .home-careers-button {
+    width: fit-content;
+  }
+
+  main .home-careers-mark {
+    right: -85px;
+    width: 230px;
+    opacity: 0.42;
   }
 }
 
@@ -218,5 +359,15 @@ main .news-card:focus-visible::after {
   main .approach .section-heading p:not(.eyebrow),
   main .approach li {
     font-size: 16px !important;
+  }
+
+  main .home-careers-promo h2 {
+    font-size: clamp(2.7rem, 12vw, 3.7rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main .home-careers-button {
+    transition: none;
   }
 }
