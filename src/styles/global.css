@@ -330,16 +330,26 @@ h4 em,
 }
 
 @media (max-width: 620px) {
+  :root {
+    --page-gutter: 1.25rem;
+  }
+
   .container {
-    width: min(calc(100% - 24px), var(--container));
+    width: min(calc(100% - (var(--page-gutter) * 2)), var(--container));
   }
 
   .grid {
     grid-template-columns: 1fr;
   }
 
+  .button-row {
+    align-items: flex-start;
+  }
+
   .button {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
+    padding-inline: 1.05rem;
   }
 
   .button.text {
