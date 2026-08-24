@@ -23,8 +23,7 @@ if (!contact || !contact.data.contacts) {
 
 const contactData = contact.data as ContactData;
 
-const formEndpoint =
-  "https://formsubmit.co/allie@merciertalentsolutions.com";
+const formEndpoint = "/api/contact";
 
 const description =
   "Contact Mercier Talent Solutions for executive coaching, assessments, training, and consulting for law firms.";
@@ -111,31 +110,7 @@ const description =
           <h2>Contact us</h2>
         </div>
 
-        <form action={formEndpoint} method="POST">
-          <input
-            type="hidden"
-            name="_subject"
-            value="Mercier Talent Solutions Contact Form"
-          />
-
-          <input
-            type="hidden"
-            name="_template"
-            value="table"
-          />
-
-          <input
-            type="hidden"
-            name="_captcha"
-            value="false"
-          />
-
-          <input
-            type="hidden"
-            name="_cc"
-            value="julia@merciertalentsolutions.com"
-          />
-
+        <form action={formEndpoint} method="POST" data-contact-form>
           <input
             type="hidden"
             name="form_name"
@@ -149,11 +124,18 @@ const description =
           />
 
           <input
+            type="hidden"
+            name="form_started_at"
+            data-form-started-at
+          />
+
+          <input
             class="honeypot"
             type="text"
-            name="_honey"
+            name="company_website"
             tabindex="-1"
             autocomplete="off"
+            aria-hidden="true"
           />
 
           <div class="form-grid">
@@ -188,7 +170,7 @@ const description =
             <label class="full">
               I'M INTERESTED IN
 
-              <select name="interest">
+              <select name="interest" data-contact-interest>
                 <option value=""></option>
                 <option>Executive Coaching</option>
                 <option>Assessments</option>
@@ -204,6 +186,7 @@ const description =
               <textarea
                 name="message"
                 rows="6"
+                data-contact-message
               ></textarea>
             </label>
 
@@ -495,7 +478,13 @@ const description =
   }
 
   .honeypot {
-    display: none;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
   }
 
   [data-contact-reveal] {
@@ -679,4 +668,39 @@ const description =
   } else {
     revealItems.forEach((item) => item.classList.add("is-visible"));
   }
+
+  const contactForm = document.querySelector("[data-contact-form]");
+  const startedAt = contactForm?.querySelector("[data-form-started-at]");
+  const interest = contactForm?.querySelector("[data-contact-interest]");
+  const message = contactForm?.querySelector("[data-contact-message]");
+
+  if (startedAt instanceof HTMLInputElement) {
+    startedAt.value = String(Date.now());
+  }
+
+  const clearDetailsError = () => {
+    if (message instanceof HTMLTextAreaElement) {
+      message.setCustomValidity("");
+    }
+  };
+
+  interest?.addEventListener("change", clearDetailsError);
+  message?.addEventListener("input", clearDetailsError);
+
+  contactForm?.addEventListener("submit", (event) => {
+    const selectedInterest =
+      interest instanceof HTMLSelectElement ? interest.value.trim() : "";
+    const messageText =
+      message instanceof HTMLTextAreaElement ? message.value.trim() : "";
+
+    if (!selectedInterest && messageText.length < 8) {
+      event.preventDefault();
+      if (message instanceof HTMLTextAreaElement) {
+        message.setCustomValidity(
+          "Please choose what you're interested in or add a short message.",
+        );
+        message.reportValidity();
+      }
+    }
+  });
 </script>
