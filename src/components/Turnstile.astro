@@ -47,6 +47,12 @@ const {
             } else if (error === "verification") {
               note.textContent = "Please complete the security check and try again.";
               note.setAttribute("role", "alert");
+            } else if (error === "details") {
+              note.textContent = "Please choose what you're interested in or add a short message before submitting.";
+              note.setAttribute("role", "alert");
+            } else if (error === "resume") {
+              note.textContent = "Please attach a PDF, DOC, or DOCX resume under 10 MB and try again.";
+              note.setAttribute("role", "alert");
             } else {
               note.textContent = "We couldn't send your message. Please try again or email us directly.";
               note.setAttribute("role", "alert");
