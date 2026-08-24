@@ -3,7 +3,23 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Turnstile from "../../components/Turnstile.astro";
 import { getEntry } from "astro:content";
 
-const fallbackApplicationForm = {
+type ApplicationField = {
+  id: string;
+  type: "text" | "textarea" | "email" | "file";
+  label: string;
+  required: boolean;
+  help?: string;
+};
+
+type ApplicationForm = {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  submitLabel: string;
+  fields: ApplicationField[];
+};
+
+const fallbackApplicationForm: ApplicationForm = {
   eyebrow: "Apply",
   title: "Submit your application",
   intro: "Tell us a little about your background, experience and availability, then attach your resume or professional biography. Additional materials are optional.",
@@ -18,7 +34,7 @@ const fallbackApplicationForm = {
 export async function getStaticPaths() {
   const careersPage = await getEntry("pages", "careers");
   const roles = careersPage?.data.roles ?? [];
-  const applicationForm = careersPage?.data.applicationForm ?? fallbackApplicationForm;
+  const applicationForm = (careersPage?.data.applicationForm ?? fallbackApplicationForm) as ApplicationForm;
 
   return roles.map((role) => ({
     params: { slug: role.slug },
@@ -27,7 +43,7 @@ export async function getStaticPaths() {
 }
 
 const { role, applicationForm: suppliedApplicationForm } = Astro.props;
-const applicationForm = suppliedApplicationForm ?? fallbackApplicationForm;
+const applicationForm = (suppliedApplicationForm ?? fallbackApplicationForm) as ApplicationForm;
 const description = role.summary || `Career opportunity: ${role.title} at Mercier Talent Solutions.`;
 const descriptionMarkup = (role.description ?? []).join("\n\n");
 const formEndpoint = "/api/careers";
@@ -41,11 +57,11 @@ const safeFieldId = (value: unknown) => String(value ?? "")
   .slice(0, 50);
 const fieldName = (id: unknown) => `field_${safeFieldId(id)}`;
 const applicationSchema = JSON.stringify({
-  fields: (applicationForm.fields ?? []).map((field: Record<string, unknown>) => ({
+  fields: applicationForm.fields.map((field) => ({
     id: safeFieldId(field.id),
-    type: String(field.type ?? "text"),
-    label: String(field.label ?? "Field").slice(0, 120),
-    required: Boolean(field.required),
+    type: field.type,
+    label: field.label.slice(0, 120),
+    required: field.required,
   })),
 });
 
@@ -173,24 +189,24 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
             <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
 
             <div class="form-grid">
-              {(applicationForm.fields ?? []).map((field: Record<string, any>) => (
+              {applicationForm.fields.map((field) => (
                 <label class:list={["full", "form-field", field.type === "file" && "file-field"]}>
                   <span class="field-label">{field.label}{field.required ? "*" : ""}</span>
                   {field.type === "textarea" ? (
-                    <textarea name={fieldName(field.id)} rows="5" required={Boolean(field.required)}></textarea>
+                    <textarea name={fieldName(field.id)} rows="5" required={field.required}></textarea>
                   ) : field.type === "file" ? (
                     <input
                       type="file"
                       name={fieldName(field.id)}
                       accept={documentAccept}
-                      required={Boolean(field.required)}
+                      required={field.required}
                     />
                   ) : (
                     <input
                       type={field.type === "email" ? "email" : "text"}
                       name={fieldName(field.id)}
                       autocomplete={field.type === "email" ? "email" : field.id === "name" ? "name" : field.id === "location" ? "address-level2" : "off"}
-                      required={Boolean(field.required)}
+                      required={field.required}
                     />
                   )}
                   {field.help && <span class="field-note">{field.help}</span>}
