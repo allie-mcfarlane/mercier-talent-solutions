@@ -1,5 +1,5 @@
-const FORMSUBMIT_AJAX_ENDPOINT =
-  "https://formsubmit.co/ajax/allie@merciertalentsolutions.com";
+const FORMSUBMIT_ENDPOINT =
+  "https://formsubmit.co/allie@merciertalentsolutions.com";
 
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 const MAX_FIELDS = 40;
@@ -16,6 +16,7 @@ const MIN_FORM_AGE_MS = 1500;
 const MAX_FORM_AGE_MS = 24 * 60 * 60 * 1000;
 const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}\s.'’\-]*$/u;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const CAREERS_CC = "julia@merciertalentsolutions.com";
 
 const textValue = (formData, name, maxLength = 10000) => {
   const value = formData.get(name);
@@ -71,17 +72,6 @@ const hasPlausibleFormTiming = (value) => {
 
   const age = Date.now() - startedAt;
   return age >= MIN_FORM_AGE_MS && age <= MAX_FORM_AGE_MS;
-};
-
-const deliveryLabel = (label) => {
-  const clean = String(label || "Field")
-    .normalize("NFKD")
-    .replace(/[^\x20-\x7E]/g, "")
-    .replace(/[\r\n\t]+/g, " ")
-    .trim()
-    .slice(0, 100);
-
-  return `Application - ${clean || "Field"}`;
 };
 
 const parseApplicationSchema = (raw) => {
@@ -156,7 +146,6 @@ export async function onRequestPost(context) {
       return redirectBack(request, returnPath, { error: "verification" });
     }
 
-    const answers = [];
     let replyTo = "";
     let totalAttachmentBytes = 0;
 
@@ -183,7 +172,6 @@ export async function onRequestPost(context) {
           }
         }
 
-        answers.push({ field, value: present ? file : null });
         continue;
       }
 
@@ -203,8 +191,6 @@ export async function onRequestPost(context) {
       if (field.id === "name" && value && !looksLikeHumanName(value)) {
         return redirectBack(request, returnPath, { error: "verification" });
       }
-
-      answers.push({ field, value });
     }
 
     if (!env.TURNSTILE_SECRET_KEY) {
@@ -249,59 +235,28 @@ export async function onRequestPost(context) {
     }
 
     const formUrl = new URL(returnPath, request.url).toString();
-    const delivery = new FormData();
-    delivery.append("_subject", `Career Application - ${position}`);
-    delivery.append("_template", "table");
-    delivery.append("_captcha", "false");
-    delivery.append("_cc", "julia@merciertalentsolutions.com");
-    if (replyTo) delivery.append("_replyto", replyTo);
-    delivery.append("_url", formUrl);
-    delivery.append("form_name", "Career Application");
-    delivery.append("Position", position);
+    const expectedSubject = `Career Application - ${position}`;
+    const submittedReplyTo = textValue(formData, "_replyto", 254);
 
-    let attachmentIndex = 0;
-    for (const { field, value } of answers) {
-      const key = deliveryLabel(field.label);
-      if (field.type === "file") {
-        if (!value) continue;
-
-        attachmentIndex += 1;
-        delivery.append(key, value.name);
-        const attachmentKey =
-          attachmentIndex === 1 ? "attachment" : `attachment_${attachmentIndex}`;
-        delivery.append(attachmentKey, value, value.name);
-      } else {
-        delivery.append(key, value);
-      }
-    }
-
-    const deliveryResponse = await fetch(FORMSUBMIT_AJAX_ENDPOINT, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Referer: formUrl,
-      },
-      body: delivery,
-    });
-
-    let deliveryResult = null;
-    try {
-      deliveryResult = await deliveryResponse.json();
-    } catch (_) {}
-
-    const deliverySucceeded =
-      deliveryResponse.ok &&
-      (deliveryResult?.success === true || deliveryResult?.success === "true");
-
-    if (!deliverySucceeded) {
-      console.error("Career application delivery failed.", {
-        status: deliveryResponse.status,
-        response: deliveryResult,
-      });
+    if (
+      textValue(formData, "_subject", 300) !== expectedSubject ||
+      textValue(formData, "_template", 30) !== "table" ||
+      textValue(formData, "_captcha", 10) !== "false" ||
+      textValue(formData, "_cc", 300) !== CAREERS_CC ||
+      textValue(formData, "_url", 500) !== formUrl ||
+      (replyTo && submittedReplyTo !== replyTo)
+    ) {
+      console.warn("Career application delivery metadata was invalid.");
       return redirectBack(request, returnPath, { error: "send" });
     }
 
-    return redirectBack(request, returnPath, { sent: "1" });
+    return new Response(null, {
+      status: 307,
+      headers: {
+        Location: FORMSUBMIT_ENDPOINT,
+        "Cache-Control": "no-store",
+      },
+    });
   } catch (error) {
     console.error("Career application submission failed.", error);
     return redirectBack(request, "/careers/", { error: "send" });
