@@ -77,6 +77,12 @@ const {
             } else if (error === "verification") {
               note.textContent = "Please complete the security check and try again.";
               note.setAttribute("role", "alert");
+            } else if (error === "application") {
+              note.textContent = "Please complete the required application fields and try again.";
+              note.setAttribute("role", "alert");
+            } else if (error === "attachment") {
+              note.textContent = "Please check your file attachments. Use PDF, DOC, or DOCX files with a combined size under 10 MB.";
+              note.setAttribute("role", "alert");
             } else if (error === "details") {
               note.textContent = "Please choose what you're interested in or add a short message before submitting.";
               note.setAttribute("role", "alert");
