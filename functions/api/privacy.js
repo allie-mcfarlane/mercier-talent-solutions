@@ -1,6 +1,6 @@
 const DATA_REQUESTS_PATH = "/data-requests/";
-const FORMSUBMIT_ENDPOINT =
-  "https://formsubmit.co/julia@merciertalentsolutions.com";
+const FORMSUBMIT_AJAX_ENDPOINT =
+  "https://formsubmit.co/ajax/julia@merciertalentsolutions.com";
 
 const MIN_FORM_AGE_MS = 1500;
 const MAX_FORM_AGE_MS = 24 * 60 * 60 * 1000;
@@ -58,16 +58,18 @@ const escapeHtml = (value) =>
 const hiddenInput = (name, value) =>
   `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`;
 
-const browserDeliveryResponse = (request, payload) => {
+const browserAjaxDeliveryResponse = (request, payload) => {
   const successUrl = new URL(DATA_REQUESTS_PATH, request.url);
   successUrl.searchParams.set("sent", "1");
+
+  const errorUrl = new URL(DATA_REQUESTS_PATH, request.url);
+  errorUrl.searchParams.set("error", "send");
 
   const fields = [
     hiddenInput("_subject", payload._subject),
     hiddenInput("_template", payload._template),
     hiddenInput("_captcha", payload._captcha),
     hiddenInput("_replyto", payload._replyto),
-    hiddenInput("_next", successUrl.toString()),
     hiddenInput("_url", payload._url),
     hiddenInput("form_name", payload.form_name),
     hiddenInput("name", payload.name),
@@ -81,17 +83,60 @@ const browserDeliveryResponse = (request, payload) => {
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="origin">
     <title>Sending request…</title>
   </head>
   <body>
-    <form id="privacy-delivery" action="${escapeHtml(FORMSUBMIT_ENDPOINT)}" method="POST">
+    <form
+      id="privacy-delivery"
+      action="${escapeHtml(FORMSUBMIT_AJAX_ENDPOINT)}"
+      method="POST"
+      data-success-url="${escapeHtml(successUrl.toString())}"
+      data-error-url="${escapeHtml(errorUrl.toString())}"
+    >
       ${fields}
       <noscript>
-        <p>Your security check passed. Select Continue to submit your request.</p>
-        <button type="submit">Continue</button>
+        <p>JavaScript is required to finish sending this request.</p>
       </noscript>
     </form>
-    <script>document.getElementById("privacy-delivery").submit();</script>
+    <script>
+      (() => {
+        const form = document.getElementById("privacy-delivery");
+        if (!form) return;
+
+        const successUrl = form.dataset.successUrl || "/data-requests/?sent=1";
+        const errorUrl = form.dataset.errorUrl || "/data-requests/?error=send";
+
+        const send = async () => {
+          try {
+            const payload = Object.fromEntries(new FormData(form).entries());
+            const response = await fetch(form.action, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            let result = null;
+            try {
+              result = await response.json();
+            } catch (_) {}
+
+            const accepted =
+              response.ok &&
+              String(result?.success ?? "true").toLowerCase() !== "false";
+
+            window.location.replace(accepted ? successUrl : errorUrl);
+          } catch (_) {
+            window.location.replace(errorUrl);
+          }
+        };
+
+        send();
+      })();
+    </script>
   </body>
 </html>`;
 
@@ -100,7 +145,7 @@ const browserDeliveryResponse = (request, payload) => {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "Cache-Control": "no-store",
-      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Referrer-Policy": "origin",
     },
   });
 };
@@ -192,7 +237,7 @@ export async function onRequestPost(context) {
       message,
     };
 
-    return browserDeliveryResponse(request, payload);
+    return browserAjaxDeliveryResponse(request, payload);
   } catch (error) {
     console.error("Privacy form submission failed.", error);
     return redirectToDataRequests(request, { error: "send" });
