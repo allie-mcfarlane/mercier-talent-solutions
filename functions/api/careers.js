@@ -73,6 +73,12 @@ const hasPlausibleFormTiming = (value) => {
   return age >= MIN_FORM_AGE_MS && age <= MAX_FORM_AGE_MS;
 };
 
+const deliveryLabel = (label) =>
+  `Application — ${String(label || "Field")
+    .replace(/[\r\n\t]+/g, " ")
+    .trim()
+    .slice(0, 120)}`;
+
 const parseApplicationSchema = (raw) => {
   if (!raw) return null;
 
@@ -247,10 +253,11 @@ export async function onRequestPost(context) {
     delivery.append("Position", position);
 
     for (const { field, value } of answers) {
+      const key = deliveryLabel(field.label);
       if (field.type === "file") {
-        if (value) delivery.append(field.label, value, value.name);
+        if (value) delivery.append(key, value, value.name);
       } else {
-        delivery.append(field.label, value);
+        delivery.append(key, value);
       }
     }
 
