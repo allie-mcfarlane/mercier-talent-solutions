@@ -199,8 +199,13 @@ const navItems = navigation?.data.items ?? site.nav;
 
     menuToggle.addEventListener("click", () => {
       const isOpen = header.getAttribute("data-menu-open") === "true";
-      header.toggleAttribute("data-menu-open", !isOpen);
-      menuToggle.setAttribute("aria-expanded", String(!isOpen));
+
+      if (isOpen) {
+        closeMenu();
+      } else {
+        header.setAttribute("data-menu-open", "true");
+        menuToggle.setAttribute("aria-expanded", "true");
+      }
     });
 
     nav.addEventListener("click", (event) => {
