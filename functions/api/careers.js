@@ -74,11 +74,11 @@ const hasPlausibleFormTiming = (value) => {
 };
 
 const parseApplicationSchema = (raw) => {
-  if (!raw) return [];
+  if (!raw) return null;
 
   try {
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed?.fields)) return [];
+    if (!Array.isArray(parsed?.fields)) return null;
 
     const seen = new Set();
     return parsed.fields
@@ -101,7 +101,7 @@ const parseApplicationSchema = (raw) => {
       })
       .filter(Boolean);
   } catch {
-    return [];
+    return null;
   }
 };
 
@@ -138,7 +138,7 @@ export async function onRequestPost(context) {
     const formStartedAt = textValue(formData, "form_started_at", 40);
     const schemaRaw = textValue(formData, "application_schema", 24000);
     const parsedFields = parseApplicationSchema(schemaRaw);
-    const dynamicSchema = parsedFields.length > 0;
+    const dynamicSchema = Array.isArray(parsedFields);
     const fields = dynamicSchema ? parsedFields : legacyFields;
 
     if (!position || !token || !hasPlausibleFormTiming(formStartedAt)) {
