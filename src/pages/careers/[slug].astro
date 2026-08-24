@@ -3,20 +3,51 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Turnstile from "../../components/Turnstile.astro";
 import { getEntry } from "astro:content";
 
+const fallbackApplicationForm = {
+  eyebrow: "Apply",
+  title: "Submit your application",
+  intro: "Tell us a little about your background, experience and availability, then attach your resume or professional biography. Additional materials are optional.",
+  submitLabel: "Submit application",
+  fields: [
+    { id: "name", type: "text", label: "Name", required: true },
+    { id: "email", type: "email", label: "Email", required: true },
+    { id: "resume", type: "file", label: "Resume or Professional Biography", required: true, help: "Attach a PDF or Word document." },
+  ],
+};
+
 export async function getStaticPaths() {
   const careersPage = await getEntry("pages", "careers");
   const roles = careersPage?.data.roles ?? [];
+  const applicationForm = careersPage?.data.applicationForm ?? fallbackApplicationForm;
 
   return roles.map((role) => ({
     params: { slug: role.slug },
-    props: { role },
+    props: { role, applicationForm },
   }));
 }
 
-const { role } = Astro.props;
+const { role, applicationForm: suppliedApplicationForm } = Astro.props;
+const applicationForm = suppliedApplicationForm ?? fallbackApplicationForm;
 const description = role.summary || `Career opportunity: ${role.title} at Mercier Talent Solutions.`;
 const descriptionMarkup = (role.description ?? []).join("\n\n");
 const formEndpoint = "/api/careers";
+const documentAccept = ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+const safeFieldId = (value: unknown) => String(value ?? "")
+  .toLowerCase()
+  .replace(/[^a-z0-9-]/g, "-")
+  .replace(/-+/g, "-")
+  .replace(/^-|-$/g, "")
+  .slice(0, 50);
+const fieldName = (id: unknown) => `field_${safeFieldId(id)}`;
+const applicationSchema = JSON.stringify({
+  fields: (applicationForm.fields ?? []).map((field: Record<string, unknown>) => ({
+    id: safeFieldId(field.id),
+    type: String(field.type ?? "text"),
+    label: String(field.label ?? "Field").slice(0, 120),
+    required: Boolean(field.required),
+  })),
+});
 
 const escapeHtml = (value: unknown = "") => String(value ?? "")
   .replaceAll("&", "&amp;")
@@ -123,9 +154,9 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
 
         <section class="application-section" aria-labelledby="application-heading">
           <div class="application-heading">
-            <p class="eyebrow">Apply</p>
-            <h2 id="application-heading">Submit your application</h2>
-            <p>Tell us a little about your background, experience and availability, then attach your resume or professional biography. Additional materials are optional.</p>
+            {applicationForm.eyebrow && <p class="eyebrow">{applicationForm.eyebrow}</p>}
+            <h2 id="application-heading">{applicationForm.title}</h2>
+            {applicationForm.intro && <p>{applicationForm.intro}</p>}
           </div>
 
           <form
@@ -133,83 +164,38 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
             action={formEndpoint}
             method="POST"
             enctype="multipart/form-data"
+            data-configurable-careers-form
           >
             <input type="hidden" name="form_name" value="Career Application" />
             <input type="hidden" name="position" value={role.title} />
             <input type="hidden" name="return_to" value={`/careers/${role.slug}/`} />
+            <input type="hidden" name="application_schema" value={applicationSchema} />
             <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" />
 
             <div class="form-grid">
-              <label class="full">
-                NAME*
-                <input type="text" name="name" autocomplete="name" required />
-              </label>
-
-              <label class="full">
-                EMAIL*
-                <input type="email" name="email" autocomplete="email" required />
-              </label>
-
-              <label class="full">
-                LOCATION (OPTIONAL)
-                <input type="text" name="location" autocomplete="address-level2" />
-              </label>
-
-              <label class="full guided-field">
-                RELEVANT LEGAL &amp; COACHING EXPERIENCE*
-                <textarea name="relevant_experience" rows="5" required></textarea>
-                <span class="field-note">Briefly summarize your legal practice background and experience coaching partners or senior leaders.</span>
-              </label>
-
-              <label class="full guided-field">
-                PROGRAMS &amp; LEADERSHIP DEVELOPMENT EXPERIENCE (OPTIONAL)
-                <textarea name="programs_experience" rows="5"></textarea>
-                <span class="field-note">You may include training programs, workshops, retreats or other leadership-development work you have designed or led.</span>
-              </label>
-
-              <label class="full guided-field">
-                COACHING CREDENTIALS &amp; EDUCATION*
-                <textarea name="credentials_education" rows="5" required></textarea>
-                <span class="field-note">Include relevant coach training, credentials, education and assessment certifications.</span>
-              </label>
-
-              <label class="full guided-field">
-                WHY MERCIER TALENT SOLUTIONS? (OPTIONAL)
-                <textarea name="interest_in_mercier" rows="4"></textarea>
-                <span class="field-note">Tell us briefly what interests you about becoming involved with the firm.</span>
-              </label>
-
-              <label class="full guided-field">
-                AVAILABILITY &amp; PREFERRED PROFESSIONAL ARRANGEMENT (OPTIONAL)
-                <textarea name="availability_arrangements" rows="4"></textarea>
-                <span class="field-note">Share your general availability and the types of professional arrangements you would be open to considering.</span>
-              </label>
-
-              <label class="full guided-field">
-                ANYTHING ELSE YOU'D LIKE US TO KNOW (OPTIONAL)
-                <textarea name="additional_notes" rows="4"></textarea>
-              </label>
-
-              <label class="full file-field">
-                RESUME OR PROFESSIONAL BIOGRAPHY*
-                <input
-                  type="file"
-                  name="attachment"
-                  accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                  required
-                />
-                <span class="file-note">Attach a PDF or Word document.</span>
-              </label>
-
-              <label class="full file-field">
-                ADDITIONAL MATERIALS (OPTIONAL)
-                <input
-                  type="file"
-                  name="additional_materials"
-                  accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                />
-                <span class="file-note">Optional: attach one PDF or Word document with any additional information you would like us to consider.</span>
-              </label>
+              {(applicationForm.fields ?? []).map((field: Record<string, any>) => (
+                <label class:list={["full", "form-field", field.type === "file" && "file-field"]}>
+                  <span class="field-label">{field.label}{field.required ? "*" : ""}</span>
+                  {field.type === "textarea" ? (
+                    <textarea name={fieldName(field.id)} rows="5" required={Boolean(field.required)}></textarea>
+                  ) : field.type === "file" ? (
+                    <input
+                      type="file"
+                      name={fieldName(field.id)}
+                      accept={documentAccept}
+                      required={Boolean(field.required)}
+                    />
+                  ) : (
+                    <input
+                      type={field.type === "email" ? "email" : "text"}
+                      name={fieldName(field.id)}
+                      autocomplete={field.type === "email" ? "email" : field.id === "name" ? "name" : field.id === "location" ? "address-level2" : "off"}
+                      required={Boolean(field.required)}
+                    />
+                  )}
+                  {field.help && <span class="field-note">{field.help}</span>}
+                </label>
+              ))}
 
               <div class="full turnstile-wrap">
                 <Turnstile
@@ -219,7 +205,7 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
                 />
               </div>
 
-              <button class="button submit-button full" type="submit">Submit application</button>
+              <button class="button submit-button full" type="submit">{applicationForm.submitLabel || "Submit application"}</button>
             </div>
           </form>
         </section>
@@ -451,6 +437,10 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     line-height: 1.2;
   }
 
+  .field-label {
+    display: block;
+  }
+
   input,
   textarea {
     width: 100%;
@@ -481,7 +471,7 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     resize: vertical;
   }
 
-  .guided-field textarea {
+  .form-field textarea {
     min-height: 112px;
   }
 
@@ -504,7 +494,6 @@ const roleDescriptionHtml = renderDescription(descriptionMarkup);
     cursor: pointer;
   }
 
-  .file-note,
   .field-note {
     color: #66707c;
     font-family: var(--font-body);
