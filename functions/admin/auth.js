@@ -1,3 +1,5 @@
+import { getAccessEmail } from "../_shared/access-user.js";
+
 const ALLOWED_USERS = new Map([
   ["allie@merciertalentsolutions.com", { login: "allie-mcfarlane", name: "Allie McFarlane" }],
   ["julia@merciertalentsolutions.com", { login: "julia", name: "Julia Mercier" }],
@@ -18,14 +20,14 @@ const errorPage = (title, message, status) =>
     { status, headers: responseHeaders },
   );
 
-export function onRequestGet({ request }) {
+export async function onRequestGet({ request }) {
   const url = new URL(request.url);
 
   if (url.searchParams.get("provider") !== "github") {
     return errorPage("Unsupported sign-in", "This admin only supports the Mercier access flow.", 400);
   }
 
-  const email = (request.headers.get("cf-access-authenticated-user-email") || "").trim().toLowerCase();
+  const email = await getAccessEmail(request);
   const user = ALLOWED_USERS.get(email);
 
   if (!user) {
