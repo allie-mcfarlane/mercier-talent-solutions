@@ -176,6 +176,7 @@
     const frame = document.getElementById('careers-preview');
     if (!frame) return;
     const index = Number(event.detail?.index ?? 0);
+    const attempts = Number(event.detail?.attempts ?? 0);
     const formSectionActive = document.querySelector('[data-section="form"]')?.classList.contains('active');
 
     try {
@@ -193,8 +194,26 @@
           frame.src = href;
           return;
         }
+
+        if (attempts < 15) {
+          setTimeout(() => {
+            document.dispatchEvent(new CustomEvent('mts:preview-career-role', {
+              detail: { index: Number.isFinite(index) ? index : 0, attempts: attempts + 1 },
+            }));
+          }, 120);
+        }
+        return;
       }
-    } catch (_) {}
+    } catch (_) {
+      if (formSectionActive && attempts < 15) {
+        setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('mts:preview-career-role', {
+            detail: { index: Number.isFinite(index) ? index : 0, attempts: attempts + 1 },
+          }));
+        }, 120);
+        return;
+      }
+    }
 
     openRolePreviewFallback(Number.isFinite(index) ? index : 0, frame);
   });
