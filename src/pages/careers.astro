@@ -1,0 +1,282 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getEntry } from "astro:content";
+
+const careersPage = await getEntry("pages", "careers");
+
+if (!careersPage) {
+  throw new Error("Careers page content is missing.");
+}
+
+const { eyebrow, title, titleAccent, lede, rolesHeading, roles = [] } = careersPage.data;
+const metaDescription = lede || "Careers at Mercier Talent Solutions.";
+---
+
+<BaseLayout title="Careers | Mercier Talent Solutions" description={metaDescription}>
+  <section class="careers-hero">
+    <div class="container careers-hero-inner">
+      <div class="careers-hero-copy">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <div class="hero-rule" aria-hidden="true"></div>
+        <h1>
+          <span>{title}</span>
+          <em>{titleAccent}</em>
+        </h1>
+        {lede && <p class="careers-lede">{lede}</p>}
+      </div>
+
+      <div class="careers-mark" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="roles-section">
+    <div class="container roles-shell">
+      {rolesHeading && <p class="roles-label">{rolesHeading}</p>}
+
+      {
+        roles.length > 0 ? (
+          <div class="role-list">
+            {roles.map((role) => (
+              <a class="role-link" href={`/careers/${role.slug}/`}>
+                <div>
+                  <h2>{role.title}</h2>
+                  {(role.location || role.employmentType) && (
+                    <p>
+                      {[role.location, role.employmentType].filter(Boolean).join(" · ")}
+                    </p>
+                  )}
+                </div>
+                <span aria-hidden="true">→</span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="roles-empty">
+            <p>No roles are currently listed here.</p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .careers-hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(221, 220, 215, 0.9);
+    background: linear-gradient(140deg, #fafaf8 0%, #f0f0ec 100%);
+  }
+
+  .careers-hero-inner {
+    position: relative;
+    display: grid;
+    min-height: clamp(350px, 31vw, 470px);
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 0.34fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+    max-width: 1700px;
+    padding-block: clamp(4.25rem, 7vw, 6.2rem);
+  }
+
+  .careers-hero-copy {
+    position: relative;
+    z-index: 2;
+    max-width: 980px;
+  }
+
+  .careers-hero .eyebrow,
+  .roles-label {
+    margin: 0;
+    color: var(--color-blue);
+    font-family: var(--font-label);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4.5px;
+    text-transform: uppercase;
+  }
+
+  .hero-rule {
+    width: 74px;
+    height: 2px;
+    margin: 1.5rem 0 1.65rem;
+    background: var(--color-blue-dark);
+  }
+
+  .careers-hero h1 {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: clamp(3.15rem, 5.1vw, 5.65rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.98;
+  }
+
+  .careers-hero h1 span::after {
+    content: " ";
+  }
+
+  .careers-hero h1 em {
+    color: var(--color-blue);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .careers-lede {
+    max-width: 760px;
+    margin: 1.65rem 0 0;
+    color: var(--color-muted, #66707c);
+    font-size: clamp(1rem, 1.25vw, 1.15rem);
+    line-height: 1.75;
+  }
+
+  .careers-mark {
+    position: relative;
+    width: min(28vw, 330px);
+    aspect-ratio: 1;
+    justify-self: end;
+    opacity: 0.85;
+  }
+
+  .careers-mark span {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    border: 1px solid rgba(69, 98, 142, 0.28);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .careers-mark span:nth-child(1) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .careers-mark span:nth-child(2) {
+    width: 67%;
+    height: 67%;
+    border-color: rgba(26, 43, 70, 0.24);
+  }
+
+  .careers-mark span:nth-child(3) {
+    width: 30%;
+    height: 30%;
+    border-color: rgba(69, 98, 142, 0.52);
+    background: rgba(69, 98, 142, 0.05);
+  }
+
+  .roles-section {
+    background: #fff;
+    padding: clamp(4.5rem, 8vw, 8rem) 0 clamp(5.5rem, 9vw, 9rem);
+  }
+
+  .roles-shell {
+    max-width: 1500px;
+  }
+
+  .roles-label {
+    margin-bottom: clamp(1.7rem, 3vw, 2.6rem);
+  }
+
+  .role-list {
+    border-top: 1px solid #dddcd7;
+  }
+
+  .role-link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: center;
+    min-height: clamp(118px, 10vw, 158px);
+    border-bottom: 1px solid #dddcd7;
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: padding 180ms ease, color 180ms ease, background-color 180ms ease;
+  }
+
+  .role-link:hover,
+  .role-link:focus-visible {
+    padding-inline: clamp(1rem, 2vw, 2rem);
+    color: var(--color-blue-dark);
+    background: #f7f7f4;
+  }
+
+  .role-link h2 {
+    margin: 0;
+    color: inherit;
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3.35vw, 3.65rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+  }
+
+  .role-link p {
+    margin: 0.8rem 0 0;
+    color: #66707c;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .role-link > span {
+    color: var(--color-blue);
+    font-size: clamp(2rem, 3vw, 3.1rem);
+    font-weight: 400;
+    transition: transform 180ms ease;
+  }
+
+  .role-link:hover > span,
+  .role-link:focus-visible > span {
+    transform: translateX(6px);
+  }
+
+  .roles-empty {
+    border-top: 1px solid #dddcd7;
+    border-bottom: 1px solid #dddcd7;
+    padding: clamp(2rem, 4vw, 3rem) 0;
+  }
+
+  .roles-empty p {
+    margin: 0;
+    color: #66707c;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 760px) {
+    .careers-hero-inner {
+      min-height: auto;
+      grid-template-columns: 1fr;
+      padding-block: 4rem;
+    }
+
+    .careers-mark {
+      position: absolute;
+      right: -72px;
+      bottom: -86px;
+      width: 230px;
+      opacity: 0.45;
+    }
+
+    .role-link {
+      gap: 1rem;
+      min-height: 105px;
+    }
+
+    .role-link:hover,
+    .role-link:focus-visible {
+      padding-inline: 0.65rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .role-link,
+    .role-link > span {
+      transition: none;
+    }
+  }
+</style>
