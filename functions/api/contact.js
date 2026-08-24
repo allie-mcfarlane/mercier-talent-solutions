@@ -12,7 +12,7 @@ const ALLOWED_INTERESTS = new Set([
 ]);
 
 const MIN_FORM_AGE_MS = 1500;
-const MAX_FORM_AGE_MS = 2 * 60 * 60 * 1000;
+const MAX_FORM_AGE_MS = 24 * 60 * 60 * 1000;
 const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}\s.'’\-]*$/u;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
