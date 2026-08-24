@@ -14,6 +14,90 @@ export async function getStaticPaths() {
 
 const { role } = Astro.props;
 const description = role.summary || `Career opportunity: ${role.title} at Mercier Talent Solutions.`;
+const descriptionMarkup = (role.description ?? []).join("\n\n");
+
+const escapeHtml = (value: unknown = "") => String(value ?? "")
+  .replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;")
+  .replaceAll("'", "&#039;");
+
+const safeUrl = (value: unknown = "") => {
+  const url = String(value ?? "").trim();
+  return /^(https?:\/\/|mailto:|tel:|\/(?!\/)|#)/i.test(url) ? url : "";
+};
+
+const inlineMarkupToHtml = (value: unknown = "", allowLinks = true) => {
+  let raw = String(value ?? "");
+  const links: { label: string; href: string }[] = [];
+
+  if (allowLinks) {
+    raw = raw.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, href) => {
+      const safe = safeUrl(href);
+      if (!safe) return label;
+      const token = `@@MTSLINK${links.length}@@`;
+      links.push({ label, href: safe });
+      return token;
+    });
+  }
+
+  let html = escapeHtml(raw);
+  html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+
+  (["navy", "blue", "gray"] as const).forEach((name) => {
+    const pattern = new RegExp(`\\[\\[${name}\\]\\]([\\s\\S]*?)\\[\\[\\/${name}\\]\\]`, "g");
+    html = html.replace(pattern, `<span class="role-text-${name}">$1</span>`);
+  });
+
+  links.forEach((link, index) => {
+    const label = inlineMarkupToHtml(link.label, false);
+    html = html.replace(
+      `@@MTSLINK${index}@@`,
+      `<a href="${escapeHtml(link.href)}">${label}</a>`,
+    );
+  });
+
+  return html;
+};
+
+const renderDescription = (markup: string) => {
+  const chunks = markup
+    .replace(/\r/g, "")
+    .split(/\n{2,}/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (!chunks.length) return "";
+
+  return chunks.map((chunk) => {
+    const lines = chunk.split("\n").map((line) => line.trimEnd());
+
+    if (lines.every((line) => /^-\s+/.test(line))) {
+      return `<ul>${lines
+        .map((line) => `<li>${inlineMarkupToHtml(line.replace(/^-\s+/, ""))}</li>`)
+        .join("")}</ul>`;
+    }
+
+    if (lines.every((line) => /^\d+\.\s+/.test(line))) {
+      return `<ol>${lines
+        .map((line) => `<li>${inlineMarkupToHtml(line.replace(/^\d+\.\s+/, ""))}</li>`)
+        .join("")}</ol>`;
+    }
+
+    if (lines.length === 1 && /^###\s+/.test(lines[0])) {
+      return `<h3>${inlineMarkupToHtml(lines[0].replace(/^###\s+/, ""))}</h3>`;
+    }
+
+    if (lines.length === 1 && /^##\s+/.test(lines[0])) {
+      return `<h2>${inlineMarkupToHtml(lines[0].replace(/^##\s+/, ""))}</h2>`;
+    }
+
+    return `<p>${lines.map((line) => inlineMarkupToHtml(line)).join("<br>")}</p>`;
+  }).join("");
+};
+
+const roleDescriptionHtml = renderDescription(descriptionMarkup);
 ---
 
 <BaseLayout title={`${role.title} | Careers | Mercier Talent Solutions`} description={description}>
@@ -34,7 +118,7 @@ const description = role.summary || `Career opportunity: ${role.title} at Mercie
     <section class="role-content-section">
       <div class="container role-content">
         {role.summary && <p class="role-summary">{role.summary}</p>}
-        {role.description.map((paragraph) => <p>{paragraph}</p>)}
+        {roleDescriptionHtml && <div class="role-rich-text" set:html={roleDescriptionHtml}></div>}
       </div>
     </section>
   </article>
@@ -104,20 +188,80 @@ const description = role.summary || `Career opportunity: ${role.title} at Mercie
     max-width: 960px;
   }
 
-  .role-content p {
-    margin: 0 0 1.45rem;
-    color: var(--color-ink);
-    font-size: clamp(1rem, 1.15vw, 1.12rem);
-    line-height: 1.85;
-  }
-
-  .role-content .role-summary {
-    margin-bottom: clamp(2rem, 4vw, 3rem);
+  .role-summary {
+    margin: 0 0 clamp(2rem, 4vw, 3rem);
     color: var(--color-blue-dark);
     font-family: var(--font-heading);
     font-size: clamp(1.45rem, 2.3vw, 2.05rem);
     font-weight: 600;
     letter-spacing: -0.025em;
     line-height: 1.45;
+  }
+
+  .role-rich-text :global(p) {
+    margin: 0 0 1.45rem;
+    color: var(--color-ink);
+    font-size: clamp(1rem, 1.15vw, 1.12rem);
+    line-height: 1.85;
+  }
+
+  .role-rich-text :global(h2) {
+    margin: 2.6rem 0 1rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: clamp(1.65rem, 2.5vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.2;
+  }
+
+  .role-rich-text :global(h3) {
+    margin: 2.15rem 0 0.85rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .role-rich-text :global(ul),
+  .role-rich-text :global(ol) {
+    margin: 0 0 1.65rem;
+    padding-left: 1.45rem;
+    color: var(--color-ink);
+  }
+
+  .role-rich-text :global(li) {
+    margin: 0.45rem 0;
+    font-size: clamp(1rem, 1.15vw, 1.12rem);
+    line-height: 1.75;
+  }
+
+  .role-rich-text :global(a) {
+    color: var(--color-blue);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .role-rich-text :global(a:hover),
+  .role-rich-text :global(a:focus-visible) {
+    color: var(--color-blue-dark);
+  }
+
+  .role-rich-text :global(strong) {
+    font-weight: 700;
+  }
+
+  .role-rich-text :global(.role-text-navy) {
+    color: #17253e;
+  }
+
+  .role-rich-text :global(.role-text-blue) {
+    color: #45628e;
+  }
+
+  .role-rich-text :global(.role-text-gray) {
+    color: #66707c;
   }
 </style>
