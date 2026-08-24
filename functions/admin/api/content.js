@@ -10,6 +10,7 @@ import {
   validContentType,
   validSlug,
 } from "../../_shared/content-store.js";
+import { getAccessEmail } from "../../_shared/access-user.js";
 
 const ACCESS_TOKEN = "token mts-cloudflare-access";
 const ALLOWED_USERS = new Set([
@@ -17,11 +18,8 @@ const ALLOWED_USERS = new Set([
   "julia@merciertalentsolutions.com",
 ]);
 
-const getUserEmail = (request) =>
-  (request.headers.get("cf-access-authenticated-user-email") || "").trim().toLowerCase();
-
-const authorize = (request) => {
-  const email = getUserEmail(request);
+const authorize = async (request) => {
+  const email = await getAccessEmail(request);
   if (!ALLOWED_USERS.has(email)) return { ok: false, response: jsonResponse({ message: "Access denied." }, 403) };
   if (request.headers.get("authorization") !== ACCESS_TOKEN) {
     return { ok: false, response: jsonResponse({ message: "Invalid admin session." }, 401) };
@@ -35,7 +33,7 @@ const authorize = (request) => {
 };
 
 export async function onRequestGet({ request, env }) {
-  const auth = authorize(request);
+  const auth = await authorize(request);
   if (!auth.ok) return auth.response;
   if (!hasContentStore(env)) {
     return jsonResponse({ configured: false, message: "D1 content publishing is not configured yet." }, 503);
@@ -65,7 +63,7 @@ export async function onRequestGet({ request, env }) {
 }
 
 export async function onRequestPut({ request, env }) {
-  const auth = authorize(request);
+  const auth = await authorize(request);
   if (!auth.ok) return auth.response;
   if (!hasContentStore(env)) {
     return jsonResponse({ configured: false, message: "D1 content publishing is not configured yet." }, 503);
@@ -120,7 +118,7 @@ export async function onRequestPut({ request, env }) {
 }
 
 export async function onRequestDelete({ request, env }) {
-  const auth = authorize(request);
+  const auth = await authorize(request);
   if (!auth.ok) return auth.response;
   if (!hasContentStore(env)) {
     return jsonResponse({ configured: false, message: "D1 content publishing is not configured yet." }, 503);
