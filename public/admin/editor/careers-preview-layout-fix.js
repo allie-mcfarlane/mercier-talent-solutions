@@ -56,7 +56,7 @@
     return `<input type="${field.type === 'email' ? 'email' : 'text'}" disabled>`;
   };
 
-  const patchConfigurableForm = (role, doc) => {
+  const patchConfigurableForm = (role) => {
     const config = window.__MTS_CAREERS_APPLICATION_FORM__;
     if (!config || !Array.isArray(config.fields)) return;
 
@@ -124,9 +124,11 @@
           .mts-draft-role .role-rich-text h3{margin:1.75rem 0 .65rem!important}
           .mts-draft-role .role-rich-text h2:first-child,
           .mts-draft-role .role-rich-text h3:first-child{margin-top:0!important}
-          .mts-draft-role .field-note{color:#66707c;font-size:13px;font-weight:400;letter-spacing:0;line-height:1.5;text-transform:none}
-          .mts-draft-role .field-label{display:block}
-          .mts-draft-role .form-field textarea{min-height:96px!important}
+          .field-note{color:#66707c!important;font-size:13px!important;font-weight:400!important;letter-spacing:0!important;line-height:1.5!important;text-transform:none!important}
+          .field-label{display:block}
+          .form-field textarea{min-height:96px!important}
+          .preview-form-note{color:#66707c;font-size:13px;line-height:1.5}
+          .preview-submit{width:max-content;min-height:45px;border:1px solid #17253e;background:#17253e;padding:0 1.15rem;color:#fff;font-size:14px;font-weight:700}
           @media(max-width:760px){
             .mts-draft-role .role-hero-inner{padding-block:3.25rem 3.75rem!important}
             .mts-draft-role .back-link{margin-bottom:1.75rem!important}
@@ -140,9 +142,9 @@
         doc.head.append(style);
       }
 
-      const role = doc.querySelector('.mts-draft-role');
+      const role = doc.querySelector('.mts-draft-role, .role-page');
       if (!role) return;
-      patchConfigurableForm(role, doc);
+      patchConfigurableForm(role);
     } catch (_) {}
   };
 
@@ -174,12 +176,26 @@
     const frame = document.getElementById('careers-preview');
     if (!frame) return;
     const index = Number(event.detail?.index ?? 0);
+    const formSectionActive = document.querySelector('[data-section="form"]')?.classList.contains('active');
+
     try {
-      if (frame.contentDocument?.querySelector('.mts-draft-role')) {
+      const doc = frame.contentDocument;
+      if (doc?.querySelector('.role-page')) {
         patchPreview(frame);
         return;
       }
+
+      if (formSectionActive) {
+        const links = [...(doc?.querySelectorAll('.role-link') || [])];
+        const link = links[Number.isFinite(index) ? index : 0];
+        const href = link?.getAttribute('href');
+        if (href) {
+          frame.src = href;
+          return;
+        }
+      }
     } catch (_) {}
+
     openRolePreviewFallback(Number.isFinite(index) ? index : 0, frame);
   });
 
