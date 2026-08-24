@@ -12,7 +12,7 @@ roles:
       - Mercier Talent Solutions is conducting a selective search for a senior executive coach to join our growing practice.
       - We advise and coach partners, associates, firm leaders, and senior business professionals at leading law firms. Our work is thoughtful, practical, and highly tailored. We understand the pressures, relationships, and organizational dynamics of law firms because our experience is rooted in the legal profession.
       - We are looking for an accomplished coach who shares our commitment to excellent work and is interested in becoming meaningfully involved in the practice over time.
-      - "## The Opportunity"
+      - "### The Opportunity"
       - The Senior Executive Coach will coach partners, senior leaders, and other professionals at Am Law 100 and comparable firms. Engagements may address leadership development, executive presence, communication, management, delegation, time management, business development, career strategy, transitions, and other challenges facing lawyers and law-firm leaders.
       - The coach will also have opportunities to design and lead training programs, workshops, leadership-development initiatives, and retreats for lawyers and law-firm professionals. This requires the ability to translate sophisticated leadership concepts into practical, engaging programs tailored to the needs and culture of each firm.
       - The coach will work closely with Julia Mercier on engagement strategy, client context, sponsor relationships, and quality. The role requires an ability to support the individual coachee while understanding the broader objectives of the firm sponsoring the engagement.
