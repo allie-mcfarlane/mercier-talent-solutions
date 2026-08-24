@@ -1,5 +1,5 @@
-const FORMSUBMIT_ENDPOINT =
-  "https://formsubmit.co/allie@merciertalentsolutions.com";
+const FORMSUBMIT_AJAX_ENDPOINT =
+  "https://formsubmit.co/ajax/allie@merciertalentsolutions.com";
 
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 const MAX_FIELDS = 40;
@@ -275,24 +275,28 @@ export async function onRequestPost(context) {
       }
     }
 
-    const deliveryResponse = await fetch(FORMSUBMIT_ENDPOINT, {
+    const deliveryResponse = await fetch(FORMSUBMIT_AJAX_ENDPOINT, {
       method: "POST",
       headers: {
-        Accept: "text/html,application/xhtml+xml",
+        Accept: "application/json",
         Referer: formUrl,
       },
       body: delivery,
-      redirect: "follow",
     });
 
-    if (!deliveryResponse.ok) {
-      let responseText = "";
-      try {
-        responseText = (await deliveryResponse.text()).slice(0, 500);
-      } catch (_) {}
+    let deliveryResult = null;
+    try {
+      deliveryResult = await deliveryResponse.json();
+    } catch (_) {}
+
+    const deliverySucceeded =
+      deliveryResponse.ok &&
+      (deliveryResult?.success === true || deliveryResult?.success === "true");
+
+    if (!deliverySucceeded) {
       console.error("Career application delivery failed.", {
         status: deliveryResponse.status,
-        response: responseText,
+        response: deliveryResult,
       });
       return redirectBack(request, returnPath, { error: "send" });
     }
