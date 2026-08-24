@@ -52,6 +52,10 @@
       return name && children ? `[[${name}]]${children}[[/${name}]]` : children;
     }
 
+    if (tag === 'DIV' || tag === 'P') {
+      return children ? `${children}\n` : '\n';
+    }
+
     return children;
   };
 
@@ -69,10 +73,13 @@
       const tag = node.tagName;
       if (tag === 'UL' || tag === 'OL') {
         const ordered = tag === 'OL';
-        const items = [...node.children]
+        const rawItems = [...node.children]
           .filter((item) => item.tagName === 'LI')
-          .map((item, index) => `${ordered ? `${index + 1}.` : '-'} ${inlineToMarkup(item).trim()}`)
-          .filter((item) => item.replace(/^\d+\.|^-/, '').trim());
+          .flatMap((item) => inlineToMarkup(item)
+            .split(/\n+/)
+            .map((part) => part.trim())
+            .filter(Boolean));
+        const items = rawItems.map((item, index) => `${ordered ? `${index + 1}.` : '-'} ${item}`);
         if (items.length) blocks.push(items.join('\n'));
         return;
       }
@@ -173,7 +180,7 @@
       .mts-rich-editor p{margin:0 0 14px}.mts-rich-editor p:last-child{margin-bottom:0}
       .mts-rich-editor h2{margin:22px 0 10px;font-size:22px;line-height:1.25;color:#17253e}
       .mts-rich-editor h3{margin:19px 0 8px;font-size:17px;line-height:1.3;color:#17253e}
-      .mts-rich-editor ul,.mts-rich-editor ol{margin:8px 0 16px;padding-left:24px}
+      .mts-rich-editor ul,.mts-rich-editor ol{display:grid;gap:7px;margin:8px 0 16px;padding-left:24px}
       .mts-rich-editor a{color:#45628e;text-decoration:underline;text-underline-offset:3px}
       .mts-rich-help{display:block;margin-top:7px;color:#718091;font-size:11px;line-height:1.45}
       .mts-preview-role{margin-left:auto}
@@ -226,7 +233,7 @@
     textarea.after(wrap);
 
     const oldHelp = textarea.parentElement?.querySelector('small');
-    if (oldHelp) oldHelp.textContent = 'Highlight text and use the toolbar to format it. Links and colors use the approved Mercier styles.';
+    if (oldHelp) oldHelp.textContent = 'Highlight text and use the toolbar to format it. Bullets, links, and colors are preserved when you save or publish.';
     else {
       const help = document.createElement('small');
       help.className = 'mts-rich-help';
@@ -303,23 +310,40 @@
     const style = doc.createElement('style');
     style.id = 'mts-draft-role-styles';
     style.textContent = `
+      .mts-draft-role{width:100%;overflow-x:hidden}
       .mts-draft-role .role-hero{border-bottom:1px solid rgba(221,220,215,.9);background:linear-gradient(140deg,#fafaf8 0%,#f0f0ec 100%)}
       .mts-draft-role .role-hero-inner{max-width:1380px;padding-block:clamp(4rem,7vw,6.5rem)}
-      .mts-draft-role .back-link{display:inline-block;margin-bottom:clamp(2.6rem,4vw,4rem);color:#66707c;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer}
+      .mts-draft-role .back-link{display:inline-block;margin-bottom:clamp(1.8rem,3vw,2.4rem);color:#66707c;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer}
       .mts-draft-role .back-link:hover{text-decoration:underline;text-underline-offset:4px;color:#45628e}
-      .mts-draft-role .eyebrow{margin:0 0 1.1rem;color:#45628e;font-size:13px;font-weight:700;letter-spacing:4.5px;text-transform:uppercase}
       .mts-draft-role h1{max-width:1120px;margin:0;color:#17253e;font-family:var(--font-heading);font-size:clamp(3rem,5vw,5.5rem);font-weight:700;letter-spacing:-.05em;line-height:1.02}
       .mts-draft-role .role-meta{margin:1.5rem 0 0;color:#66707c;font-size:14px;font-weight:600}
-      .mts-draft-role .role-content-section{background:#fff;padding:clamp(4rem,7vw,7rem) 0 clamp(5.5rem,9vw,9rem)}
-      .mts-draft-role .role-content{max-width:960px}
+      .mts-draft-role .role-content-section{background:#fff;padding:clamp(3.6rem,6vw,5.5rem) 0 clamp(5.5rem,9vw,9rem)}
+      .mts-draft-role .role-content{max-width:1120px}
+      .mts-draft-role .role-summary,.mts-draft-role .role-rich-text{max-width:860px}
       .mts-draft-role .role-summary{margin:0 0 clamp(2rem,4vw,3rem);color:#45628e;font-family:var(--font-heading);font-size:clamp(1.45rem,2.3vw,2.05rem);font-weight:600;letter-spacing:-.025em;line-height:1.45}
-      .mts-draft-role .role-rich-text p{margin:0 0 1.45rem;color:#17253e;font-size:clamp(1rem,1.15vw,1.12rem);line-height:1.85}
-      .mts-draft-role .role-rich-text h2{margin:2.5rem 0 1rem;color:#17253e;font-family:var(--font-heading);font-size:clamp(1.65rem,2.4vw,2.2rem);line-height:1.2}
-      .mts-draft-role .role-rich-text h3{margin:2.1rem 0 .85rem;color:#17253e;font-family:var(--font-heading);font-size:clamp(1.25rem,1.8vw,1.55rem);line-height:1.3}
-      .mts-draft-role .role-rich-text ul,.mts-draft-role .role-rich-text ol{margin:0 0 1.6rem;padding-left:1.4rem;color:#17253e}
-      .mts-draft-role .role-rich-text li{margin:.45rem 0;font-size:clamp(1rem,1.15vw,1.12rem);line-height:1.75}
-      .mts-draft-role .role-rich-text a{color:#45628e;text-decoration:underline;text-underline-offset:3px}
+      .mts-draft-role .role-rich-text{color:#111;font-size:17px;line-height:1.78}
+      .mts-draft-role .role-rich-text p{margin:0 0 1.35rem;color:inherit;font-size:inherit;line-height:inherit}
+      .mts-draft-role .role-rich-text h2,.mts-draft-role .role-rich-text h3{color:#17253e;font-family:var(--font-heading);font-weight:700;line-height:1.18}
+      .mts-draft-role .role-rich-text h2{margin:2.6rem 0 1rem;font-size:clamp(1.75rem,3vw,2.5rem)}
+      .mts-draft-role .role-rich-text h2:first-child,.mts-draft-role .role-rich-text h3:first-child{margin-top:0}
+      .mts-draft-role .role-rich-text h3{margin:2.15rem 0 .9rem;font-size:clamp(1.4rem,2.2vw,1.9rem)}
+      .mts-draft-role .role-rich-text ul,.mts-draft-role .role-rich-text ol{display:grid;gap:.55rem;margin:0 0 1.4rem;padding-left:1.3rem;color:inherit}
+      .mts-draft-role .role-rich-text li{margin:0;font-size:inherit;line-height:inherit}
+      .mts-draft-role .role-rich-text a{color:#17253e;font-weight:700;text-decoration:underline;text-underline-offset:3px}
       .mts-draft-role .role-text-navy{color:#17253e}.mts-draft-role .role-text-blue{color:#45628e}.mts-draft-role .role-text-gray{color:#66707c}
+      .mts-draft-role .application-section{display:grid;grid-template-columns:minmax(260px,.72fr) minmax(0,1.28fr);gap:clamp(3rem,7vw,7rem);margin-top:clamp(4.5rem,8vw,7rem);padding-top:clamp(3.5rem,6vw,5rem);border-top:1px solid #dddcd7;align-items:start}
+      .mts-draft-role .application-heading .eyebrow{margin:0 0 1.55rem;color:#45628e;font-size:13px;font-weight:700;letter-spacing:4.5px;text-transform:uppercase}
+      .mts-draft-role .application-heading h2{margin:0 0 1.25rem;color:#17253e;font-family:var(--font-heading);font-size:clamp(2rem,3.2vw,3.2rem);font-weight:700;letter-spacing:-.04em;line-height:1.08}
+      .mts-draft-role .application-heading>p:last-child{max-width:430px;margin:0;color:#66707c;font-size:15px;line-height:1.7}
+      .mts-draft-role .application-form{padding-left:clamp(2rem,4vw,4rem);border-left:1px solid #dddcd7}
+      .mts-draft-role .form-grid{display:grid;grid-template-columns:1fr;gap:1.625rem}
+      .mts-draft-role .application-form label{display:grid;gap:.625rem;color:#45628e;font-size:11px;font-weight:700;letter-spacing:.12em;line-height:1.2}
+      .mts-draft-role .application-form input,.mts-draft-role .application-form textarea{width:100%;border:0;border-bottom:1px solid #bdb8ae;border-radius:0;background:transparent;padding:.75rem 0 .8125rem;color:#000;font:400 16px/1.45 var(--font-body)}
+      .mts-draft-role .application-form textarea{min-height:110px;resize:none}
+      .mts-draft-role .file-note,.mts-draft-role .preview-form-note{color:#66707c;font-size:13px;font-weight:400;letter-spacing:0;line-height:1.5}
+      .mts-draft-role .preview-submit{width:max-content;min-height:45px;border:1px solid #17253e;background:#17253e;padding:0 1.15rem;color:#fff;font-size:14px;font-weight:700}
+      @media(max-width:900px){.mts-draft-role .application-section{grid-template-columns:1fr;gap:2.5rem}.mts-draft-role .application-form{padding-left:0;border-left:0}}
+      @media(max-width:760px){.mts-draft-role .role-hero-inner{padding-block:3.25rem 3.75rem}.mts-draft-role .back-link{margin-bottom:1.75rem}.mts-draft-role h1{font-size:clamp(2.35rem,11vw,3.5rem);line-height:1.04}.mts-draft-role .role-content-section{padding-top:3rem;padding-bottom:4.5rem}.mts-draft-role .role-rich-text{font-size:16.5px;line-height:1.72}.mts-draft-role .application-section{margin-top:3.75rem;padding-top:3rem}.mts-draft-role .application-heading .eyebrow{margin-bottom:1.25rem}}
     `;
     doc.head.append(style);
   };
@@ -342,7 +366,6 @@
         <header class="role-hero">
           <div class="container role-hero-inner">
             <a class="back-link" href="/careers/">← Careers</a>
-            <p class="eyebrow">Careers</p>
             <h1>${escapeHtml(role.title || 'New Role')}</h1>
             ${meta ? `<p class="role-meta">${escapeHtml(meta)}</p>` : ''}
           </div>
@@ -351,6 +374,24 @@
           <div class="container role-content">
             ${role.summary ? `<p class="role-summary">${escapeHtml(role.summary)}</p>` : ''}
             <div class="role-rich-text">${previewDescriptionHtml(index)}</div>
+            <section class="application-section" aria-label="Application form preview">
+              <div class="application-heading">
+                <p class="eyebrow">Apply</p>
+                <h2>Submit your application</h2>
+                <p>Send us your details and attach your resume. PDF, DOC, and DOCX files are accepted.</p>
+              </div>
+              <div class="application-form">
+                <div class="form-grid">
+                  <label>NAME*<input type="text" disabled /></label>
+                  <label>EMAIL*<input type="email" disabled /></label>
+                  <label>MESSAGE<textarea disabled></textarea></label>
+                  <label>RESUME*<input type="file" disabled /><span class="file-note">Attach a PDF or Word document.</span></label>
+                  <span class="preview-form-note">Security check appears here on the live page.</span>
+                  <button class="preview-submit" type="button" disabled>Submit application</button>
+                  <span class="preview-form-note">Preview only — applications are not sent from the editor.</span>
+                </div>
+              </div>
+            </section>
           </div>
         </section>
       </article>`;
