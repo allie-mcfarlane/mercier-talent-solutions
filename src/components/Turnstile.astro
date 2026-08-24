@@ -30,6 +30,26 @@ const {
             const endpoint = widget.getAttribute("data-mts-endpoint") || "/api/contact";
             form.setAttribute("action", endpoint);
             form.setAttribute("method", "POST");
+
+            let startedAt = form.querySelector('[name="form_started_at"]');
+            if (!startedAt) {
+              startedAt = document.createElement("input");
+              startedAt.type = "hidden";
+              startedAt.name = "form_started_at";
+              form.appendChild(startedAt);
+            }
+            startedAt.value = String(Date.now());
+
+            if (!form.querySelector('[name="company_website"]')) {
+              const honeypot = document.createElement("input");
+              honeypot.type = "text";
+              honeypot.name = "company_website";
+              honeypot.tabIndex = -1;
+              honeypot.autocomplete = "off";
+              honeypot.setAttribute("aria-hidden", "true");
+              honeypot.className = "honeypot";
+              form.appendChild(honeypot);
+            }
           });
 
           const params = new URLSearchParams(window.location.search);
