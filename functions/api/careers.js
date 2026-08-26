@@ -44,6 +44,15 @@ const redirectBack = (request, returnPath, params) => {
   });
 };
 
+const jsonOk = () =>
+  new Response(JSON.stringify({ ok: true }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
+  });
+
 const fileExtension = (name) => {
   const match = String(name || "").toLowerCase().match(/\.([a-z0-9]+)$/);
   return match ? match[1] : "";
@@ -251,6 +260,10 @@ export async function onRequestPost(context) {
     ) {
       console.warn("Career application delivery metadata was invalid.");
       return redirectBack(request, returnPath, { error: "send" });
+    }
+
+    if ((request.headers.get("Accept") || "").includes("application/json")) {
+      return jsonOk();
     }
 
     return new Response(null, {
