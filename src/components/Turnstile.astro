@@ -76,17 +76,22 @@ const {
 
             if (formAction === "career") {
               const position = form.querySelector('[name="position"]')?.value || "Career Application";
+              const formUrl = `${window.location.origin}${window.location.pathname}`;
+              const successUrl = `${formUrl}?sent=1`;
               ensureHidden(form, "_subject", `Career Application - ${position}`);
               ensureHidden(form, "_template", "table");
               ensureHidden(form, "_captcha", "false");
               ensureHidden(form, "_cc", "julia@merciertalentsolutions.com");
-              ensureHidden(form, "_url", `${window.location.origin}${window.location.pathname}`);
+              ensureHidden(form, "_url", formUrl);
+              ensureHidden(form, "_next", successUrl);
               ensureHidden(form, "_replyto", "");
 
               form.addEventListener("submit", () => {
                 const emailInput = form.querySelector('input[type="email"]');
+                const currentFormUrl = `${window.location.origin}${window.location.pathname}`;
                 ensureHidden(form, "_replyto", emailInput?.value?.trim() || "");
-                ensureHidden(form, "_url", `${window.location.origin}${window.location.pathname}`);
+                ensureHidden(form, "_url", currentFormUrl);
+                ensureHidden(form, "_next", `${currentFormUrl}?sent=1`);
               });
             }
           });
