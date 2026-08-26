@@ -86,12 +86,109 @@ const {
               ensureHidden(form, "_next", successUrl);
               ensureHidden(form, "_replyto", "");
 
-              form.addEventListener("submit", () => {
+              let delivering = false;
+
+              form.addEventListener("submit", async (event) => {
+                if (delivering) return;
+                event.preventDefault();
+
                 const emailInput = form.querySelector('input[type="email"]');
                 const currentFormUrl = `${window.location.origin}${window.location.pathname}`;
                 ensureHidden(form, "_replyto", emailInput?.value?.trim() || "");
                 ensureHidden(form, "_url", currentFormUrl);
                 ensureHidden(form, "_next", `${currentFormUrl}?sent=1`);
+
+                const submitButton = form.querySelector('[type="submit"]');
+                if (submitButton) submitButton.disabled = true;
+
+                try {
+                  const validationResponse = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { Accept: "application/json" },
+                    body: new FormData(form),
+                    redirect: "manual",
+                  });
+
+                  if (validationResponse.status >= 300 && validationResponse.status < 400) {
+                    const location = validationResponse.headers.get("Location");
+                    window.location.assign(location || `${currentFormUrl}?error=send`);
+                    return;
+                  }
+
+                  if (!validationResponse.ok) {
+                    throw new Error("Career validation failed.");
+                  }
+
+                  const validation = await validationResponse.json();
+                  if (
+                    validation?.ok !== true ||
+                    typeof validation?.endpoint !== "string" ||
+                    !validation.endpoint.startsWith("https://formsubmit.co/")
+                  ) {
+                    throw new Error("Career delivery target was unavailable.");
+                  }
+
+                  const schemaInput = form.querySelector('[name="application_schema"]');
+                  if (schemaInput?.value) {
+                    try {
+                      const schema = JSON.parse(schemaInput.value);
+                      let attachmentIndex = 0;
+
+                      if (Array.isArray(schema?.fields)) {
+                        schema.fields.forEach((field) => {
+                          const fieldId = String(field?.id || "").trim();
+                          if (!fieldId) return;
+
+                          const control = form.querySelector(`[name="field_${fieldId}"]`);
+                          if (!control) return;
+
+                          if (field?.type === "file") {
+                            const hasFile = Boolean(control.files?.length);
+                            if (!hasFile) {
+                              control.disabled = true;
+                              return;
+                            }
+
+                            attachmentIndex += 1;
+                            control.name = attachmentIndex === 1
+                              ? "attachment"
+                              : `attachment_${attachmentIndex}`;
+                            return;
+                          }
+
+                          const label = String(field?.label || "Field")
+                            .replace(/[\r\n\t]+/g, " ")
+                            .trim()
+                            .slice(0, 100);
+                          control.name = `Application - ${label || "Field"}`;
+                        });
+                      }
+                    } catch (_) {}
+                  }
+
+                  [
+                    "return_to",
+                    "application_schema",
+                    "form_started_at",
+                    "cf-turnstile-response",
+                    "_honey",
+                    "company_website",
+                  ].forEach((name) => {
+                    form.querySelectorAll(`[name="${name}"]`).forEach((control) => {
+                      control.disabled = true;
+                    });
+                  });
+
+                  form.setAttribute("action", validation.endpoint);
+                  form.setAttribute("method", "POST");
+                  form.setAttribute("enctype", "multipart/form-data");
+                  delivering = true;
+                  HTMLFormElement.prototype.submit.call(form);
+                } catch (_) {
+                  window.location.assign(`${currentFormUrl}?error=send`);
+                } finally {
+                  if (!delivering && submitButton) submitButton.disabled = false;
+                }
               });
             }
           });
