@@ -45,7 +45,7 @@ const redirectBack = (request, returnPath, params) => {
 };
 
 const jsonOk = () =>
-  new Response(JSON.stringify({ ok: true }), {
+  new Response(JSON.stringify({ ok: true, endpoint: FORMSUBMIT_ENDPOINT }), {
     status: 200,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
