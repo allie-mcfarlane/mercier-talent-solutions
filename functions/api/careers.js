@@ -235,6 +235,8 @@ export async function onRequestPost(context) {
     }
 
     const formUrl = new URL(returnPath, request.url).toString();
+    const successUrl = new URL(returnPath, request.url);
+    successUrl.searchParams.set("sent", "1");
     const expectedSubject = `Career Application - ${position}`;
     const submittedReplyTo = textValue(formData, "_replyto", 254);
 
@@ -244,6 +246,7 @@ export async function onRequestPost(context) {
       textValue(formData, "_captcha", 10) !== "false" ||
       textValue(formData, "_cc", 300) !== CAREERS_CC ||
       textValue(formData, "_url", 500) !== formUrl ||
+      textValue(formData, "_next", 600) !== successUrl.toString() ||
       (replyTo && submittedReplyTo !== replyTo)
     ) {
       console.warn("Career application delivery metadata was invalid.");
