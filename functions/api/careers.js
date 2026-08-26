@@ -1,5 +1,5 @@
 const FORMSUBMIT_ENDPOINT =
-  "https://formsubmit.co/allie@merciertalentsolutions.com";
+  "https://formsubmit.co/4a94b00665ec4a46e1489403848db166";
 
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 const MAX_FIELDS = 40;
