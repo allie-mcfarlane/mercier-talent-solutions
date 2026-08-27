@@ -138,3 +138,15 @@ Questions about this Privacy Policy or our privacy practices may be sent to:
 
 **Mercier Talent Solutions LLC**  
 [**julia@merciertalentsolutions.com**](mailto:julia@merciertalentsolutions.com)
+
+Mercier Talent Solutions LLC operates an internal Google Workspace add-on called **MTS Coaching Notes** for authorized users within the Mercier Talent Solutions Google Workspace organization.
+
+The add-on may access the Google Doc that a user is actively working in when the user invokes the add-on. This access is used only to provide the requested functionality, including reading document structure, identifying existing coaching-session sections, inserting new session sections, and formatting coaching notes.
+
+MTS Coaching Notes does not transmit Google Docs content to external servers or third-party services and does not separately store copies of Google Docs content outside Google Workspace.
+
+Google user data accessed by the add-on is used only to provide the add-on’s document-editing functionality. It is not sold, used for advertising, used to create marketing profiles, or used to train large language models.
+
+Access to Google Workspace data is limited to the permissions necessary for the add-on to function and is intended only for authorized Mercier Talent Solutions personnel.
+
+Mercier Talent Solutions LLC does not share Google user data obtained through MTS Coaching Notes with third parties except where required by applicable law.
