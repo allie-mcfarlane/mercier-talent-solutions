@@ -1,7 +1,6 @@
 ---
 eyebrow: Terms of Service
-title: MTS Coaching Notes
-titleAccent: Terms of Service
+title: Terms of Service
 updated: "Last updated: August 2026"
 ---
 
