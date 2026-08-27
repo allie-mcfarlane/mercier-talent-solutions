@@ -17,6 +17,7 @@ export const site = {
   ],
   privacyNav: [
     { label: "Privacy Policy", href: "/privacy/" },
+    { label: "Terms of Service", href: "/terms-of-service/" },
     { label: "Privacy Choices", href: "/privacy-choices/" },
     { label: "Data Requests & Appeals", href: "/data-requests/" },
   ],
