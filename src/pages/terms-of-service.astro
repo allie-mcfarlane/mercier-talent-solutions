@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getEntry } from "astro:content";
+
+type TermsData = {
+  eyebrow?: string;
+  title?: string;
+  titleAccent?: string;
+  updated?: string;
+};
+
+const terms = await getEntry("pages", "terms-of-service");
+if (!terms) {
+  throw new Error("Terms of service content is missing.");
+}
+
+const termsData = terms.data as TermsData;
+const { Content } = await terms.render();
+const description = "MTS Coaching Notes Terms of Service for authorized Mercier Talent Solutions business use.";
+---
+
+<BaseLayout title="Terms of Service | Mercier Talent Solutions" description={description}>
+  <section class="section">
+    <div class="container policy">
+      <p class="eyebrow">{termsData.eyebrow}</p>
+      <h1>{termsData.title} {termsData.titleAccent && <em>{termsData.titleAccent}</em>}</h1>
+      {termsData.updated && <p class="updated">{termsData.updated}</p>}
+      <Content />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .policy {
+    max-width: var(--reading-width);
+  }
+
+  h1 {
+    margin: 0.4rem 0 0.45rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: var(--page-title-size);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  h1 em {
+    color: var(--color-blue);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .updated {
+    color: var(--color-blue);
+    font-weight: 800;
+  }
+
+  .policy :global(p) {
+    color: var(--color-muted);
+    font-size: var(--paragraph-size);
+  }
+
+  .policy :global(a) {
+    color: var(--color-blue-dark);
+    font-weight: 800;
+  }
+</style>
