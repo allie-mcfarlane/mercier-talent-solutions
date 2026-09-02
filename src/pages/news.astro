@@ -306,12 +306,15 @@ const categoryClass = (category: string) => {
   }
 
   .meta-row time {
+    border: 0;
     color: var(--color-blue);
     font-family: var(--font-label);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 3.2px;
+    text-decoration: none !important;
     text-transform: uppercase;
+    box-shadow: none;
   }
 
   .pill {
@@ -461,7 +464,7 @@ const categoryClass = (category: string) => {
     grid-template-columns: minmax(165px, 0.25fr) minmax(0, 1fr) auto;
     gap: clamp(1.75rem, 4vw, 4.5rem);
     align-items: start;
-    padding: clamp(2.25rem, 3.6vw, 3.35rem) 0;
+    padding: clamp(3.5rem, 5.5vw, 5rem) 0;
     border-bottom: 1px solid var(--color-line);
     color: inherit;
     text-decoration: none !important;
@@ -475,8 +478,10 @@ const categoryClass = (category: string) => {
   }
 
   .news-item h3,
-  .news-item p {
-    text-decoration: none;
+  .news-item p,
+  .news-item time,
+  .news-item .pill {
+    text-decoration: none !important;
   }
 
   .item-meta {
@@ -644,7 +649,7 @@ const categoryClass = (category: string) => {
 
     .news-item {
       display: block;
-      padding: 2rem 0;
+      padding: 3rem 0;
       transform: none !important;
     }
 
