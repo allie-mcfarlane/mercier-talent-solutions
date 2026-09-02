@@ -121,7 +121,7 @@ const categoryClass = (category: string) => {
 
         <div class="news-list">
           {remainingPosts.map((post) => (
-            <a class="news-item" data-reveal href={`/post/${post.slug}/`}>
+            <article class="news-item" data-reveal>
               <div class="meta-row item-meta">
                 <span class={`pill ${categoryClass(post.data.category)}`}>
                   {post.data.category}
@@ -136,10 +136,10 @@ const categoryClass = (category: string) => {
                 <p>{post.data.excerpt}</p>
               </div>
 
-              <span class="read-more item-link">
+              <a class="read-more item-link" href={`/post/${post.slug}/`}>
                 Read more <span aria-hidden="true">→</span>
-              </span>
-            </a>
+              </a>
+            </article>
           ))}
         </div>
       </div>
@@ -312,29 +312,30 @@ const categoryClass = (category: string) => {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 3.2px;
-    text-decoration: none !important;
+    text-decoration: none;
     text-transform: uppercase;
     box-shadow: none;
   }
 
   .pill {
     display: inline-flex;
-    min-height: 30px;
+    min-height: 32px;
     align-items: center;
-    border: 1px solid rgba(69, 98, 142, 0.35);
-    padding: 0.4rem 0.7rem;
+    border: 2px solid transparent;
+    padding: 0.42rem 0.78rem;
     font-family: var(--font-label);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
     line-height: 1;
+    text-decoration: none;
     text-transform: uppercase;
   }
 
   .pill-insight {
-    border-color: rgba(69, 98, 142, 0.52);
+    border-color: var(--color-blue);
     background: var(--color-white);
-    color: var(--color-blue);
+    color: var(--color-blue-dark);
   }
 
   .pill-speaking {
@@ -344,7 +345,7 @@ const categoryClass = (category: string) => {
   }
 
   .pill-whitepaper {
-    border-color: rgba(69, 98, 142, 0.2);
+    border-color: #9aabc2;
     background: var(--color-blue-soft);
     color: var(--color-blue-dark);
   }
@@ -356,8 +357,8 @@ const categoryClass = (category: string) => {
   }
 
   .pill-news {
-    border-color: var(--color-line);
-    background: #f2f2ef;
+    border-color: #a8adb5;
+    background: #efefeb;
     color: var(--color-ink);
   }
 
@@ -464,29 +465,13 @@ const categoryClass = (category: string) => {
     grid-template-columns: minmax(165px, 0.25fr) minmax(0, 1fr) auto;
     gap: clamp(1.75rem, 4vw, 4.5rem);
     align-items: start;
-    padding: clamp(3.5rem, 5.5vw, 5rem) 0;
+    padding: clamp(4.25rem, 6vw, 5.75rem) 0;
     border-bottom: 1px solid var(--color-line);
-    color: inherit;
-    text-decoration: none !important;
-    transition: transform 400ms var(--ease-soft);
-  }
-
-  .news-item:hover,
-  .news-item:focus-visible {
-    text-decoration: none !important;
-    transform: translateX(5px);
-  }
-
-  .news-item h3,
-  .news-item p,
-  .news-item time,
-  .news-item .pill {
-    text-decoration: none !important;
   }
 
   .item-meta {
     display: grid;
-    gap: 0.85rem;
+    gap: 1rem;
     align-content: start;
     margin: 0;
   }
@@ -498,7 +483,7 @@ const categoryClass = (category: string) => {
   .item-content {
     display: grid;
     max-width: 850px;
-    gap: 1rem;
+    gap: 1.15rem;
   }
 
   .item-content h3 {
@@ -509,12 +494,14 @@ const categoryClass = (category: string) => {
     font-weight: 700;
     letter-spacing: -0.025em;
     line-height: 1.16;
+    text-decoration: none;
   }
 
   .item-content > p {
     max-width: 720px;
     font-size: 16px;
     line-height: 1.7;
+    text-decoration: none;
   }
 
   .item-link {
@@ -602,7 +589,7 @@ const categoryClass = (category: string) => {
 
     .news-item {
       grid-template-columns: minmax(145px, 0.28fr) minmax(0, 1fr);
-      gap: 1.75rem 2.5rem;
+      gap: 2rem 2.5rem;
     }
 
     .item-link {
@@ -649,20 +636,19 @@ const categoryClass = (category: string) => {
 
     .news-item {
       display: block;
-      padding: 3rem 0;
-      transform: none !important;
+      padding: 3.5rem 0;
     }
 
     .item-meta {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
+      gap: 0.8rem 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .item-content {
-      gap: 0.9rem;
+      gap: 1rem;
     }
 
     .item-content h3 {
@@ -675,7 +661,7 @@ const categoryClass = (category: string) => {
 
     .item-link {
       display: inline-flex;
-      margin-top: 1.45rem;
+      margin-top: 1.65rem;
     }
   }
 
