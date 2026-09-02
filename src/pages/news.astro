@@ -31,6 +31,8 @@ const dateFormat = {
 const categoryClass = (category: string) => {
   if (category === "Speaking") return "pill-speaking";
   if (category === "White Paper") return "pill-whitepaper";
+  if (category === "Announcement") return "pill-announcement";
+  if (category === "News") return "pill-news";
   return "pill-insight";
 };
 ---
@@ -327,8 +329,8 @@ const categoryClass = (category: string) => {
   }
 
   .pill-insight {
-    border-color: rgba(69, 98, 142, 0.5);
-    background: transparent;
+    border-color: rgba(69, 98, 142, 0.52);
+    background: var(--color-white);
     color: var(--color-blue);
   }
 
@@ -339,9 +341,21 @@ const categoryClass = (category: string) => {
   }
 
   .pill-whitepaper {
-    border-color: rgba(69, 98, 142, 0.22);
+    border-color: rgba(69, 98, 142, 0.2);
     background: var(--color-blue-soft);
     color: var(--color-blue-dark);
+  }
+
+  .pill-announcement {
+    border-color: var(--color-blue-dark);
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+  }
+
+  .pill-news {
+    border-color: var(--color-line);
+    background: #f2f2ef;
+    color: var(--color-ink);
   }
 
   .featured-copy h2 {
@@ -450,13 +464,19 @@ const categoryClass = (category: string) => {
     padding: clamp(2.25rem, 3.6vw, 3.35rem) 0;
     border-bottom: 1px solid var(--color-line);
     color: inherit;
-    text-decoration: none;
+    text-decoration: none !important;
     transition: transform 400ms var(--ease-soft);
   }
 
   .news-item:hover,
   .news-item:focus-visible {
+    text-decoration: none !important;
     transform: translateX(5px);
+  }
+
+  .news-item h3,
+  .news-item p {
+    text-decoration: none;
   }
 
   .item-meta {
