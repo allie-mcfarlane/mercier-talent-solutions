@@ -70,6 +70,11 @@ export async function onRequestGet(context) {
         element.setAttribute("content", socialImageAlt);
       },
     })
+    .on("head", {
+      element(element) {
+        element.append(`<script src="/article-pdf-download.js?v=${ASSET_VERSION}" defer></script>`, { html: true });
+      },
+    })
     .on('link[href*="article-final-fixes.css"]', {
       element(element) {
         element.setAttribute("href", `/article-final-fixes.css?v=${ASSET_VERSION}`);
