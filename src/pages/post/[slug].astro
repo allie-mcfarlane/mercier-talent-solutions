@@ -22,7 +22,9 @@ const dateFormat = {
 const authorImage = post.data.authorImage ?? "/images/julia-mercier.jpg";
 const authorImageAlt = post.data.authorImageAlt ?? post.data.author;
 const authorTitle = post.data.authorTitle ?? "Principal";
-const canonicalArticleUrl = new URL(`/post/${post.slug}/`, "https://mercier-talent-solutions.pages.dev").toString();
+const articleUrl = new URL(`/post/${post.slug}/`, "https://merciertalentsolutions.com");
+articleUrl.searchParams.set("linkedin", "20260903");
+const linkedInArticleUrl = articleUrl.toString();
 
 const categoryClass = (category: string) => {
   if (category === "Speaking") return "pill-speaking";
@@ -34,8 +36,9 @@ const categoryClass = (category: string) => {
 <BaseLayout
   title={`${post.data.seoTitle ?? post.data.title} | Mercier Talent Solutions`}
   description={post.data.seoDescription ?? post.data.excerpt}
-  image="https://mercier-talent-solutions.pages.dev/images/mts-mark.png"
+  image="https://merciertalentsolutions.com/images/mts-mark.png?v=20260903"
   imageAlt="Mercier Talent Solutions"
+  socialUrl={linkedInArticleUrl}
   type="article"
   publishedTime={post.data.pubDate}
   modifiedTime={post.data.updatedDate}
@@ -111,7 +114,7 @@ const categoryClass = (category: string) => {
 
           <a
             class="article-action primary"
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalArticleUrl)}`}
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(linkedInArticleUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
