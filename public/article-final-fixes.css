@@ -1,5 +1,10 @@
 /* Final article refinements approved in the HTML preview. */
 
+/* Keep printed articles away from the physical page edges. */
+@page {
+  margin: 0.7in;
+}
+
 /* Keep the article category label at the top-right of the hero. */
 main .article-hero .article-shell {
   position: relative !important;
