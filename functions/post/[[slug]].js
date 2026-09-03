@@ -100,25 +100,5 @@ export async function onRequestGet(context) {
         element.setAttribute("src", `/category-pills.js?v=${ASSET_VERSION}`);
       },
     })
-    .on(".live-article-actions [data-download-article]", {
-      element(element) {
-        element.remove();
-      },
-    })
-    .on(".live-article-actions [data-download-status]", {
-      element(element) {
-        element.remove();
-      },
-    })
-    .on(".live-article-actions .article-action.primary", {
-      element(element) {
-        element.before('<button class="article-action" type="button" data-download-article>Download article</button>', { html: true });
-      },
-    })
-    .on(".live-article-actions", {
-      element(element) {
-        element.append('<p class="download-status" aria-live="polite" data-download-status></p>', { html: true });
-      },
-    })
     .transform(response);
 }
