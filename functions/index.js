@@ -10,45 +10,71 @@ const homepageNewsStyles = `
   .news-band .news-list[data-news-carousel] {
     display: flex !important;
     flex-wrap: nowrap !important;
-    align-items: flex-start !important;
-    gap: clamp(1.5rem, 2vw, 2rem) !important;
+    align-items: stretch !important;
+    gap: clamp(1.6rem, 2vw, 2rem) !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory;
   }
 
-  .news-band .news-card {
-    width: clamp(320px, 34vw, 460px) !important;
-    min-width: 320px !important;
-    min-height: 0 !important;
-    height: auto !important;
-    flex: 0 0 clamp(320px, 34vw, 460px) !important;
-    align-self: flex-start !important;
-    align-content: start !important;
+  .news-band .news-card,
+  .news-band .news-card:first-child {
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto !important;
+    width: clamp(360px, 29vw, 430px) !important;
+    min-width: clamp(360px, 29vw, 430px) !important;
+    height: 430px !important;
+    min-height: 430px !important;
+    flex: 0 0 clamp(360px, 29vw, 430px) !important;
+    align-self: stretch !important;
+    align-content: stretch !important;
     gap: 1rem !important;
+    padding: clamp(1.75rem, 2vw, 2rem) !important;
     cursor: default;
   }
 
-  .news-band .news-card:first-child {
-    width: clamp(390px, 48vw, 650px) !important;
-    min-width: 390px !important;
-    flex-basis: clamp(390px, 48vw, 650px) !important;
+  .news-band .news-card h3,
+  .news-band .news-card:first-child h3 {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0 !important;
+    font-size: clamp(1.3rem, 1.45vw, 1.65rem) !important;
+    line-height: 1.25 !important;
+    text-decoration: none !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
   }
 
-  .news-band .news-card h3,
-  .news-band .news-card p,
-  .news-band .news-card .news-author {
+  .news-band .news-card > p {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0 !important;
+    color: var(--color-muted) !important;
+    font-size: 15.5px !important;
+    line-height: 1.6 !important;
+    text-decoration: none !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+  }
+
+  .news-band .news-card .pill {
+    align-self: start;
+  }
+
+  .news-band .news-author,
+  .news-band .news-card .meta-row {
+    display: block !important;
+    align-self: end !important;
+    margin: 0 !important;
+    padding-top: 0.6rem;
+    color: var(--color-muted) !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.45 !important;
     text-decoration: none !important;
   }
 
-  .news-band .news-author {
-    gap: 0 !important;
-    align-items: center;
-  }
-
-  .news-band .news-card.is-visible:hover {
-    border-color: var(--color-line) !important;
-    box-shadow: none !important;
-    transform: none !important;
+  .news-band .news-author img {
+    display: none !important;
   }
 
   .news-band .home-news-read-more {
@@ -56,13 +82,14 @@ const homepageNewsStyles = `
     width: max-content;
     align-items: center;
     gap: 0.65rem;
-    margin-top: 0.25rem;
+    margin-top: 0.2rem;
     border-bottom: 1px solid var(--color-blue-dark);
     padding-bottom: 0.35rem;
     color: var(--color-blue-dark);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    text-decoration: none;
+    line-height: 1.2;
+    text-decoration: none !important;
     transition: gap 220ms var(--ease-soft), color 220ms ease, border-color 220ms ease;
   }
 
@@ -73,12 +100,26 @@ const homepageNewsStyles = `
     color: var(--color-blue);
   }
 
+  .news-band .news-card.is-visible:hover,
+  .news-band .news-card:focus-within {
+    border-color: var(--color-line) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
   @media (max-width: 700px) {
     .news-band .news-card,
     .news-band .news-card:first-child {
-      width: min(86vw, 390px) !important;
-      min-width: min(86vw, 320px) !important;
-      flex-basis: min(86vw, 390px) !important;
+      width: min(84vw, 390px) !important;
+      min-width: min(84vw, 390px) !important;
+      height: 410px !important;
+      min-height: 410px !important;
+      flex-basis: min(84vw, 390px) !important;
+      padding: 1.5rem !important;
+    }
+
+    .news-band .news-card > p {
+      -webkit-line-clamp: 5;
     }
   }
 </style>`;
@@ -88,9 +129,9 @@ export async function onRequestGet(context) {
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 
-  // First pass: normalize every homepage news card to a non-linked article,
-  // remember its destination, remove all legacy/duplicate Read more links,
-  // and remove author thumbnails. This makes the operation idempotent.
+  // Pass 1: normalize every card before adding the single final action.
+  // The source card href is preserved on the card, every nested/legacy link
+  // is removed, and author thumbnails are removed permanently from this view.
   const normalized = new HTMLRewriter()
     .on("head", {
       element(element) {
@@ -111,12 +152,7 @@ export async function onRequestGet(context) {
         element.setAttribute("data-post-href", existingHref);
       },
     })
-    .on(".news-band .news-card .home-news-read-more", {
-      element(element) {
-        element.remove();
-      },
-    })
-    .on(".news-band .news-card .read-more", {
+    .on(".news-band .news-card a", {
       element(element) {
         element.remove();
       },
@@ -128,7 +164,7 @@ export async function onRequestGet(context) {
     })
     .transform(response);
 
-  // Second pass: after every old/duplicate link is gone, add exactly one.
+  // Pass 2: now that every prior link is gone, add exactly one Read more link.
   return new HTMLRewriter()
     .on(".news-band .news-card", {
       element(element) {
