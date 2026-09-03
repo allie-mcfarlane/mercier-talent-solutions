@@ -33,37 +33,7 @@ main .contact-section .contact-grid {
   max-width: none !important;
 }
 
-/* Footer: logo sits on the normal page gutter; centered content stays independent. */
-.site-footer .footer-inner {
-  width: calc(100% - (var(--page-gutter) * 2)) !important;
-  max-width: none !important;
-  margin-inline: auto !important;
-}
-
-.site-footer .footer-columns {
-  width: 100% !important;
-  max-width: none !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-.site-footer .footer-cta,
-.site-footer .footer-bottom {
-  width: 100%;
-  max-width: 1100px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-.site-footer .footer-brand {
-  justify-self: start !important;
-}
-
-.site-footer .footer-nav-group {
-  width: min(100%, 820px) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
+/* Footer alignment now lives only in Footer.astro so later global fixes cannot move it. */
 
 /* Homepage: the three-column proof band uses white text on navy. */
 main .proof h2,
@@ -179,12 +149,6 @@ main .news-hero .hero-copy h1 {
 
   main .news-hero .hero-copy h1 {
     margin-top: 1.3rem !important;
-  }
-
-  .site-footer .footer-nav-group {
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
   }
 }
 

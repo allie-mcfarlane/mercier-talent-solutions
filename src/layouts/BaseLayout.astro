@@ -72,7 +72,7 @@ const websiteSchema = {
   "@id": `${site.url}/#website`,
   name: site.name,
   url: site.url,
-  description: site.description,
+  description,
   publisher: { "@id": `${site.url}/#organization` },
 };
 
@@ -215,18 +215,18 @@ const teamAuthors = Object.fromEntries(
     />
     <link rel="stylesheet" href="https://use.typekit.net/iij2yik.css" />
     <ThemeSettings />
-    {Astro.url.pathname === "/" && <link rel="stylesheet" href="/home-polish.css" />}
-    {Astro.url.pathname === "/" && <link rel="stylesheet" href="/home-final-fixes.css" />}
-    {Astro.url.pathname === "/" && <script is:inline src="/home-final-fixes.js" defer></script>}
-    {Astro.url.pathname === "/about/" && <link rel="stylesheet" href="/about-polish.css" />}
-    {Astro.url.pathname === "/services/" && <link rel="stylesheet" href="/services-polish.css" />}
-    {Astro.url.pathname === "/services/" && <link rel="stylesheet" href="/services-final-fixes.css" />}
-    {Astro.url.pathname === "/news/" && <link rel="stylesheet" href="/news-final-fixes.css" />}
-    {Astro.url.pathname === "/whitepapers/" && <link rel="stylesheet" href="/whitepapers-final-fixes.css" />}
-    {Astro.url.pathname === "/whitepapers/" && <script is:inline src="/whitepapers-final-fixes.js" defer></script>}
-    {Astro.url.pathname.startsWith("/post/") && <link rel="stylesheet" href="/article-final-fixes.css" />}
-    {Astro.url.pathname.startsWith("/post/") && <script is:inline src="/article-pdf-download.js" defer></script>}
-    <link rel="stylesheet" href="/full-width-fixes.css" />
+    {Astro.url.pathname === "/" && <link rel="stylesheet" href="/home-polish.css?v=20260903-1020" />}
+    {Astro.url.pathname === "/" && <link rel="stylesheet" href="/home-final-fixes.css?v=20260903-1020" />}
+    {Astro.url.pathname === "/" && <script is:inline src="/home-final-fixes.js?v=20260903-1020" defer></script>}
+    {Astro.url.pathname === "/about/" && <link rel="stylesheet" href="/about-polish.css?v=20260903-1020" />}
+    {Astro.url.pathname === "/services/" && <link rel="stylesheet" href="/services-polish.css?v=20260903-1020" />}
+    {Astro.url.pathname === "/services/" && <link rel="stylesheet" href="/services-final-fixes.css?v=20260903-1020" />}
+    {Astro.url.pathname === "/news/" && <link rel="stylesheet" href="/news-final-fixes.css?v=20260903-1020" />}
+    {Astro.url.pathname === "/whitepapers/" && <link rel="stylesheet" href="/whitepapers-final-fixes.css?v=20260903-1020" />}
+    {Astro.url.pathname === "/whitepapers/" && <script is:inline src="/whitepapers-final-fixes.js?v=20260903-1020" defer></script>}
+    {Astro.url.pathname.startsWith("/post/") && <link rel="stylesheet" href="/article-final-fixes.css?v=20260903-1020" />}
+    {Astro.url.pathname.startsWith("/post/") && <script is:inline src="/article-pdf-download.js?v=20260903-1020" defer></script>}
+    <link rel="stylesheet" href="/full-width-fixes.css?v=20260903-1020" />
     {fixedVisualCss && <style is:inline set:html={fixedVisualCss}></style>}
   </head>
   <body>

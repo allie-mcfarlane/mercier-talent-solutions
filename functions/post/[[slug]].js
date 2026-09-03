@@ -1,5 +1,6 @@
 import { serveLivePost } from "../_shared/live-render.js";
 
+const ASSET_VERSION = "20260903-1020";
 const getSlug = (params) => Array.isArray(params.slug) ? params.slug.join("/") : String(params.slug || "");
 
 export async function onRequestGet(context) {
@@ -69,9 +70,24 @@ export async function onRequestGet(context) {
         element.setAttribute("content", socialImageAlt);
       },
     })
-    .on("head", {
+    .on('link[href*="article-final-fixes.css"]', {
       element(element) {
-        element.append('<script src="/article-pdf-download.js" defer></script>', { html: true });
+        element.setAttribute("href", `/article-final-fixes.css?v=${ASSET_VERSION}`);
+      },
+    })
+    .on('link[href*="full-width-fixes.css"]', {
+      element(element) {
+        element.setAttribute("href", `/full-width-fixes.css?v=${ASSET_VERSION}`);
+      },
+    })
+    .on('link[href*="live-content.css"]', {
+      element(element) {
+        element.setAttribute("href", `/live-content.css?v=${ASSET_VERSION}`);
+      },
+    })
+    .on('script[src*="article-pdf-download.js"]', {
+      element(element) {
+        element.setAttribute("src", `/article-pdf-download.js?v=${ASSET_VERSION}`);
       },
     })
     .on(".live-article-actions [data-download-article]", {

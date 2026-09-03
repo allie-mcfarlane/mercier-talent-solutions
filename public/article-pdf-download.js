@@ -290,17 +290,18 @@
 
       const lines = doc.splitTextToSize(quote, contentWidth - 28);
       const lineStep = 14.5;
-      const blockHeight = Math.max(24, lines.length * lineStep + 8);
-      ensureSpace(Math.min(blockHeight, pageHeight - topMargin - bottomMargin));
+      const ruleHeight = Math.max(12, (Math.max(0, lines.length - 1) * lineStep) + 10);
+      ensureSpace(Math.min(ruleHeight + 18, pageHeight - topMargin - bottomMargin));
 
       const startY = y - 6;
+      const availableRuleHeight = Math.max(0, pageHeight - bottomMargin - startY);
       doc.setDrawColor(69, 98, 142);
       doc.setLineWidth(2);
       doc.line(
         marginX,
         startY,
         marginX,
-        startY + Math.min(blockHeight - 2, pageHeight - bottomMargin - startY),
+        startY + Math.min(ruleHeight, availableRuleHeight),
       );
 
       lines.forEach((line) => {
@@ -308,7 +309,9 @@
         doc.text(line, marginX + 16, y);
         y += lineStep;
       });
-      y += 10;
+
+      // Keep paragraph spacing outside the quote rule instead of extending the rule into it.
+      y += 12;
     };
 
     const renderNode = (node) => {

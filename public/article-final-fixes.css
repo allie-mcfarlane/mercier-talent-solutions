@@ -54,10 +54,19 @@ main .article-body h4 {
   font-size: 15px !important;
 }
 
-/* Keep article quotes restrained and one step smaller than the previous treatment. */
-main .article-body blockquote {
+/* Keep quote rules centered on the quote text; spacing belongs outside the quote. */
+main .article-body blockquote,
+main .live-article-body blockquote {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
   font-size: clamp(0.98rem, 1.15vw, 1.08rem) !important;
   line-height: 1.58 !important;
+}
+
+main .article-body blockquote > p,
+main .live-article-body blockquote > p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 /* Keep the three article actions separated even when the live CMS stylesheet is present. */
