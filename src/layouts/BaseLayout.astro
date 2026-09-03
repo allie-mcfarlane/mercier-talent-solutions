@@ -23,7 +23,7 @@ const {
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, site.url).toString();
-const socialImage = image ?? "/images/optimized/waiting-area-1400.jpg";
+const socialImage = image ?? "/images/mts-mark.png";
 const imageUrl = new URL(socialImage, site.url).toString();
 const socialImageAlt = imageAlt ?? `${site.name} - leadership and talent development for law firms`;
 const publishedIso = publishedTime instanceof Date ? publishedTime.toISOString() : publishedTime;
@@ -190,6 +190,7 @@ const teamAuthors = Object.fromEntries(
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:secure_url" content={imageUrl} />
     <meta property="og:image:alt" content={socialImageAlt} />
     {type === "article" && publishedIso && <meta property="article:published_time" content={publishedIso} />}
     {type === "article" && modifiedIso && <meta property="article:modified_time" content={modifiedIso} />}
