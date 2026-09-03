@@ -45,6 +45,47 @@ main .read-more:focus-visible {
   color: var(--color-blue) !important;
 }
 
+/* Category pills must keep the same category-specific treatment after Cloudflare rewrites the list. */
+main .featured-copy .pill,
+main .other-news .news-item .pill {
+  background: var(--color-white) !important;
+}
+
+main .featured-copy .pill.pill-insight,
+main .other-news .news-item .pill.pill-insight {
+  border-color: rgba(69, 98, 142, 0.5) !important;
+  background: transparent !important;
+  color: var(--color-blue) !important;
+}
+
+main .featured-copy .pill.pill-speaking,
+main .other-news .news-item .pill.pill-speaking {
+  border-color: var(--color-blue) !important;
+  background: var(--color-blue) !important;
+  color: var(--color-white) !important;
+}
+
+main .featured-copy .pill.pill-whitepaper,
+main .other-news .news-item .pill.pill-whitepaper {
+  border-color: rgba(69, 98, 142, 0.22) !important;
+  background: var(--color-blue-soft) !important;
+  color: var(--color-blue-dark) !important;
+}
+
+main .featured-copy .pill.pill-announcement,
+main .other-news .news-item .pill.pill-announcement {
+  border-color: var(--color-blue-dark) !important;
+  background: var(--color-blue-dark) !important;
+  color: var(--color-white) !important;
+}
+
+main .featured-copy .pill.pill-news,
+main .other-news .news-item .pill.pill-news {
+  border-color: var(--color-line) !important;
+  background: #f2f2ef !important;
+  color: var(--color-ink) !important;
+}
+
 @media (max-width: 720px) {
   main .news-hero .hero-copy {
     padding: 3.4rem 0 3.6rem !important;

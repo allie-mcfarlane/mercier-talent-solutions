@@ -7,6 +7,7 @@ main .services-hero .services-hero-grid {
 }
 
 main .service-section {
+  --service-heading-copy-gap: clamp(1.9rem, 2.6vw, 2.35rem);
   padding: clamp(4.75rem, 6.5vw, 6.75rem) 0 !important;
 }
 
@@ -25,10 +26,26 @@ main .service-section .consulting-list p {
   line-height: 1.68 !important;
 }
 
+/* Remove the duplicate pale-blue number layer. */
+main .service-number {
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+main .service-number::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Use the same divider-to-copy spacing for Coaching, Assessments, Training and Consulting. */
+main .section-heading-anchor {
+  margin-bottom: var(--service-heading-copy-gap) !important;
+}
+
 /* Training: restore the same title rhythm used by the other service sections. */
 main .training-text-column {
   display: grid !important;
-  gap: 1.75rem !important;
+  gap: var(--service-heading-copy-gap) !important;
 }
 
 /* Add the missing separator beneath 03 Training without changing the title size or position. */
@@ -112,10 +129,6 @@ main .program-item > p {
     padding-block: 4rem !important;
   }
 
-  main .training-text-column {
-    gap: 1.65rem !important;
-  }
-
   main .program-groups > article {
     grid-template-columns: minmax(190px, 240px) minmax(0, 1fr) !important;
     column-gap: 2.25rem !important;
@@ -134,6 +147,7 @@ main .program-item > p {
   }
 
   main .service-section {
+    --service-heading-copy-gap: 1.5rem;
     padding: 4rem 0 4.75rem !important;
   }
 
@@ -146,10 +160,6 @@ main .program-item > p {
   main .service-section .program-item p,
   main .service-section .consulting-list p {
     font-size: 16px !important;
-  }
-
-  main .training-text-column {
-    gap: 1.5rem !important;
   }
 
   main .training-text-column > .service-heading-block {

@@ -33,10 +33,20 @@ main .contact-section .contact-grid {
   max-width: none !important;
 }
 
-/* Footer: keep the normal gutter while removing the fixed 1680px cap. */
+/* Footer: keep the navigation and closing message centered as one balanced content block. */
 .site-footer .footer-inner {
-  width: calc(100% - (var(--page-gutter) * 2)) !important;
-  max-width: none !important;
+  width: min(calc(100% - (var(--page-gutter) * 2)), 1240px) !important;
+  max-width: 1240px !important;
+  margin-inline: auto !important;
+}
+
+.site-footer .footer-cta,
+.site-footer .footer-columns,
+.site-footer .footer-bottom {
+  width: 100%;
+  max-width: 1100px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 /* Homepage: the three-column proof band uses white text on navy. */
