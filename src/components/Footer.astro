@@ -61,7 +61,8 @@ const serviceLinks = [
   }
 
   .footer-inner {
-    width: min(calc(100% - (var(--page-gutter) * 2)), 1680px);
+    width: calc(100% - (var(--page-gutter) * 2));
+    max-width: none;
     margin-inline: auto;
   }
 
