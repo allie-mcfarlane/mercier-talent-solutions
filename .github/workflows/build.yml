@@ -29,13 +29,17 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Check visual editor scripts
+      - name: Check editor scripts
         run: |
           node --check public/admin/editor/visual-builder.js
           node --check public/admin/editor/visual-fixed-sections.js
           node --check public/admin/editor/visual-safety.js
           node --check public/admin/editor/direct-canvas.js
           node --check public/admin/editor/direct-canvas-controls-fix.js
+          node --check public/admin/editor/publish-guard.js
+
+      - name: Check publishing regressions
+        run: node scripts/content-regression-check.mjs
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
