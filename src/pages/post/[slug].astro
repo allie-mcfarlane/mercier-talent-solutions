@@ -22,7 +22,7 @@ const dateFormat = {
 const authorImage = post.data.authorImage ?? "/images/julia-mercier.jpg";
 const authorImageAlt = post.data.authorImageAlt ?? post.data.author;
 const authorTitle = post.data.authorTitle ?? "Principal";
-const canonicalArticleUrl = new URL(`/post/${post.slug}/`, "https://merciertalentsolutions.com").toString();
+const canonicalArticleUrl = new URL(`/post/${post.slug}/`, "https://mercier-talent-solutions.pages.dev").toString();
 
 const categoryClass = (category: string) => {
   if (category === "Speaking") return "pill-speaking";
@@ -34,7 +34,7 @@ const categoryClass = (category: string) => {
 <BaseLayout
   title={`${post.data.seoTitle ?? post.data.title} | Mercier Talent Solutions`}
   description={post.data.seoDescription ?? post.data.excerpt}
-  image="/images/mts-mark.png"
+  image="https://mercier-talent-solutions.pages.dev/images/mts-mark.png"
   imageAlt="Mercier Talent Solutions"
   type="article"
   publishedTime={post.data.pubDate}
