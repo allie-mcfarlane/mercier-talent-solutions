@@ -107,6 +107,16 @@ export async function onRequestGet(context) {
         );
       },
     })
+    .on(".news-band .news-card .home-news-read-more", {
+      element(element) {
+        element.remove();
+      },
+    })
+    .on(".news-band .news-card .read-more", {
+      element(element) {
+        element.remove();
+      },
+    })
     .on(".news-band .news-card .news-author img", {
       element(element) {
         element.remove();
