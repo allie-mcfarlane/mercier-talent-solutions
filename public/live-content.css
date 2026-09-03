@@ -8,7 +8,8 @@
   display:flex;
   max-width:860px;
   flex-wrap:wrap;
-  gap:1.25rem;
+  column-gap:clamp(1.5rem,3vw,2.5rem);
+  row-gap:1.35rem;
   align-items:center;
   justify-content:space-between;
   margin-top:clamp(3.2rem,5vw,4.6rem);
@@ -26,10 +27,11 @@
 .live-article-actions .action-buttons{
   display:flex;
   flex-wrap:wrap;
-  gap:.65rem;
+  gap:.85rem 1rem;
 }
 .live-article-actions .article-action{
   display:inline-flex;
+  min-width:118px;
   min-height:42px;
   align-items:center;
   justify-content:center;
@@ -69,8 +71,8 @@
   .live-article-actions .actions-label{width:auto}
 }
 @media(max-width:700px){
-  .live-article-actions .action-buttons{width:100%}
-  .live-article-actions .article-action{flex:1}
+  .live-article-actions .action-buttons{width:100%;gap:.7rem}
+  .live-article-actions .article-action{min-width:0;flex:1}
 }
 
 /* Give article metadata more separation from the title while keeping it close to the divider. */
