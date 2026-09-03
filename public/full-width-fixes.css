@@ -33,10 +33,10 @@ main .contact-section .contact-grid {
   max-width: none !important;
 }
 
-/* Footer: logo stays left; CTA, navigation group and closing links stay visually centered. */
+/* Footer: logo sits on the normal page gutter; centered content stays independent. */
 .site-footer .footer-inner {
-  width: min(calc(100% - (var(--page-gutter) * 2)), 1240px) !important;
-  max-width: 1240px !important;
+  width: calc(100% - (var(--page-gutter) * 2)) !important;
+  max-width: none !important;
   margin-inline: auto !important;
 }
 
