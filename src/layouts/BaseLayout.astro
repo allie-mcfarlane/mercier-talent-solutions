@@ -13,6 +13,7 @@ const {
   description = "Talent development for law firms.",
   image,
   imageAlt,
+  socialUrl,
   type = "website",
   publishedTime,
   modifiedTime,
@@ -23,6 +24,7 @@ const {
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, site.url).toString();
+const openGraphUrl = socialUrl ?? canonicalUrl;
 const socialImage = image ?? "/images/mts-mark.png";
 const imageUrl = new URL(socialImage, site.url).toString();
 const socialImageAlt = imageAlt ?? `${site.name} - leadership and talent development for law firms`;
@@ -188,7 +190,7 @@ const teamAuthors = Object.fromEntries(
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:url" content={openGraphUrl} />
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:secure_url" content={imageUrl} />
     <meta property="og:image:alt" content={socialImageAlt} />
