@@ -16,6 +16,7 @@ const categoryPills = read('public/category-pills.js');
 const servicesFixes = read('public/services-final-fixes.css');
 const editorHtml = read('public/admin/editor/index.html');
 const publishGuard = read('public/admin/editor/publish-guard.js');
+const repositorySync = read('public/admin/editor/repository-sync.js');
 
 // Publishing isolation: content collections must only be loaded by the pages that own them.
 expect(
@@ -66,12 +67,23 @@ expect(liveRender.includes('<div class="paper-body">${bodyHtml}</div>'), 'Runtim
 expect(servicesFixes.includes('.service-number::before'), 'Services duplicate number-layer protection is missing.');
 expect(servicesFixes.includes('text-shadow: none'), 'Services shadow-letter protection is missing.');
 
-// Editor publish guard must be last in the data-layer chain and must prevent page-wide Advanced HTML injection.
+// Editor publishing order: validate first, synchronize the repository second, then allow D1 publication.
+expect(editorHtml.includes('/admin/editor/repository-sync.js'), 'Repository synchronization is not loaded in the editor.');
 expect(editorHtml.includes('/admin/editor/publish-guard.js'), 'Editor publishing safety guard is not loaded.');
 expect(
-  editorHtml.indexOf('/admin/editor/publish-guard.js') > editorHtml.indexOf('/admin/editor/access-fetch-fix.js'),
-  'Editor publishing safety guard must load after the data/access fetch layers.',
+  editorHtml.indexOf('/admin/editor/repository-sync.js') > editorHtml.indexOf('/admin/editor/access-fetch-fix.js'),
+  'Repository synchronization must load after the data/access fetch layers.',
 );
+expect(
+  editorHtml.indexOf('/admin/editor/publish-guard.js') > editorHtml.indexOf('/admin/editor/repository-sync.js'),
+  'Publish validation must wrap repository synchronization and run first.',
+);
+expect(repositorySync.includes("String(payload.action || 'draft') !== 'publish'"), 'Repository synchronization is not restricted to publishing.');
+expect(repositorySync.includes('loadDraft(String(payload.branch), sourceHeaders)'), 'Branch publishing no longer verifies the stored draft before repository synchronization.');
+expect(repositorySync.includes('if (!repositoryResult.ok)'), 'Repository synchronization failure no longer blocks publication.');
+expect(repositorySync.includes("if (type === 'post') return `src/content/posts/${slug}.md`;"), 'Blog post repository synchronization path is missing.');
+expect(repositorySync.includes("if (type === 'whitepaper') return `src/content/white-papers/${slug}.md`;"), 'White paper repository synchronization path is missing.');
+expect(repositorySync.includes("if (type === 'page') return `src/content/pages/${slug}.md`;"), 'Page repository synchronization path is missing.');
 expect(publishGuard.includes("type === 'html'"), 'Advanced HTML safety validation is missing.');
 expect(publishGuard.includes("<(script|style|link|meta|base|iframe)"), 'Advanced HTML page-wide element blocking is missing.');
 expect(publishGuard.includes("action === 'publish'"), 'Publish-time strict validation is missing.');
@@ -85,4 +97,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Content regression checks passed. Runtime parity and publishing safeguards are present.');
+console.log('Content regression checks passed. Runtime parity, repository synchronization, and publishing safeguards are present.');
