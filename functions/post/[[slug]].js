@@ -10,7 +10,65 @@ export async function onRequestGet(context) {
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 
+  const socialImage = new URL("/images/mts-mark.png", context.request.url).toString();
+  const socialImageAlt = "Mercier Talent Solutions";
+  let ogImageSeen = false;
+  let ogSecureImageSeen = false;
+  let ogImageAltSeen = false;
+  let twitterImageSeen = false;
+  let twitterImageAltSeen = false;
+
   return new HTMLRewriter()
+    .on('meta[property="og:image"]', {
+      element(element) {
+        if (ogImageSeen) {
+          element.remove();
+          return;
+        }
+        ogImageSeen = true;
+        element.setAttribute("content", socialImage);
+      },
+    })
+    .on('meta[property="og:image:secure_url"]', {
+      element(element) {
+        if (ogSecureImageSeen) {
+          element.remove();
+          return;
+        }
+        ogSecureImageSeen = true;
+        element.setAttribute("content", socialImage);
+      },
+    })
+    .on('meta[property="og:image:alt"]', {
+      element(element) {
+        if (ogImageAltSeen) {
+          element.remove();
+          return;
+        }
+        ogImageAltSeen = true;
+        element.setAttribute("content", socialImageAlt);
+      },
+    })
+    .on('meta[name="twitter:image"]', {
+      element(element) {
+        if (twitterImageSeen) {
+          element.remove();
+          return;
+        }
+        twitterImageSeen = true;
+        element.setAttribute("content", socialImage);
+      },
+    })
+    .on('meta[name="twitter:image:alt"]', {
+      element(element) {
+        if (twitterImageAltSeen) {
+          element.remove();
+          return;
+        }
+        twitterImageAltSeen = true;
+        element.setAttribute("content", socialImageAlt);
+      },
+    })
     .on("head", {
       element(element) {
         element.append('<script src="/article-pdf-download.js" defer></script>', { html: true });
