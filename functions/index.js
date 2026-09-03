@@ -22,8 +22,8 @@ const homepageNewsStyles = `
     grid-template-rows: auto auto minmax(0, 1fr) auto auto !important;
     width: clamp(360px, 29vw, 430px) !important;
     min-width: clamp(360px, 29vw, 430px) !important;
-    height: 430px !important;
-    min-height: 430px !important;
+    height: auto !important;
+    min-height: 520px !important;
     flex: 0 0 clamp(360px, 29vw, 430px) !important;
     align-self: stretch !important;
     align-content: stretch !important;
@@ -39,26 +39,26 @@ const homepageNewsStyles = `
 
   .news-band .news-card h3,
   .news-band .news-card:first-child h3 {
-    display: -webkit-box;
-    overflow: hidden;
+    display: block !important;
+    overflow: visible !important;
     margin: 0 !important;
     font-size: clamp(1.3rem, 1.45vw, 1.65rem) !important;
     line-height: 1.25 !important;
     text-decoration: none !important;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+    -webkit-box-orient: initial !important;
+    -webkit-line-clamp: unset !important;
   }
 
   .news-band .news-card > p {
-    display: -webkit-box;
-    overflow: hidden;
+    display: block !important;
+    overflow: visible !important;
     margin: 0 !important;
     color: var(--color-muted) !important;
     font-size: 15.5px !important;
     line-height: 1.6 !important;
     text-decoration: none !important;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
+    -webkit-box-orient: initial !important;
+    -webkit-line-clamp: unset !important;
   }
 
   .news-band .news-card .pill {
@@ -117,14 +117,10 @@ const homepageNewsStyles = `
     .news-band .news-card:first-child {
       width: min(84vw, 390px) !important;
       min-width: min(84vw, 390px) !important;
-      height: 410px !important;
-      min-height: 410px !important;
+      height: auto !important;
+      min-height: 500px !important;
       flex-basis: min(84vw, 390px) !important;
       padding: 1.5rem !important;
-    }
-
-    .news-band .news-card > p {
-      -webkit-line-clamp: 5;
     }
   }
 </style>`;
