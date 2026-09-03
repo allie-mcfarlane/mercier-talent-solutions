@@ -1,6 +1,6 @@
 import { serveExistingPage } from "./_shared/live-render.js";
 
-const ASSET_VERSION = "20260903-1020";
+const ASSET_VERSION = "20260903-1129";
 
 export async function onRequestGet(context) {
   const response = await serveExistingPage(context, "services");
