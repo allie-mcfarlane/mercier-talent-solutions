@@ -33,18 +33,34 @@ main .contact-section .contact-grid {
   max-width: none !important;
 }
 
-/* Footer: keep the navigation and closing message centered as one balanced content block. */
+/* Footer: logo stays left; CTA, navigation group and closing links stay visually centered. */
 .site-footer .footer-inner {
   width: min(calc(100% - (var(--page-gutter) * 2)), 1240px) !important;
   max-width: 1240px !important;
   margin-inline: auto !important;
 }
 
+.site-footer .footer-columns {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 .site-footer .footer-cta,
-.site-footer .footer-columns,
 .site-footer .footer-bottom {
   width: 100%;
   max-width: 1100px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.site-footer .footer-brand {
+  justify-self: start !important;
+}
+
+.site-footer .footer-nav-group {
+  width: min(100%, 820px) !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
@@ -163,6 +179,12 @@ main .news-hero .hero-copy h1 {
 
   main .news-hero .hero-copy h1 {
     margin-top: 1.3rem !important;
+  }
+
+  .site-footer .footer-nav-group {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
