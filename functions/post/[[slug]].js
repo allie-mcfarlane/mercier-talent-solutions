@@ -72,7 +72,7 @@ export async function onRequestGet(context) {
     })
     .on("head", {
       element(element) {
-        element.append(`<script src="/article-pdf-download.js?v=${ASSET_VERSION}" defer></script>`, { html: true });
+        element.append(`<script src="/article-pdf-download.js?v=${ASSET_VERSION}" defer></script><script src="/category-pills.js?v=${ASSET_VERSION}" defer></script>`, { html: true });
       },
     })
     .on('link[href*="article-final-fixes.css"]', {
@@ -93,6 +93,11 @@ export async function onRequestGet(context) {
     .on('script[src*="article-pdf-download.js"]', {
       element(element) {
         element.setAttribute("src", `/article-pdf-download.js?v=${ASSET_VERSION}`);
+      },
+    })
+    .on('script[src*="category-pills.js"]', {
+      element(element) {
+        element.setAttribute("src", `/category-pills.js?v=${ASSET_VERSION}`);
       },
     })
     .on(".live-article-actions [data-download-article]", {
