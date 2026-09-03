@@ -88,7 +88,10 @@ export async function onRequestGet(context) {
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 
-  return new HTMLRewriter()
+  // First pass: normalize every homepage news card to a non-linked article,
+  // remember its destination, remove all legacy/duplicate Read more links,
+  // and remove author thumbnails. This makes the operation idempotent.
+  const normalized = new HTMLRewriter()
     .on("head", {
       element(element) {
         element.append(homepageNewsStyles, { html: true });
@@ -96,15 +99,16 @@ export async function onRequestGet(context) {
     })
     .on(".news-band .news-card", {
       element(element) {
-        if (element.tagName.toLowerCase() !== "a") return;
+        if (element.tagName.toLowerCase() === "a") {
+          const href = safePostHref(element.getAttribute("href"));
+          element.tagName = "article";
+          element.removeAttribute("href");
+          element.setAttribute("data-post-href", href);
+          return;
+        }
 
-        const href = safePostHref(element.getAttribute("href"));
-        element.tagName = "article";
-        element.removeAttribute("href");
-        element.append(
-          `<a class="home-news-read-more" href="${href}">Read more <span aria-hidden="true">→</span></a>`,
-          { html: true },
-        );
+        const existingHref = safePostHref(element.getAttribute("data-post-href"));
+        element.setAttribute("data-post-href", existingHref);
       },
     })
     .on(".news-band .news-card .home-news-read-more", {
@@ -123,4 +127,18 @@ export async function onRequestGet(context) {
       },
     })
     .transform(response);
+
+  // Second pass: after every old/duplicate link is gone, add exactly one.
+  return new HTMLRewriter()
+    .on(".news-band .news-card", {
+      element(element) {
+        const href = safePostHref(element.getAttribute("data-post-href"));
+        element.removeAttribute("data-post-href");
+        element.append(
+          `<a class="home-news-read-more" href="${href}">Read more <span aria-hidden="true">→</span></a>`,
+          { html: true },
+        );
+      },
+    })
+    .transform(normalized);
 }
