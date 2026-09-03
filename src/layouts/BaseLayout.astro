@@ -227,6 +227,7 @@ const teamAuthors = Object.fromEntries(
     {Astro.url.pathname.startsWith("/post/") && <link rel="stylesheet" href="/article-final-fixes.css?v=20260903-1020" />}
     {Astro.url.pathname.startsWith("/post/") && <script is:inline src="/article-pdf-download.js?v=20260903-1020" defer></script>}
     <link rel="stylesheet" href="/full-width-fixes.css?v=20260903-1020" />
+    <script is:inline src="/category-pills.js?v=20260903-1945" defer></script>
     {fixedVisualCss && <style is:inline set:html={fixedVisualCss}></style>}
   </head>
   <body>
@@ -241,11 +242,23 @@ const teamAuthors = Object.fromEntries(
     <script is:inline define:vars={{ teamAuthors }}>
       (() => {
         const authorName = document.querySelector(".author-copy strong")?.textContent?.trim();
-        if (!authorName || !teamAuthors[authorName]) return;
+        if (!authorName) return;
 
         const profile = teamAuthors[authorName];
         const photo = document.querySelector(".author-photo");
         const role = document.querySelector(".author-copy span");
+
+        if (!profile) {
+          const usesLegacyFallback =
+            photo instanceof HTMLImageElement &&
+            (photo.getAttribute("src") || "").includes("/images/julia-mercier.jpg");
+
+          if (usesLegacyFallback) {
+            photo.remove();
+            if (role?.textContent?.trim() === "Principal") role.remove();
+          }
+          return;
+        }
 
         if (photo instanceof HTMLImageElement && profile.image) {
           photo.src = profile.image;
