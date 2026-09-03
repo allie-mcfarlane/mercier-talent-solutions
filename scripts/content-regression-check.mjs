@@ -12,6 +12,7 @@ const homeRoute = read('functions/index.js');
 const newsRoute = read('functions/news.js');
 const postRoute = read('functions/post/[[slug]].js');
 const whitepapersRoute = read('functions/whitepapers.js');
+const categoryPills = read('public/category-pills.js');
 const servicesFixes = read('public/services-final-fixes.css');
 const editorHtml = read('public/admin/editor/index.html');
 const publishGuard = read('public/admin/editor/publish-guard.js');
@@ -37,12 +38,29 @@ expect(homeRoute.includes('element.tagName = "article"'), 'Homepage news cards c
 expect(homeRoute.includes('.news-band .news-card a'), 'Homepage news-card nested-link cleanup is missing.');
 expect(homeRoute.includes('.news-band .news-card .news-author img'), 'Homepage news-card author-image cleanup is missing.');
 expect(homeRoute.includes('class="home-news-read-more"'), 'Homepage news cards are missing the single Read more action.');
+expect(!liveRender.includes('/images/julia-mercier.jpg'), 'Runtime rendering contains a Julia headshot fallback.');
 
-// Runtime article parity: Download must exist, PDF logic must load, and social preview must use the approved neutral image.
-expect(postRoute.includes('data-download-article'), 'Runtime articles are missing Download article.');
+// Category parity: all supported article categories must map to their dedicated site pill classes.
+expect(liveRender.includes('Announcement: "pill-announcement"'), 'Runtime Announcement category styling is missing.');
+expect(liveRender.includes('News: "pill-news"'), 'Runtime News category styling is missing.');
+expect(categoryPills.includes("Announcement: 'pill-announcement'"), 'Fallback Announcement pill normalization is missing.');
+expect(categoryPills.includes("News: 'pill-news'"), 'Fallback News pill normalization is missing.');
+expect(newsRoute.includes('/category-pills.js'), 'News route is missing fallback category normalization.');
+expect(postRoute.includes('/category-pills.js'), 'Article route is missing fallback category normalization.');
+
+// Runtime article parity: source renderer owns actions; route wrapper only loads supporting assets.
+expect(liveRender.includes('data-download-article'), 'Runtime article source is missing Download article.');
+expect(liveRender.includes('data-download-status'), 'Runtime article source is missing Download status feedback.');
 expect(postRoute.includes('/article-pdf-download.js'), 'Runtime article PDF download code is not loaded.');
-expect(postRoute.includes('/images/mts-mark.png'), 'Runtime social preview image is no longer the approved neutral Mercier image.');
+expect(!postRoute.includes('.live-article-actions [data-download-article]'), 'Article route is rebuilding the Download action instead of using source markup.');
+expect(!postRoute.includes('.live-article-actions [data-download-status]'), 'Article route is rebuilding Download status instead of using source markup.');
+expect(liveRender.includes('/images/mts-mark.png'), 'Runtime article source is missing the approved neutral social image.');
+expect(postRoute.includes('/images/mts-mark.png'), 'Runtime article route is missing neutral social-image enforcement.');
 expect(!postRoute.includes('/images/julia-mercier.jpg'), 'Runtime social preview route contains a Julia headshot fallback.');
+
+// White-paper body formatting should use stored rendered HTML when available rather than flattening Markdown to text.
+expect(liveRender.includes('paper.html || paragraphs(paper.body || "")'), 'Runtime white-paper body formatting can be flattened again.');
+expect(liveRender.includes('<div class="paper-body">${bodyHtml}</div>'), 'Runtime white-paper body container no longer preserves rendered content.');
 
 // Services duplicate-number/shadow regression remains explicitly suppressed until source styles are consolidated.
 expect(servicesFixes.includes('.service-number::before'), 'Services duplicate number-layer protection is missing.');
@@ -67,4 +85,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Content regression checks passed. Article and white-paper publishing safeguards are present.');
+console.log('Content regression checks passed. Runtime parity and publishing safeguards are present.');
