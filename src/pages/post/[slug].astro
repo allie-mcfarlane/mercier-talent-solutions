@@ -34,7 +34,8 @@ const categoryClass = (category: string) => {
 <BaseLayout
   title={`${post.data.seoTitle ?? post.data.title} | Mercier Talent Solutions`}
   description={post.data.seoDescription ?? post.data.excerpt}
-  image={post.data.image}
+  image="/images/mts-mark.png"
+  imageAlt="Mercier Talent Solutions"
   type="article"
   publishedTime={post.data.pubDate}
   modifiedTime={post.data.updatedDate}
