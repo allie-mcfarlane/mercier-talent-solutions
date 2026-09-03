@@ -11,7 +11,7 @@ export async function onRequestGet(context) {
   return new HTMLRewriter()
     .on("head", {
       element(element) {
-        element.append('<link rel="stylesheet" href="/live-content.css">', { html: true });
+        element.append('<link rel="stylesheet" href="/live-content.css"><script src="/category-pills.js" defer></script>', { html: true });
       },
     })
     .on(".other-news .news-item", {
