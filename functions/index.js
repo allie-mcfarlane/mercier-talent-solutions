@@ -32,6 +32,11 @@ const homepageNewsStyles = `
     cursor: default;
   }
 
+  .news-band .news-card::after {
+    display: none !important;
+    content: none !important;
+  }
+
   .news-band .news-card h3,
   .news-band .news-card:first-child h3 {
     display: -webkit-box;
