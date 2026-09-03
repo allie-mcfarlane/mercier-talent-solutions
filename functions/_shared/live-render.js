@@ -46,11 +46,15 @@ const formatDate = (value) => {
 const postTimestamp = (item) => new Date(item?.data?.pubDate || 0).valueOf() || 0;
 const paperTimestamp = (item) => new Date(item?.data?.date || 0).valueOf() || 0;
 
-const categoryClass = (category) => {
-  if (category === "Speaking") return "pill-speaking";
-  if (category === "White Paper") return "pill-whitepaper";
-  return "pill-insight";
+const CATEGORY_CLASSES = {
+  Insight: "pill-insight",
+  Speaking: "pill-speaking",
+  "White Paper": "pill-whitepaper",
+  Announcement: "pill-announcement",
+  News: "pill-news",
 };
+
+const categoryClass = (category) => CATEGORY_CLASSES[String(category || "")] || "pill-insight";
 
 const indexed = (items, callback) => {
   let index = 0;
@@ -157,11 +161,9 @@ async function getMergedPage(context, slug) {
 
 const authorMap = (aboutPage) => Object.fromEntries(asArray(aboutPage?.data?.team).map((person) => [person.name, person]));
 
-const renderHomePosts = (posts, authors) => posts.slice(0, 8).map((post) => {
+const renderHomePosts = (posts) => posts.slice(0, 8).map((post) => {
   const data = post.data || {};
-  const author = authors[data.author] || {};
-  const avatar = author.image || data.image || "/images/julia-mercier.jpg";
-  return `<a class="card news-card" href="/post/${encodeURIComponent(post.slug)}/"><span class="pill">${escapeHtml(data.category || "Insight")}</span><h3>${escapeHtml(data.title || "")}</h3><p>${escapeHtml(data.excerpt || "")}</p><span class="meta-row news-author"><img src="${safeUrl(avatar)}" alt="" loading="lazy"><span>${escapeHtml(data.author || "")} · ${escapeHtml(formatDate(data.pubDate))}</span></span></a>`;
+  return `<a class="card news-card" href="/post/${encodeURIComponent(post.slug)}/"><span class="pill ${categoryClass(data.category)}">${escapeHtml(data.category || "Insight")}</span><h3>${escapeHtml(data.title || "")}</h3><p>${escapeHtml(data.excerpt || "")}</p><span class="meta-row news-author"><span>${escapeHtml(data.author || "")} · ${escapeHtml(formatDate(data.pubDate))}</span></span></a>`;
 }).join("");
 
 const renderOtherNews = (posts) => posts.map((post) => {
@@ -171,7 +173,8 @@ const renderOtherNews = (posts) => posts.map((post) => {
 
 const renderWhitePapers = (papers) => papers.map((paper, index) => {
   const data = paper.data || {};
-  return `<article class="paper-row ${index % 2 === 1 ? "paper-row-reverse" : ""} is-visible" data-wp-reveal><div class="paper-cover"><div class="cover-inner"><div class="cover-meta"><span>Mercier Talent Solutions</span><span>White Paper No. ${escapeHtml(data.number || "")}</span></div><h2>${escapeHtml(data.title || "")}</h2><div class="cover-orbits" aria-hidden="true"><span class="a"></span><span class="b"></span></div></div></div><div class="paper-content"><time datetime="${escapeHtml(String(data.date || ""))}">${escapeHtml(formatDate(data.date))}</time><h3>${escapeHtml(data.title || "")}</h3><p class="paper-subtitle">${escapeHtml(data.description || "")}</p><p class="paper-body">${escapeHtml(paper.body || "")}</p>${data.document ? `<a class="paper-action" href="${safeUrl(data.document)}" target="_blank" rel="noopener noreferrer">Download the Paper <span aria-hidden="true">→</span></a>` : ""}</div></article>`;
+  const bodyHtml = paper.html || paragraphs(paper.body || "");
+  return `<article class="paper-row ${index % 2 === 1 ? "paper-row-reverse" : ""} is-visible" data-wp-reveal><div class="paper-cover"><div class="cover-inner"><div class="cover-meta"><span>Mercier Talent Solutions</span><span>White Paper No. ${escapeHtml(data.number || "")}</span></div><h2>${escapeHtml(data.title || "")}</h2><div class="cover-orbits" aria-hidden="true"><span class="a"></span><span class="b"></span></div></div></div><div class="paper-content"><time datetime="${escapeHtml(String(data.date || ""))}">${escapeHtml(formatDate(data.date))}</time><h3>${escapeHtml(data.title || "")}</h3><p class="paper-subtitle">${escapeHtml(data.description || "")}</p><div class="paper-body">${bodyHtml}</div>${data.document ? `<a class="paper-action" href="${safeUrl(data.document)}" target="_blank" rel="noopener noreferrer">Download the Paper <span aria-hidden="true">→</span></a>` : ""}</div></article>`;
 }).join("");
 
 const applyBuilderOverride = (rewriter, page) => {
@@ -376,10 +379,8 @@ export async function serveExistingPage(context, pageKey) {
   }
 
   if (pageKey === "home" && postsResult.hasOverrides) {
-    const about = await getMergedPage(context, "about");
-    const authors = authorMap(about);
     const posts = postsResult.items.sort((a, b) => postTimestamp(b) - postTimestamp(a));
-    rewriter.on(".news-list[data-news-carousel]", { element: (element) => element.setInnerContent(renderHomePosts(posts, authors), { html: true }) });
+    rewriter.on(".news-list[data-news-carousel]", { element: (element) => element.setInnerContent(renderHomePosts(posts), { html: true }) });
   }
 
   if (pageKey === "news" && postsResult.hasOverrides) {
@@ -416,12 +417,13 @@ const renderArticle = (post, author) => {
   const data = post.data || {};
   const references = asArray(data.references);
   const bodyHtml = linkCitations(post.html || paragraphs(post.body || ""), references);
-  const image = author?.image || data.authorImage || "/images/julia-mercier.jpg";
+  const image = author?.image || data.authorImage || "";
   const imageAlt = author?.imageAlt || data.authorImageAlt || data.author || "";
-  const role = author?.eyebrow || author?.role || data.authorTitle || "Principal";
+  const role = author?.eyebrow || author?.role || data.authorTitle || "";
+  const authorPhoto = image ? `<img class="author-photo live-author-photo" src="${safeUrl(image)}" alt="${escapeHtml(imageAlt)}" loading="eager" decoding="async">` : "";
   const referencesHtml = references.length ? `<section class="references live-references" aria-labelledby="references-heading"><h2 id="references-heading">References</h2><ol>${references.map((reference, index) => `<li id="reference-${index + 1}"><a href="${safeUrl(reference.url || "#")}" target="_blank" rel="noopener noreferrer">${escapeHtml(reference.text || `Source ${index + 1}`)}</a></li>`).join("")}</ol></section>` : "";
   const canonical = `https://merciertalentsolutions.com/post/${encodeURIComponent(post.slug)}/`;
-  return `<article class="article-page live-article-page"><header class="article-hero live-article-hero"><div class="container article-shell live-article-shell"><a class="back-link live-article-back" href="/news/">← Back to News & Insights</a><span class="pill live-article-pill ${categoryClass(data.category)}">${escapeHtml(data.category || "Insight")}</span><h1>${escapeHtml(data.title || "")}</h1>${data.subtitle ? `<p class="article-subtitle live-article-subtitle">${escapeHtml(data.subtitle)}</p>` : ""}<div class="article-meta live-article-meta"><div class="author-block live-author-block"><img class="author-photo live-author-photo" src="${safeUrl(image)}" alt="${escapeHtml(imageAlt)}" loading="eager" decoding="async"><div class="author-copy live-author-copy"><strong>${escapeHtml(data.author || "")}</strong><span>${escapeHtml(role)}</span></div></div><time datetime="${escapeHtml(String(data.pubDate || ""))}">${escapeHtml(formatDate(data.pubDate))}</time></div></div></header><div class="article-content-section live-article-content-section"><div class="container article-body live-article-body" data-article-body>${bodyHtml}${referencesHtml}</div><div class="container article-actions live-article-actions"><span class="actions-label">Article options</span><div class="action-buttons"><button class="article-action" type="button" onclick="window.print()">Print</button><a class="article-action primary" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}" target="_blank" rel="noopener noreferrer">Post to LinkedIn</a></div></div></div></article>`;
+  return `<article class="article-page live-article-page"><header class="article-hero live-article-hero"><div class="container article-shell live-article-shell"><a class="back-link live-article-back" href="/news/">← Back to News & Insights</a><span class="pill live-article-pill ${categoryClass(data.category)}">${escapeHtml(data.category || "Insight")}</span><h1>${escapeHtml(data.title || "")}</h1>${data.subtitle ? `<p class="article-subtitle live-article-subtitle">${escapeHtml(data.subtitle)}</p>` : ""}<div class="article-meta live-article-meta"><div class="author-block live-author-block">${authorPhoto}<div class="author-copy live-author-copy"><strong>${escapeHtml(data.author || "")}</strong>${role ? `<span>${escapeHtml(role)}</span>` : ""}</div></div><time datetime="${escapeHtml(String(data.pubDate || ""))}">${escapeHtml(formatDate(data.pubDate))}</time></div></div></header><div class="article-content-section live-article-content-section"><div class="container article-body live-article-body" data-article-body>${bodyHtml}${referencesHtml}</div><div class="container article-actions live-article-actions"><span class="actions-label">Article options</span><div class="action-buttons"><button class="article-action" type="button" onclick="window.print()">Print</button><button class="article-action" type="button" data-download-article>Download article</button><a class="article-action primary" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}" target="_blank" rel="noopener noreferrer">Post to LinkedIn</a></div><p class="download-status" aria-live="polite" data-download-status></p></div></div></article>`;
 };
 
 export async function serveLivePost(context, slug) {
@@ -438,7 +440,7 @@ export async function serveLivePost(context, slug) {
   const title = `${post.data?.seoTitle || post.data?.title || "Article"} | Mercier Talent Solutions`;
   const description = post.data?.seoDescription || post.data?.excerpt || "";
   const canonical = new URL(`/post/${slug}/`, context.request.url).toString();
-  const image = post.data?.image ? new URL(post.data.image, context.request.url).toString() : "";
+  const image = new URL("/images/mts-mark.png", context.request.url).toString();
 
   let rewriter = new HTMLRewriter()
     .on("title", { element: (element) => element.setInnerContent(title) })
@@ -449,7 +451,7 @@ export async function serveLivePost(context, slug) {
     .on('meta[property="og:url"]', { element: (element) => element.setAttribute("content", canonical) })
     .on('meta[name="twitter:title"]', { element: (element) => element.setAttribute("content", title) })
     .on('meta[name="twitter:description"]', { element: (element) => element.setAttribute("content", description) })
-    .on("head", { element(element) { element.append('<link rel="stylesheet" href="/live-content.css"><link rel="stylesheet" href="/article-final-fixes.css">', { html: true }); if (image) element.append(`<meta property="og:image" content="${escapeHtml(image)}"><meta name="twitter:image" content="${escapeHtml(image)}">`, { html: true }); } })
+    .on("head", { element(element) { element.append(`<link rel="stylesheet" href="/live-content.css"><link rel="stylesheet" href="/article-final-fixes.css"><meta property="og:image" content="${escapeHtml(image)}"><meta property="og:image:alt" content="Mercier Talent Solutions"><meta name="twitter:image" content="${escapeHtml(image)}"><meta name="twitter:image:alt" content="Mercier Talent Solutions">`, { html: true }); } })
     .on("#main-content", { element: (element) => element.setInnerContent(renderArticle({ slug, ...post }, author), { html: true }) });
 
   return rewriter.transform(asset);
