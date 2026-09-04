@@ -180,15 +180,10 @@ export async function authorizeAdminRequest(request, env) {
     }
 
     const presentedToken = authorizationToken(request);
-    if (presentedToken && secureEqual(presentedToken, session.csrf)) {
-      return { ok: true, user, session, csrfVerified: true };
+    if (!presentedToken || !secureEqual(presentedToken, session.csrf)) {
+      return { ok: false, status: 403, message: "Invalid admin session token." };
     }
-
-    // Compatibility path for the existing visual-editor fetch wrappers. The browser-controlled
-    // Origin/Referer and Sec-Fetch-Site checks above are the CSRF boundary; the signed HttpOnly
-    // session remains the credential. Legacy client authorization strings are never trusted here.
-    return { ok: true, user, session, csrfVerified: false };
   }
 
-  return { ok: true, user, session, csrfVerified: false };
+  return { ok: true, user, session, csrfVerified: unsafe };
 }
