@@ -18,6 +18,7 @@ const visualPageEdits = read('src/components/VisualPageEdits.astro');
 const categoryPills = read('public/category-pills.js');
 const servicesFixes = read('public/services-final-fixes.css');
 const editorHtml = read('public/admin/editor/index.html');
+const editorGithubCompat = read('public/admin/editor/editor-github-compat.js');
 const directCanvas = read('public/admin/editor/direct-canvas.js');
 const publishGuard = read('public/admin/editor/publish-guard.js');
 const repositorySync = read('public/admin/editor/repository-sync.js');
@@ -82,22 +83,31 @@ expect(staticServices.includes('text-shadow: none;'), 'Services source no longer
 expect(!servicesFixes.includes('main .service-number::before'), 'Services final-fixes stylesheet still hides a source-level duplicate number layer.');
 expect(!servicesFixes.includes('main .service-number {'), 'Services final-fixes stylesheet still contains obsolete number suppression.');
 
-// Editor publishing order: D1 direct publishing must capture the validated repository-sync fetch chain.
+// Editor publishing order: repository sync captures the real browser fetch, validation wraps it,
+// the compatibility layer captures both, Access wraps compatibility, and D1 direct is outermost.
+// This keeps real GitHub SHA checks out of the compatibility layer's synthetic D1 main-file responses.
 expect(editorHtml.includes('/admin/editor/repository-sync.js'), 'Repository synchronization is not loaded in the editor.');
 expect(editorHtml.includes('/admin/editor/publish-guard.js'), 'Editor publishing safety guard is not loaded.');
+expect(editorHtml.includes('/admin/editor/editor-github-compat.js'), 'GitHub compatibility layer is not loaded in the editor.');
+expect(editorHtml.includes('/admin/editor/access-fetch-fix.js'), 'Access credentials wrapper is not loaded in the editor.');
 expect(editorHtml.includes('/admin/editor/editor-d1-direct.js'), 'D1 direct publishing layer is not loaded in the editor.');
 expect(
-  editorHtml.indexOf('/admin/editor/access-fetch-fix.js') < editorHtml.indexOf('/admin/editor/repository-sync.js'),
-  'Access credentials wrapper must load before repository synchronization.',
-);
-expect(
   editorHtml.indexOf('/admin/editor/repository-sync.js') < editorHtml.indexOf('/admin/editor/publish-guard.js'),
-  'Repository synchronization must be wrapped by publish validation.',
+  'Repository synchronization must capture the real browser fetch before validation wraps it.',
 );
 expect(
-  editorHtml.indexOf('/admin/editor/publish-guard.js') < editorHtml.indexOf('/admin/editor/editor-d1-direct.js'),
-  'D1 publishing must load after and capture the validation/repository synchronization chain.',
+  editorHtml.indexOf('/admin/editor/publish-guard.js') < editorHtml.indexOf('/admin/editor/editor-github-compat.js'),
+  'GitHub compatibility must capture validation and repository synchronization for its internal content calls.',
 );
+expect(
+  editorHtml.indexOf('/admin/editor/editor-github-compat.js') < editorHtml.indexOf('/admin/editor/access-fetch-fix.js'),
+  'Access credentials wrapper must remain outside GitHub compatibility.',
+);
+expect(
+  editorHtml.indexOf('/admin/editor/access-fetch-fix.js') < editorHtml.indexOf('/admin/editor/editor-d1-direct.js'),
+  'D1 direct publishing must remain outermost so Publish requests enter the complete safety chain.',
+);
+expect(editorGithubCompat.includes('const nativeFetch = window.fetch.bind(window);'), 'GitHub compatibility no longer captures the safety chain as expected.');
 expect(repositorySync.includes("String(payload.action || 'draft') !== 'publish'"), 'Repository synchronization is not restricted to publishing.');
 expect(repositorySync.includes('loadDraft(String(payload.branch), sourceHeaders)'), 'Branch publishing no longer verifies the stored draft before repository synchronization.');
 expect(repositorySync.includes('if (!repositoryResult.ok)'), 'Repository synchronization failure no longer blocks publication.');
@@ -117,4 +127,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Content regression checks passed. Static/runtime parity, Services source cleanup, visual edit recovery, repository synchronization, and publishing safeguards are present.');
+console.log('Content regression checks passed. Static/runtime parity, Services source cleanup, visual edit recovery, real repository synchronization, and publishing safeguards are present.');
