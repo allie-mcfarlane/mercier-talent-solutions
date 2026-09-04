@@ -13,9 +13,11 @@ const newsRoute = read('functions/news.js');
 const postRoute = read('functions/post/[[slug]].js');
 const whitepapersRoute = read('functions/whitepapers.js');
 const staticWhitepapers = read('src/pages/whitepapers.astro');
+const visualPageEdits = read('src/components/VisualPageEdits.astro');
 const categoryPills = read('public/category-pills.js');
 const servicesFixes = read('public/services-final-fixes.css');
 const editorHtml = read('public/admin/editor/index.html');
+const directCanvas = read('public/admin/editor/direct-canvas.js');
 const publishGuard = read('public/admin/editor/publish-guard.js');
 const repositorySync = read('public/admin/editor/repository-sync.js');
 
@@ -67,6 +69,12 @@ expect(staticWhitepapers.includes('(await paper.render()).Content'), 'Static Whi
 expect(staticWhitepapers.includes('<Content />'), 'Static White Papers are missing rendered body content.');
 expect(!staticWhitepapers.includes('<p class="paper-body">{paper.body}</p>'), 'Static White Papers can flatten Markdown to raw text again.');
 
+// Visual editor formatting should survive nearby DOM changes by recovering the unique saved source record.
+expect(visualPageEdits.includes('const matchingRecord = (scope, element, index)'), 'Public visual formatting no longer recovers from text-index shifts.');
+expect(visualPageEdits.includes('matches.length === 1 ? matches[0] : null'), 'Public visual formatting source matching is not ambiguity-safe.');
+expect(directCanvas.includes('const matchingRecord = (scope, element, index)'), 'Editor preview formatting no longer recovers from text-index shifts.');
+expect(directCanvas.includes('const matched = matchingRecord(scope, element, index);'), 'Editor selection editing does not reuse the recovered formatting record.');
+
 // Services duplicate-number/shadow regression remains explicitly suppressed until source styles are consolidated.
 expect(servicesFixes.includes('.service-number::before'), 'Services duplicate number-layer protection is missing.');
 expect(servicesFixes.includes('text-shadow: none'), 'Services shadow-letter protection is missing.');
@@ -106,4 +114,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Content regression checks passed. Static/runtime parity, repository synchronization, and publishing safeguards are present.');
+console.log('Content regression checks passed. Static/runtime parity, visual edit recovery, repository synchronization, and publishing safeguards are present.');
