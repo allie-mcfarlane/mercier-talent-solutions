@@ -1,13 +1,7 @@
-import { getAccessEmail } from "../../../_shared/access-user.js";
+import { authorizeAdminRequest } from "../../../_shared/admin-session.js";
 
 const REPOSITORY = "allie-mcfarlane/mercier-talent-solutions";
 const REPOSITORY_PREFIX = `repos/${REPOSITORY}`;
-const ACCESS_TOKEN = "token mts-cloudflare-access";
-
-const ALLOWED_USERS = new Map([
-  ["allie@merciertalentsolutions.com", { login: "allie-mcfarlane", name: "Allie McFarlane" }],
-  ["julia@merciertalentsolutions.com", { login: "julia", name: "Julia Mercier" }],
-]);
 
 const json = (value, status = 200) =>
   new Response(JSON.stringify(value), {
@@ -18,12 +12,6 @@ const json = (value, status = 200) =>
       "X-Content-Type-Options": "nosniff",
     },
   });
-
-const getUser = async (request) => {
-  const email = await getAccessEmail(request);
-  const user = ALLOWED_USERS.get(email);
-  return user ? { ...user, email } : null;
-};
 
 const getPath = (params) => {
   const value = params.path;
@@ -77,20 +65,15 @@ const copyResponseHeaders = (upstreamHeaders, requestUrl) => {
 export async function onRequest({ request, env, params }) {
   const method = request.method.toUpperCase();
   const requestUrl = new URL(request.url);
-  const user = await getUser(request);
+  const auth = await authorizeAdminRequest(request, env);
 
-  if (!user) return json({ message: "Access denied." }, 403);
-  if (request.headers.get("authorization") !== ACCESS_TOKEN) return json({ message: "Invalid admin session." }, 401);
+  if (!auth.ok) return json({ message: auth.message }, auth.status);
+  const user = auth.user;
   if (!env.GITHUB_ADMIN_TOKEN) return json({ message: "Website publishing is not configured yet." }, 503);
   if (!["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"].includes(method)) return json({ message: "Method not allowed." }, 405);
 
   const path = getPath(params);
   if (!path || !allowedPath(path, method, requestUrl)) return json({ message: "GitHub API route not allowed." }, 403);
-
-  if (!["GET", "HEAD"].includes(method)) {
-    const origin = request.headers.get("origin");
-    if (origin && origin !== requestUrl.origin) return json({ message: "Cross-origin request blocked." }, 403);
-  }
 
   if (path === "user" && method === "GET") {
     return json({

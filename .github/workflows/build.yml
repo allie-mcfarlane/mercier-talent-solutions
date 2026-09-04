@@ -37,9 +37,21 @@ jobs:
           node --check public/admin/editor/direct-canvas.js
           node --check public/admin/editor/direct-canvas-controls-fix.js
           node --check public/admin/editor/publish-guard.js
+          node --check public/admin/editor/editor-github-compat.js
+          node --check public/admin/editor/access-fetch-fix.js
+          node --check functions/_shared/admin-session.js
+          node --check functions/admin/auth.js
+          node --check functions/admin/api/session.js
+          node --check functions/admin/api/content.js
+          node --check "functions/admin/api/github/[[path]].js"
+          node --check functions/admin/api/media.js
+          node --check functions/admin/api/blog-post.js
+          node --check functions/admin/api/white-paper.js
 
       - name: Check publishing regressions
-        run: node scripts/content-regression-check.mjs
+        run: |
+          node scripts/content-regression-check.mjs
+          node scripts/admin-entry-order-check.mjs
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

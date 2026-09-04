@@ -10,30 +10,18 @@ import {
   validContentType,
   validSlug,
 } from "../../_shared/content-store.js";
-import { getAccessEmail } from "../../_shared/access-user.js";
+import { authorizeAdminRequest } from "../../_shared/admin-session.js";
 
-const ACCESS_TOKEN = "token mts-cloudflare-access";
-const ALLOWED_USERS = new Set([
-  "allie@merciertalentsolutions.com",
-  "julia@merciertalentsolutions.com",
-]);
-
-const authorize = async (request) => {
-  const email = await getAccessEmail(request);
-  if (!ALLOWED_USERS.has(email)) return { ok: false, response: jsonResponse({ message: "Access denied." }, 403) };
-  if (request.headers.get("authorization") !== ACCESS_TOKEN) {
-    return { ok: false, response: jsonResponse({ message: "Invalid admin session." }, 401) };
+const authorize = async (request, env) => {
+  const auth = await authorizeAdminRequest(request, env);
+  if (!auth.ok) {
+    return { ok: false, response: jsonResponse({ message: auth.message }, auth.status) };
   }
-  const origin = request.headers.get("origin");
-  const requestUrl = new URL(request.url);
-  if (origin && origin !== requestUrl.origin) {
-    return { ok: false, response: jsonResponse({ message: "Cross-origin request blocked." }, 403) };
-  }
-  return { ok: true, email };
+  return { ok: true, email: auth.user.email };
 };
 
 export async function onRequestGet({ request, env }) {
-  const auth = await authorize(request);
+  const auth = await authorize(request, env);
   if (!auth.ok) return auth.response;
   if (!hasContentStore(env)) {
     return jsonResponse({ configured: false, message: "D1 content publishing is not configured yet." }, 503);
@@ -63,7 +51,7 @@ export async function onRequestGet({ request, env }) {
 }
 
 export async function onRequestPut({ request, env }) {
-  const auth = await authorize(request);
+  const auth = await authorize(request, env);
   if (!auth.ok) return auth.response;
   if (!hasContentStore(env)) {
     return jsonResponse({ configured: false, message: "D1 content publishing is not configured yet." }, 503);
@@ -118,7 +106,7 @@ export async function onRequestPut({ request, env }) {
 }
 
 export async function onRequestDelete({ request, env }) {
-  const auth = await authorize(request);
+  const auth = await authorize(request, env);
   if (!auth.ok) return auth.response;
   if (!hasContentStore(env)) {
     return jsonResponse({ configured: false, message: "D1 content publishing is not configured yet." }, 503);
