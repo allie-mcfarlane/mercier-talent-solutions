@@ -13,6 +13,7 @@ const newsRoute = read('functions/news.js');
 const postRoute = read('functions/post/[[slug]].js');
 const whitepapersRoute = read('functions/whitepapers.js');
 const staticWhitepapers = read('src/pages/whitepapers.astro');
+const staticServices = read('src/pages/services.astro');
 const visualPageEdits = read('src/components/VisualPageEdits.astro');
 const categoryPills = read('public/category-pills.js');
 const servicesFixes = read('public/services-final-fixes.css');
@@ -75,9 +76,11 @@ expect(visualPageEdits.includes('matches.length === 1 ? matches[0] : null'), 'Pu
 expect(directCanvas.includes('const matchingRecord = (scope, element, index)'), 'Editor preview formatting no longer recovers from text-index shifts.');
 expect(directCanvas.includes('const matched = matchingRecord(scope, element, index);'), 'Editor selection editing does not reuse the recovered formatting record.');
 
-// Services duplicate-number/shadow regression remains explicitly suppressed until source styles are consolidated.
-expect(servicesFixes.includes('.service-number::before'), 'Services duplicate number-layer protection is missing.');
-expect(servicesFixes.includes('text-shadow: none'), 'Services shadow-letter protection is missing.');
+// Services numbers must render once from source; no later stylesheet should have to hide a duplicate layer.
+expect(!staticServices.includes('.service-number::before'), 'Services source can render a duplicate number layer again.');
+expect(staticServices.includes('text-shadow: none;'), 'Services source no longer explicitly prevents shadowed number lettering.');
+expect(!servicesFixes.includes('main .service-number::before'), 'Services final-fixes stylesheet still hides a source-level duplicate number layer.');
+expect(!servicesFixes.includes('main .service-number {'), 'Services final-fixes stylesheet still contains obsolete number suppression.');
 
 // Editor publishing order: D1 direct publishing must capture the validated repository-sync fetch chain.
 expect(editorHtml.includes('/admin/editor/repository-sync.js'), 'Repository synchronization is not loaded in the editor.');
@@ -114,4 +117,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Content regression checks passed. Static/runtime parity, visual edit recovery, repository synchronization, and publishing safeguards are present.');
+console.log('Content regression checks passed. Static/runtime parity, Services source cleanup, visual edit recovery, repository synchronization, and publishing safeguards are present.');
