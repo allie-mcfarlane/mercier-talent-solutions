@@ -16,7 +16,7 @@ const SEED_KEYS = {
   whitepaper: "whitepapers",
 };
 
-const DATE_KEYS = new Set(["date", "pubDate"]);
+const DATE_KEYS = new Set(["date", "pubDate", "updatedDate"]);
 
 const normalizeBody = (value = "") => String(value ?? "")
   .replace(/\r\n?/g, "\n")
@@ -34,19 +34,49 @@ const normalizeScalar = (value, key = "") => {
   return text;
 };
 
-const subsetMatches = (published, seed, key = "") => {
-  if (Array.isArray(published)) {
-    if (!Array.isArray(seed) || published.length !== seed.length) return false;
-    return published.every((value, index) => subsetMatches(value, seed[index], key));
+const normalizedPath = (path = "") => path.replace(/\[\d+\]/g, "[]");
+
+const isSeedDefault = (path, value) => {
+  const key = normalizedPath(path);
+  if (key === "author" && value === "Julia Mercier") return true;
+  if (key === "authorTitle" && value === "Principal") return true;
+  if (key === "roles[].description" && Array.isArray(value) && value.length === 0) return true;
+  if (key === "applicationForm.eyebrow" && value === "Apply") return true;
+  if (key === "applicationForm.title" && value === "Submit your application") return true;
+  if (key === "applicationForm.intro" && value === "") return true;
+  if (key === "applicationForm.submitLabel" && value === "Submit application") return true;
+  if (key === "applicationForm.fields" && Array.isArray(value) && value.length === 0) return true;
+  if (key === "applicationForm.fields[].required" && value === false) return true;
+  return false;
+};
+
+const valuesMatch = (published, seed, path = "", key = "") => {
+  if (Array.isArray(published) || Array.isArray(seed)) {
+    if (!Array.isArray(published) || !Array.isArray(seed) || published.length !== seed.length) return false;
+    return published.every((value, index) => valuesMatch(value, seed[index], `${path}[${index}]`, key));
   }
 
-  if (published && typeof published === "object") {
-    if (!seed || typeof seed !== "object" || Array.isArray(seed)) return false;
-    return Object.keys(published).every((childKey) => {
-      if (published[childKey] === undefined) return true;
-      if (!Object.prototype.hasOwnProperty.call(seed, childKey)) return false;
-      return subsetMatches(published[childKey], seed[childKey], childKey);
-    });
+  const publishedObject = published && typeof published === "object";
+  const seedObject = seed && typeof seed === "object";
+  if (publishedObject || seedObject) {
+    if (!publishedObject || !seedObject) return false;
+    const publishedKeys = Object.keys(published).filter((childKey) => published[childKey] !== undefined);
+    const seedKeys = Object.keys(seed).filter((childKey) => seed[childKey] !== undefined);
+    const keys = new Set([...publishedKeys, ...seedKeys]);
+
+    for (const childKey of keys) {
+      const childPath = path ? `${path}.${childKey}` : childKey;
+      const hasPublished = Object.prototype.hasOwnProperty.call(published, childKey) && published[childKey] !== undefined;
+      const hasSeed = Object.prototype.hasOwnProperty.call(seed, childKey) && seed[childKey] !== undefined;
+
+      if (!hasPublished) {
+        if (hasSeed && isSeedDefault(childPath, seed[childKey])) continue;
+        return false;
+      }
+      if (!hasSeed) return false;
+      if (!valuesMatch(published[childKey], seed[childKey], childPath, childKey)) return false;
+    }
+    return true;
   }
 
   const left = normalizeScalar(published, key);
@@ -60,7 +90,7 @@ const subsetMatches = (published, seed, key = "") => {
 
 export const publishedMatchesSeed = (published, seedEntry) => {
   if (!published || !seedEntry) return false;
-  return subsetMatches(published.data || {}, seedEntry.data || {})
+  return valuesMatch(published.data || {}, seedEntry.data || {})
     && normalizeBody(published.body || "") === normalizeBody(seedEntry.body || "");
 };
 
@@ -77,7 +107,9 @@ export const runtimeEntryIsAhead = (entry, seedEntry, generatedAt) => {
   const builtAt = parsedTime(generatedAt);
   if (publishedAt !== null && builtAt !== null) return publishedAt > builtAt;
 
-  // If either timestamp is unavailable, preserve the existing runtime behavior.
+  // A built static entry is the safer steady-state source when an old D1 row
+  // has no reliable publish timestamp. D1-only legacy content is preserved.
+  if (seedEntry && builtAt !== null) return false;
   return true;
 };
 
