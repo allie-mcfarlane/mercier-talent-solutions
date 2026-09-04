@@ -7,7 +7,6 @@
   const MEDIA_API = '/admin/api/media';
   const REPO_PATH = 'repos/allie-mcfarlane/mercier-talent-solutions';
   const OWNER = 'allie-mcfarlane';
-  const AUTH = 'token mts-cloudflare-access';
   const BRANCH_CACHE_KEY = 'mts-visual-draft-branches-v2';
   const PR_CACHE_KEY = 'mts-visual-draft-prs-v2';
   const BRANCH_PATH_KEY = 'mts-visual-draft-paths-v2';
@@ -161,9 +160,18 @@
     return '';
   };
 
+  const sessionHeaders = async (base = {}) => {
+    const headers = new Headers(base || {});
+    const csrf = await window.MTSAdminSession?.getCsrf?.();
+    if (csrf) {
+      headers.set('X-MTS-CSRF', csrf);
+      headers.set('Authorization', `token ${csrf}`);
+    }
+    return headers;
+  };
+
   const adminFetch = async (url, options = {}) => {
-    const headers = new Headers(options.headers || {});
-    headers.set('Authorization', AUTH);
+    const headers = await sessionHeaders(options.headers || {});
     if (options.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
     const response = await nativeFetch(url, { credentials: 'same-origin', ...options, headers });
     if (response.status === 503) d1Available = false;
@@ -264,17 +272,19 @@
   };
 
   const publishFallbackBranch = async (branch, input, init) => {
+    const readHeaders = await sessionHeaders({ Accept: 'application/vnd.github+json' });
     const branchResponse = await nativeFetch(`${API_PREFIX}${REPO_PATH}/git/ref/heads/${encodeURIComponent(branch)}`, {
-      headers: { Accept: 'application/vnd.github+json', Authorization: AUTH },
+      headers: readHeaders,
       credentials: 'same-origin',
     });
     if (!branchResponse.ok) return jsonResponse({ merged: false, message: 'The saved draft could not be found.' });
     const branchData = await branchResponse.json();
     const branchSha = branchData?.object?.sha;
+    const writeHeaders = await sessionHeaders({ Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' });
     const response = await nativeFetch(`${API_PREFIX}${REPO_PATH}/git/refs/heads/main`, {
       method: 'PATCH',
       credentials: 'same-origin',
-      headers: { Accept: 'application/vnd.github+json', Authorization: AUTH, 'Content-Type': 'application/json' },
+      headers: writeHeaders,
       body: JSON.stringify({ sha: branchSha, force: false }),
     });
     if (!response.ok) return jsonResponse({ merged: false, message: 'The website changed after this draft was started. Your draft is still safe.' });
