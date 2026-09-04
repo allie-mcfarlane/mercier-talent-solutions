@@ -1,4 +1,6 @@
 (() => {
+  'use strict';
+
   const ADMIN_LINKS = {
     home: '/admin/editor/#/',
     currentPages: '/admin/editor/#/pages',
@@ -9,6 +11,8 @@
     media: '#/media',
     design: '#/collections/settings/entries/appearance',
   };
+
+  let refreshQueued = false;
 
   const closeMenus = (except) => {
     document.querySelectorAll('.mts-editor-menu[open]').forEach((menu) => {
@@ -38,7 +42,7 @@
       </div>
 
       <nav class="mts-editor-nav" aria-label="Website editor menu">
-        <details class="mts-editor-menu">
+        <details class="mts-editor-menu" data-admin-section="pages">
           <summary>Pages</summary>
           <div class="mts-editor-dropdown">
             <a href="${ADMIN_LINKS.currentPages}">
@@ -51,11 +55,11 @@
             </a>
           </div>
         </details>
-        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.blog}">Blog Posts</a>
-        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.whitepapers}">White Papers</a>
-        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.media}">Media Assets</a>
-        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.menu}">Top Menu</a>
-        <a class="mts-editor-nav-link" href="${ADMIN_LINKS.design}">Design</a>
+        <a class="mts-editor-nav-link" data-admin-section="blog" href="${ADMIN_LINKS.blog}">Blog Posts</a>
+        <a class="mts-editor-nav-link" data-admin-section="whitepapers" href="${ADMIN_LINKS.whitepapers}">White Papers</a>
+        <a class="mts-editor-nav-link" data-admin-section="media" href="${ADMIN_LINKS.media}">Media Assets</a>
+        <a class="mts-editor-nav-link" data-admin-section="menu" href="${ADMIN_LINKS.menu}">Top Menu</a>
+        <a class="mts-editor-nav-link" data-admin-section="design" href="${ADMIN_LINKS.design}">Design</a>
       </nav>
 
       <section class="mts-editor-dashboard" aria-label="Editor home">
@@ -101,7 +105,7 @@
             <a href="${ADMIN_LINKS.whitepapers}"><span>White Papers</span><small>Manage PDFs and library entries</small></a>
             <a href="${ADMIN_LINKS.media}"><span>Media Assets</span><small>Browse or replace website images</small></a>
             <a href="${ADMIN_LINKS.menu}"><span>Top Menu</span><small>Add or reorder website links</small></a>
-            <a href="${ADMIN_LINKS.design}"><span>Design</span><small>Colors and font sizes</small></a>
+            <a href="${ADMIN_LINKS.design}"><span>Design</span><small>Approved colors and font sizes</small></a>
           </div>
         </div>
       </section>
@@ -120,6 +124,19 @@
     });
   };
 
+  const relabelLogin = () => {
+    document.querySelectorAll('button').forEach((button) => {
+      if (!button.textContent?.includes('Login with GitHub')) return;
+      const walker = document.createTreeWalker(button, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (node.nodeValue?.includes('Login with GitHub')) {
+          node.nodeValue = node.nodeValue.replace('Login with GitHub', 'Continue to Mercier Admin');
+        }
+      }
+    });
+  };
+
   const relabelButtons = () => {
     document.querySelectorAll('button').forEach((button) => {
       const text = (button.textContent || '').trim();
@@ -134,9 +151,28 @@
     document.body.classList.toggle('mts-whitepaper-library', text.includes('White Papers'));
     document.querySelectorAll('a').forEach((link) => {
       const label = (link.textContent || '').trim();
-      if (/^No\.\s*\d+/i.test(label) && label.includes('|')) {
-        link.classList.add('mts-whitepaper-row');
-      }
+      if (/^No\.\s*\d+/i.test(label) && label.includes('|')) link.classList.add('mts-whitepaper-row');
+    });
+  };
+
+  const currentSection = () => {
+    const hash = window.location.hash || '#/';
+    if (hash.startsWith('#/media')) return 'media';
+    if (hash.includes('/collections/navigation')) return 'menu';
+    if (hash.includes('/collections/settings')) return 'design';
+    if (hash.includes('/collections/white-papers')) return 'whitepapers';
+    if (hash.includes('/collections/posts') || hash.includes('/collections/blog')) return 'blog';
+    if (hash.includes('/collections/pages') || hash.includes('/collections/custom-pages')) return 'pages';
+    return '';
+  };
+
+  const updateNavigation = () => {
+    const active = currentSection();
+    document.querySelectorAll('[data-admin-section]').forEach((item) => {
+      const isActive = item.dataset.adminSection === active;
+      item.classList.toggle('active', isActive);
+      if (isActive) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
     });
   };
 
@@ -167,15 +203,26 @@
 
   const refresh = () => {
     ensureShell();
+    relabelLogin();
     relabelButtons();
     markWhitePaperRows();
+    updateNavigation();
     updateDashboard();
     decoratePreview();
   };
 
-  const observer = new MutationObserver(refresh);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-  window.addEventListener('hashchange', refresh);
-  window.addEventListener('load', refresh);
+  const scheduleRefresh = () => {
+    if (refreshQueued) return;
+    refreshQueued = true;
+    requestAnimationFrame(() => {
+      refreshQueued = false;
+      refresh();
+    });
+  };
+
+  const observer = new MutationObserver(scheduleRefresh);
+  observer.observe(document.body, { childList: true, subtree: true });
+  window.addEventListener('hashchange', scheduleRefresh);
+  window.addEventListener('load', scheduleRefresh);
   refresh();
 })();
