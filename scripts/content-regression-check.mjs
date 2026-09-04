@@ -12,6 +12,7 @@ const homeRoute = read('functions/index.js');
 const newsRoute = read('functions/news.js');
 const postRoute = read('functions/post/[[slug]].js');
 const whitepapersRoute = read('functions/whitepapers.js');
+const staticWhitepapers = read('src/pages/whitepapers.astro');
 const categoryPills = read('public/category-pills.js');
 const servicesFixes = read('public/services-final-fixes.css');
 const editorHtml = read('public/admin/editor/index.html');
@@ -59,24 +60,32 @@ expect(liveRender.includes('/images/mts-mark.png'), 'Runtime article source is m
 expect(postRoute.includes('/images/mts-mark.png'), 'Runtime article route is missing neutral social-image enforcement.');
 expect(!postRoute.includes('/images/julia-mercier.jpg'), 'Runtime social preview route contains a Julia headshot fallback.');
 
-// White-paper body formatting should use stored rendered HTML when available rather than flattening Markdown to text.
+// White-paper body formatting must remain rendered in both static Astro and runtime paths.
 expect(liveRender.includes('paper.html || paragraphs(paper.body || "")'), 'Runtime white-paper body formatting can be flattened again.');
 expect(liveRender.includes('<div class="paper-body">${bodyHtml}</div>'), 'Runtime white-paper body container no longer preserves rendered content.');
+expect(staticWhitepapers.includes('(await paper.render()).Content'), 'Static White Papers no longer render Markdown through Astro content.');
+expect(staticWhitepapers.includes('<Content />'), 'Static White Papers are missing rendered body content.');
+expect(!staticWhitepapers.includes('<p class="paper-body">{paper.body}</p>'), 'Static White Papers can flatten Markdown to raw text again.');
 
 // Services duplicate-number/shadow regression remains explicitly suppressed until source styles are consolidated.
 expect(servicesFixes.includes('.service-number::before'), 'Services duplicate number-layer protection is missing.');
 expect(servicesFixes.includes('text-shadow: none'), 'Services shadow-letter protection is missing.');
 
-// Editor publishing order: validate first, synchronize the repository second, then allow D1 publication.
+// Editor publishing order: D1 direct publishing must capture the validated repository-sync fetch chain.
 expect(editorHtml.includes('/admin/editor/repository-sync.js'), 'Repository synchronization is not loaded in the editor.');
 expect(editorHtml.includes('/admin/editor/publish-guard.js'), 'Editor publishing safety guard is not loaded.');
+expect(editorHtml.includes('/admin/editor/editor-d1-direct.js'), 'D1 direct publishing layer is not loaded in the editor.');
 expect(
-  editorHtml.indexOf('/admin/editor/repository-sync.js') > editorHtml.indexOf('/admin/editor/access-fetch-fix.js'),
-  'Repository synchronization must load after the data/access fetch layers.',
+  editorHtml.indexOf('/admin/editor/access-fetch-fix.js') < editorHtml.indexOf('/admin/editor/repository-sync.js'),
+  'Access credentials wrapper must load before repository synchronization.',
 );
 expect(
-  editorHtml.indexOf('/admin/editor/publish-guard.js') > editorHtml.indexOf('/admin/editor/repository-sync.js'),
-  'Publish validation must wrap repository synchronization and run first.',
+  editorHtml.indexOf('/admin/editor/repository-sync.js') < editorHtml.indexOf('/admin/editor/publish-guard.js'),
+  'Repository synchronization must be wrapped by publish validation.',
+);
+expect(
+  editorHtml.indexOf('/admin/editor/publish-guard.js') < editorHtml.indexOf('/admin/editor/editor-d1-direct.js'),
+  'D1 publishing must load after and capture the validation/repository synchronization chain.',
 );
 expect(repositorySync.includes("String(payload.action || 'draft') !== 'publish'"), 'Repository synchronization is not restricted to publishing.');
 expect(repositorySync.includes('loadDraft(String(payload.branch), sourceHeaders)'), 'Branch publishing no longer verifies the stored draft before repository synchronization.');
@@ -97,4 +106,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Content regression checks passed. Runtime parity, repository synchronization, and publishing safeguards are present.');
+console.log('Content regression checks passed. Static/runtime parity, repository synchronization, and publishing safeguards are present.');
