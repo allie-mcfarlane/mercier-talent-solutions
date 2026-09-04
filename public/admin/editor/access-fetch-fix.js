@@ -5,6 +5,7 @@
   const SESSION_ENDPOINT = '/admin/api/session';
   const CSRF_COOKIE = '__Secure-mts_admin_csrf';
   let sessionPromise = null;
+  let sessionToken = '';
 
   const readCookie = (name) => {
     const prefix = `${name}=`;
@@ -16,8 +17,7 @@
   };
 
   const bootstrapSession = async () => {
-    const existing = readCookie(CSRF_COOKIE);
-    if (existing) return existing;
+    if (sessionToken) return sessionToken;
     if (sessionPromise) return sessionPromise;
 
     sessionPromise = (async () => {
@@ -28,7 +28,8 @@
       });
       if (!response.ok) return '';
       const payload = await response.json().catch(() => ({}));
-      return String(payload?.csrf || readCookie(CSRF_COOKIE) || '');
+      sessionToken = String(payload?.csrf || readCookie(CSRF_COOKIE) || '');
+      return sessionToken;
     })();
 
     try { return await sessionPromise; }
