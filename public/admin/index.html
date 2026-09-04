@@ -38,24 +38,6 @@
           }
         }
       });
-
-      (() => {
-        const relabel = () => {
-          document.querySelectorAll("button").forEach((button) => {
-            if (button.textContent && button.textContent.includes("Login with GitHub")) {
-              const walker = document.createTreeWalker(button, NodeFilter.SHOW_TEXT);
-              while (walker.nextNode()) {
-                const node = walker.currentNode;
-                if (node.nodeValue && node.nodeValue.includes("Login with GitHub")) {
-                  node.nodeValue = node.nodeValue.replace("Login with GitHub", "Continue to Mercier Admin");
-                }
-              }
-            }
-          });
-        };
-        new MutationObserver(relabel).observe(document.body, { childList: true, subtree: true });
-        relabel();
-      })();
     </script>
     <script src="/admin/admin-preview.js"></script>
     <script src="/admin/page-live-preview.js"></script>
