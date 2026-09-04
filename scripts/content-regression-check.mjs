@@ -129,7 +129,8 @@ expect(publishGuard.includes("action === 'publish'"), 'Publish-time strict valid
 expect(publishGuard.includes("type === 'post'"), 'Article validation is missing.');
 expect(publishGuard.includes("type === 'whitepaper'"), 'White paper validation is missing.');
 
-// Admin security: Cloudflare Access identity is bound to a short-lived signed HttpOnly session.
+// Admin security: Cloudflare Access identity is bound to a short-lived signed HttpOnly session,
+// and every write also requires the matching per-session CSRF value.
 const protectedServerSources = [adminAuth, contentApi, githubBridge, mediaApi, blogPostApi, whitePaperApi].join('\n');
 expect(adminSession.includes('crypto.subtle.sign'), 'Admin sessions are no longer cryptographically signed server-side.');
 expect(adminSession.includes('HttpOnly; Secure; SameSite=Strict'), 'Admin session cookie is missing HttpOnly/Secure/SameSite protection.');
@@ -137,18 +138,22 @@ expect(adminSession.includes('getAllowedAdminUser(request)'), 'Admin session aut
 expect(adminSession.includes('new URL(referer).origin !== url.origin'), 'Unsafe admin requests are missing same-origin Origin/Referer enforcement.');
 expect(adminSession.includes('fetchSite === "same-origin"'), 'Unsafe admin requests are missing Fetch Metadata enforcement.');
 expect(adminSession.includes('ADMIN_SESSION_SECRET || env?.GITHUB_ADMIN_TOKEN'), 'Admin session signing has no server-only signing-key source.');
+expect(adminSession.includes('Invalid admin session token.'), 'Unsafe admin requests no longer fail closed when the per-session CSRF value is missing or wrong.');
+expect(adminSession.includes('!presentedToken || !secureEqual(presentedToken, session.csrf)'), 'Unsafe admin requests do not strictly require the matching session CSRF value.');
 expect(adminAuth.includes('createAdminSession(env, user)'), 'Admin login no longer issues a signed server session.');
 expect(adminAuth.includes('token: session.csrf'), 'Decap login no longer receives the per-session CSRF value.');
 expect(sessionApi.includes('appendAdminSessionCookies(headers, session)'), 'Custom editor session bootstrap no longer sets signed session cookies.');
 expect(accessFetch.includes("const SESSION_ENDPOINT = '/admin/api/session';"), 'Custom editor no longer bootstraps a server session.');
 expect(accessFetch.includes("headers.set('X-MTS-CSRF', csrf)"), 'Custom editor no longer sends the per-session CSRF value.');
 expect(accessFetch.includes("headers.set('Authorization', `token ${csrf}`)"), 'Custom editor no longer replaces legacy authorization headers with the per-session value.');
+expect(editorGithubCompat.includes('const sessionHeaders = async (base = {})'), 'GitHub compatibility requests no longer obtain the current signed-session CSRF value.');
+expect(editorGithubCompat.includes("headers.set('X-MTS-CSRF', csrf)"), 'GitHub compatibility requests no longer send the per-session CSRF value.');
+expect(!editorGithubCompat.includes('const AUTH ='), 'GitHub compatibility can contain a fixed browser authorization value again.');
 expect(contentApi.includes('authorizeAdminRequest(request, env)'), 'D1 content API is not using the shared signed-session authorization.');
 expect(githubBridge.includes('authorizeAdminRequest(request, env)'), 'GitHub publishing bridge is not using the shared signed-session authorization.');
 expect(mediaApi.includes('authorizeAdminRequest(request, env)'), 'Media API is not using the shared signed-session authorization.');
 expect(blogPostApi.includes('authorizeAdminRequest(request, env)'), 'Blog deletion is not using the shared signed-session authorization.');
 expect(whitePaperApi.includes('authorizeAdminRequest(request, env)'), 'White Paper deletion is not using the shared signed-session authorization.');
-expect(!protectedServerSources.includes('mts-cloudflare-access'), 'A static browser authorization marker is trusted by a protected server endpoint again.');
 expect(!protectedServerSources.includes('const ACCESS_TOKEN'), 'Protected server endpoints contain a static client authorization token again.');
 expect(!accessFetch.includes('GITHUB_ADMIN_TOKEN'), 'A server publishing secret leaked into browser session code.');
 
@@ -159,4 +164,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Content regression checks passed. Static/runtime parity, Services source cleanup, visual edit recovery, real repository synchronization, publishing safeguards, and signed admin-session protections are present.');
+console.log('Content regression checks passed. Static/runtime parity, Services source cleanup, visual edit recovery, real repository synchronization, publishing safeguards, and strict signed admin-session protections are present.');
