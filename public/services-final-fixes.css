@@ -26,17 +26,6 @@ main .service-section .consulting-list p {
   line-height: 1.68 !important;
 }
 
-/* Remove the duplicate pale-blue number layer. */
-main .service-number {
-  text-shadow: none !important;
-  filter: none !important;
-}
-
-main .service-number::before {
-  display: none !important;
-  content: none !important;
-}
-
 /* Use the same divider-to-copy spacing for Coaching, Assessments, Training and Consulting. */
 main .section-heading-anchor {
   margin-bottom: var(--service-heading-copy-gap) !important;

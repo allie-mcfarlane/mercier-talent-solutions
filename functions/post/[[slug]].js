@@ -72,7 +72,7 @@ export async function onRequestGet(context) {
     })
     .on("head", {
       element(element) {
-        element.append(`<script src="/article-pdf-download.js?v=${ASSET_VERSION}" defer></script>`, { html: true });
+        element.append(`<script src="/article-pdf-download.js?v=${ASSET_VERSION}" defer></script><script src="/category-pills.js?v=${ASSET_VERSION}" defer></script>`, { html: true });
       },
     })
     .on('link[href*="article-final-fixes.css"]', {
@@ -95,24 +95,9 @@ export async function onRequestGet(context) {
         element.setAttribute("src", `/article-pdf-download.js?v=${ASSET_VERSION}`);
       },
     })
-    .on(".live-article-actions [data-download-article]", {
+    .on('script[src*="category-pills.js"]', {
       element(element) {
-        element.remove();
-      },
-    })
-    .on(".live-article-actions [data-download-status]", {
-      element(element) {
-        element.remove();
-      },
-    })
-    .on(".live-article-actions .article-action.primary", {
-      element(element) {
-        element.before('<button class="article-action" type="button" data-download-article>Download article</button>', { html: true });
-      },
-    })
-    .on(".live-article-actions", {
-      element(element) {
-        element.append('<p class="download-status" aria-live="polite" data-download-status></p>', { html: true });
+        element.setAttribute("src", `/category-pills.js?v=${ASSET_VERSION}`);
       },
     })
     .transform(response);

@@ -21,6 +21,13 @@ const papers = (await getCollection("white-papers")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 
+const renderedPapers = await Promise.all(
+  papers.map(async (paper) => ({
+    paper,
+    Content: (await paper.render()).Content,
+  })),
+);
+
 const dateFormat = {
   month: "long",
   day: "numeric",
@@ -58,7 +65,7 @@ const dateFormat = {
   <section class="papers-section">
     <div class="container paper-list">
       {
-        papers.map((paper, index) => (
+        renderedPapers.map(({ paper, Content }, index) => (
           <article
             class={`paper-row ${index % 2 === 1 ? "paper-row-reverse" : ""}`}
             data-wp-reveal
@@ -88,7 +95,9 @@ const dateFormat = {
 
               <p class="paper-subtitle">{paper.data.description}</p>
 
-              <p class="paper-body">{paper.body}</p>
+              <div class="paper-body">
+                <Content />
+              </div>
 
               {
                 paper.data.document && (
@@ -474,6 +483,19 @@ const dateFormat = {
     color: var(--color-ink);
     font-size: clamp(16px, 1.05vw, 18px);
     line-height: 1.72;
+  }
+
+  .paper-body :global(p:first-child) {
+    margin-top: 0;
+  }
+
+  .paper-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .paper-body :global(ul),
+  .paper-body :global(ol) {
+    padding-left: 1.35rem;
   }
 
   .paper-action {

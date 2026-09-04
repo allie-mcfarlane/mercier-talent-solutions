@@ -165,6 +165,14 @@ const builderInline = Object.fromEntries(
       });
     };
 
+    const matchingRecord = (scope, element, index) => {
+      const source = element.textContent || "";
+      const indexed = scope[String(index)];
+      if (indexed?.source === source) return indexed;
+      const matches = Object.values(scope).filter((record) => record?.source === source);
+      return matches.length === 1 ? matches[0] : null;
+    };
+
     const applyInlineStyles = () => {
       assignTokens().forEach((block) => {
         const token = block.dataset.mtsPageToken || "";
@@ -172,7 +180,7 @@ const builderInline = Object.fromEntries(
           ? builderInline[token.slice("builder:".length)] || {}
           : inlineStyles[token] || {};
         [...block.querySelectorAll(TEXT_SELECTOR)].forEach((element, index) => {
-          const record = scope[String(index)];
+          const record = matchingRecord(scope, element, index);
           if (record) applyRecord(element, record);
         });
       });
