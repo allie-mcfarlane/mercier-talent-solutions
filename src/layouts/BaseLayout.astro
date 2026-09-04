@@ -241,6 +241,14 @@ const teamAuthors = Object.fromEntries(
     <Footer />
     <script is:inline define:vars={{ teamAuthors }}>
       (() => {
+        document.querySelectorAll(".news-band .news-author").forEach((meta) => {
+          meta.querySelector("img")?.remove();
+          const text = meta.querySelector("span");
+          if (!text) return;
+          const parts = (text.textContent || "").split("·").map((part) => part.trim()).filter(Boolean);
+          if (parts.length > 1) text.textContent = parts.at(-1) || "";
+        });
+
         const authorName = document.querySelector(".author-copy strong")?.textContent?.trim();
         if (!authorName) return;
 
