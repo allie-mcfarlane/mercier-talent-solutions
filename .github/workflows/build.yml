@@ -39,6 +39,8 @@ jobs:
           node --check public/admin/editor/publish-guard.js
           node --check public/admin/editor/admin-shell.js
           node --check public/admin/editor/workspace-tools.js
+          node --check public/admin/editor/preview-readonly.js
+          node --check scripts/build-admin-preview-data.mjs
 
       - name: Check publishing regressions
         run: node scripts/content-regression-check.mjs
