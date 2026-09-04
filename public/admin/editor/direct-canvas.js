@@ -398,6 +398,14 @@
 
   const targetElements = (block) => [...block.querySelectorAll(TEXT_SELECTOR)].filter((element) => !element.closest('[data-mts-direct-control="true"]'));
 
+  const matchingRecord = (scope, element, index) => {
+    const source = element.textContent || '';
+    const indexed = scope[String(index)];
+    if (indexed?.source === source) return indexed;
+    const matches = Object.values(scope).filter((record) => record?.source === source);
+    return matches.length === 1 ? matches[0] : null;
+  };
+
   const assignInlineTargets = (doc) => {
     const store = getStore();
     if (!store) return;
@@ -409,7 +417,7 @@
         element.dataset.mtsInlineTarget = 'true';
         element.dataset.mtsInlineToken = token;
         element.dataset.mtsInlineIndex = String(index);
-        const record = scope[String(index)];
+        const record = matchingRecord(scope, element, index);
         if (record) applyRecord(element, record);
       });
     });
@@ -428,6 +436,8 @@
       scope = store.fixedInline[token] || (create ? (store.fixedInline[token] = {}) : null);
     }
     if (!scope) return null;
+    const matched = matchingRecord(scope, element, index);
+    if (matched) return matched;
     if (!scope[index] && create) scope[index] = { source: element.textContent || '', formats: [] };
     return scope[index] || null;
   };
