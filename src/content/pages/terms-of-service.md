@@ -4,7 +4,7 @@ title: Terms of Service
 updated: "Last updated: August 2026"
 ---
 
-MTS Coaching Notes is an internal Google Workspace add-on provided by Mercier Talent Solutions LLC for authorized business use.
+MTS Notes is an internal Google Workspace add-on provided by Mercier Talent Solutions LLC for authorized business use.
 
 The add-on is designed to help users create and format coaching-session notes in Google Docs. Users are responsible for using it appropriately and in accordance with Mercier Talent Solutions policies and applicable law.
 
