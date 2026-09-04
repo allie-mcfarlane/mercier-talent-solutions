@@ -1,4 +1,4 @@
-import { serveLivePost } from "../_shared/live-render.js";
+import { serveBridgedPost } from "../_shared/runtime-bridge.js";
 
 const ASSET_VERSION = "20260903-1020";
 const getSlug = (params) => Array.isArray(params.slug) ? params.slug.join("/") : String(params.slug || "");
@@ -7,7 +7,7 @@ export async function onRequestGet(context) {
   const slug = getSlug(context.params).replace(/^\/+|\/+$/g, "");
   if (!slug || slug.includes("/")) return context.next();
 
-  const response = await serveLivePost(context, slug);
+  const response = await serveBridgedPost(context, slug);
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 

@@ -1,7 +1,7 @@
-import { serveExistingPage } from "./_shared/live-render.js";
+import { serveBridgedExistingPage } from "./_shared/runtime-bridge.js";
 
 export async function onRequestGet(context) {
-  const response = await serveExistingPage(context, "news");
+  const response = await serveBridgedExistingPage(context, "news");
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 
