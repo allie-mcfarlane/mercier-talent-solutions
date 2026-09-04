@@ -37,6 +37,7 @@ jobs:
           node --check public/admin/editor/direct-canvas.js
           node --check public/admin/editor/direct-canvas-controls-fix.js
           node --check public/admin/editor/publish-guard.js
+          node --check public/admin/editor/editor-github-compat.js
           node --check public/admin/editor/access-fetch-fix.js
           node --check functions/_shared/admin-session.js
           node --check functions/admin/auth.js
