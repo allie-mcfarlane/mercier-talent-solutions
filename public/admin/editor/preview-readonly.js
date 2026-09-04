@@ -6,6 +6,16 @@
   window.MTS_ADMIN_PREVIEW_READ_ONLY = isBranchPreview;
   if (!isBranchPreview) return;
 
+  const previewStyle = document.createElement('style');
+  previewStyle.textContent = `
+    .mts-preview-mode{position:fixed;right:20px;bottom:18px;z-index:220;display:grid;gap:3px;max-width:430px;border:1px solid #cbd7e4;border-radius:12px;padding:11px 14px;background:rgba(255,255,255,.98);box-shadow:0 14px 36px rgba(26,43,70,.16);color:#53657b}
+    .mts-preview-mode strong{color:#1a2b46;font-size:10px}
+    .mts-preview-mode span{font-size:9px;line-height:1.45}
+    .mts-preview-readonly button:disabled{opacity:.48;cursor:not-allowed}
+    @media(max-width:760px){.mts-preview-mode{left:12px;right:12px;bottom:12px;max-width:none}}
+  `;
+  document.head.append(previewStyle);
+
   const downstreamFetch = window.fetch.bind(window);
   let snapshotPromise = null;
 
