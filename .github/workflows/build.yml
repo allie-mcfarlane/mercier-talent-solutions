@@ -37,9 +37,14 @@ jobs:
           node --check public/admin/editor/direct-canvas.js
           node --check public/admin/editor/direct-canvas-controls-fix.js
           node --check public/admin/editor/publish-guard.js
+          node --check public/admin/editor/admin-shell.js
+          node --check public/admin/editor/workspace-tools.js
 
       - name: Check publishing regressions
         run: node scripts/content-regression-check.mjs
+
+      - name: Check admin workspace
+        run: node scripts/admin-workspace-check.mjs
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
