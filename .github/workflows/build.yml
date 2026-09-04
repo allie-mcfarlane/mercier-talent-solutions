@@ -57,6 +57,16 @@ jobs:
           node scripts/content-regression-check.mjs
           node scripts/admin-entry-order-check.mjs
 
+      - name: Check runtime content bridge
+        run: |
+          node --check functions/_shared/runtime-bridge.js
+          node --check functions/index.js
+          node --check functions/news.js
+          node --check functions/services.js
+          node --check "functions/post/[[slug]].js"
+          node --check "functions/[slug].js"
+          node scripts/runtime-bridge-check.mjs
+
       - name: Check admin workspace
         run: node scripts/admin-workspace-check.mjs
 

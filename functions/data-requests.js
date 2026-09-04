@@ -1,5 +1,5 @@
-import { serveExistingPage } from "./_shared/live-render.js";
+import { serveBridgedExistingPage } from "./_shared/runtime-bridge.js";
 
 export function onRequestGet(context) {
-  return serveExistingPage(context, "data-requests");
+  return serveBridgedExistingPage(context, "data-requests");
 }

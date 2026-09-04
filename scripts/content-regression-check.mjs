@@ -45,8 +45,8 @@ expect(
   liveRender.includes('pageKey === "home" ? getPublishedOverride(context.env, "page", "services")'),
   'Services preview content is no longer isolated to Home.',
 );
-expect(newsRoute.includes('serveExistingPage(context, "news")'), 'News route no longer targets only the News page.');
-expect(whitepapersRoute.includes('serveExistingPage(context, "whitepapers")'), 'White Papers route no longer targets only White Papers.');
+expect(newsRoute.includes('serveBridgedExistingPage(context, "news")'), 'News route no longer targets only the News page through the runtime bridge.');
+expect(whitepapersRoute.includes('serveBridgedExistingPage(context, "whitepapers")'), 'White Papers route no longer targets only White Papers through the runtime bridge.');
 
 // Homepage article cards: only Read more should be interactive and author thumbnails stay hidden.
 expect(homeRoute.includes('element.tagName = "article"'), 'Homepage news cards can become whole-card links again.');
