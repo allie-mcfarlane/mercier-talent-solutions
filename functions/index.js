@@ -1,4 +1,4 @@
-import { serveExistingPage } from "./_shared/live-render.js";
+import { serveBridgedExistingPage } from "./_shared/runtime-bridge.js";
 
 const safePostHref = (value = "") => {
   const href = String(value || "").trim();
@@ -150,7 +150,7 @@ const homepageNewsStyles = `
 </style>`;
 
 export async function onRequestGet(context) {
-  const response = await serveExistingPage(context, "home");
+  const response = await serveBridgedExistingPage(context, "home");
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 
