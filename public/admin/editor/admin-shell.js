@@ -9,12 +9,12 @@
     ['Home', '/admin/editor/#/page/home', 'Hero, intro cards, approach and homepage content'],
     ['About', '/admin/editor/#/page/about', 'Firm introduction, team bios and headshots'],
     ['Services', '/admin/editor/#/page/services', 'Services, focus areas, training and consulting'],
-    ['News & Insights', '/admin/editor/#/page/news', 'Landing-page heading and introduction'],
     ['Contact', '/admin/editor/#/page/contact', 'Contact copy and contact details'],
     ['Careers', '/admin/editor/careers.html', 'Open roles, descriptions and application form'],
   ];
 
   const SECONDARY_PAGES = [
+    ['News & Insights page intro', '/admin/editor/#/page/news'],
     ['White Papers page', '/admin/editor/#/page/whitepapers'],
     ['Privacy Policy', '/admin/editor/#/page/privacy'],
     ['Privacy Choices', '/admin/editor/#/page/privacy-choices'],
@@ -57,7 +57,7 @@
         </div>
         <div class="mts-admin-nav-group">
           <span class="mts-admin-nav-label">Content</span>
-          <a data-admin-nav="blog" href="/admin/editor/#/blog">Blog Posts</a>
+          <a data-admin-nav="news" href="/admin/editor/#/blog">News & Insights</a>
           <a data-admin-nav="whitepapers" href="/admin/editor/whitepapers.html">White Papers</a>
           <a data-admin-nav="media" href="/admin/editor/media.html">Media Assets</a>
         </div>
@@ -96,6 +96,16 @@
     quickGrid.querySelector('a[href="#/pages"]')?.remove();
     quickGrid.classList.add('ve-home-grid-compact');
 
+    const newsCard = quickGrid.querySelector('a[href="#/blog"]');
+    if (newsCard) {
+      const title = newsCard.querySelector('strong');
+      const description = newsCard.querySelector('p');
+      const action = newsCard.querySelector('.ve-card-action');
+      if (title) title.textContent = 'News & Insights';
+      if (description) description.textContent = 'View current posts, edit an article, or add a new post.';
+      if (action) action.textContent = 'Open News & Insights →';
+    }
+
     const pageSection = document.createElement('section');
     pageSection.className = 've-dashboard-pages';
     pageSection.innerHTML = `
@@ -120,9 +130,21 @@
     if (lede) lede.textContent = 'Choose the page or content you want to update. Save Draft keeps changes private; Publish updates the live website.';
 
     const secondary = main.querySelector('.ve-secondary-tools');
-    if (secondary) {
-      secondary.querySelector('h2')?.replaceChildren(document.createTextNode('Website settings & files'));
-    }
+    if (secondary) secondary.querySelector('h2')?.replaceChildren(document.createTextNode('Website settings & files'));
+  };
+
+  const clarifyNewsManager = () => {
+    if (!window.location.hash.startsWith('#/blog')) return;
+    const main = document.querySelector('.ve-main');
+    if (!main) return;
+    const eyebrow = main.querySelector('.ve-list-head .ve-eyebrow');
+    const title = main.querySelector('.ve-list-head .ve-title');
+    const lede = main.querySelector('.ve-list-head .ve-lede');
+    const add = main.querySelector('.ve-list-head a[href="#/blog/new"]');
+    if (eyebrow) eyebrow.textContent = 'News & Insights';
+    if (title) title.textContent = 'Current Posts';
+    if (lede) lede.textContent = 'Open a current post to edit it, or add a new post to News & Insights.';
+    if (add) add.textContent = 'Add New Post';
   };
 
   const setCurrentNavigation = () => {
@@ -137,13 +159,13 @@
     else if (path.endsWith('/menu.html')) selector = '[data-admin-nav="menu"]';
     else if (path.endsWith('/design.html')) selector = '[data-admin-nav="design"]';
     else if (path.endsWith('/careers.html')) pageLabel = 'Careers';
-    else if (hash.startsWith('#/blog')) selector = '[data-admin-nav="blog"]';
+    else if (hash.startsWith('#/blog')) selector = '[data-admin-nav="news"]';
     else if (hash.startsWith('#/new-page')) selector = '[data-admin-nav="new-page"]';
     else {
       const match = hash.match(/^#\/page\/([^/?]+)/);
       if (match) {
         const labels = {
-          home: 'Home', about: 'About', services: 'Services', news: 'News & Insights',
+          home: 'Home', about: 'About', services: 'Services', news: 'News & Insights page intro',
           whitepapers: 'White Papers page', contact: 'Contact', privacy: 'Privacy Policy',
           'privacy-choices': 'Privacy Choices', 'data-requests': 'Data Requests',
         };
@@ -156,6 +178,27 @@
       : document.querySelector(selector);
     target?.setAttribute('aria-current', 'page');
     target?.closest('details')?.setAttribute('open', '');
+  };
+
+  const ensurePreviewMode = () => {
+    if (!window.MTS_ADMIN_PREVIEW_READ_ONLY) return;
+    document.body.classList.add('mts-preview-readonly');
+    if (!document.querySelector('.mts-preview-mode')) {
+      const note = document.createElement('div');
+      note.className = 'mts-preview-mode';
+      note.innerHTML = '<strong>Preview mode</strong><span>You can review every editor screen here. Save, Publish, Upload and Replace are disabled on this temporary preview URL.</span>';
+      document.body.append(note);
+    }
+    const writeSelectors = [
+      '[data-action="save-draft"]', '[data-action="publish"]', '[data-action="save"]',
+      '[data-tool-save]', '[data-tool-publish]', '[data-media-upload]', '[data-media-replace]',
+      '#save-draft', '#publish', '[data-delete-post]', '[data-delete-whitepaper]'
+    ];
+    document.querySelectorAll(writeSelectors.join(',')).forEach((button) => {
+      if (!(button instanceof HTMLButtonElement)) return;
+      button.disabled = true;
+      button.title = 'Disabled on the temporary read-only preview.';
+    });
   };
 
   const rewritePublishMessages = () => {
@@ -215,7 +258,9 @@
     ensureRail();
     rewriteLegacyLinks();
     enhanceDashboard();
+    clarifyNewsManager();
     setCurrentNavigation();
+    ensurePreviewMode();
     rewritePublishMessages();
     ensurePreviewTopButton();
     ensureSaveExplanation();
