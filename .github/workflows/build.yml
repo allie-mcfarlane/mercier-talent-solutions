@@ -49,7 +49,9 @@ jobs:
           node --check functions/admin/api/white-paper.js
 
       - name: Check publishing regressions
-        run: node scripts/content-regression-check.mjs
+        run: |
+          node scripts/content-regression-check.mjs
+          node scripts/admin-entry-order-check.mjs
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
