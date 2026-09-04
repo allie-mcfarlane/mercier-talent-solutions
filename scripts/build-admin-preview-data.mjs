@@ -4,6 +4,14 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outputPath = path.join(root, 'public/admin/editor/preview-data.json');
+const cloudflareBranch = String(process.env.CF_PAGES_BRANCH || '').trim();
+
+if (cloudflareBranch === 'main') {
+  if (fs.existsSync(outputPath)) fs.rmSync(outputPath);
+  console.log('Admin branch-preview data skipped for production.');
+  process.exit(0);
+}
+
 const contentRoots = [
   'src/content/pages',
   'src/content/posts',
