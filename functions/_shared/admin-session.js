@@ -90,7 +90,18 @@ const authorizationToken = (request) => {
 const sameOriginWrite = (request) => {
   const url = new URL(request.url);
   const origin = request.headers.get("origin");
-  if (!origin || origin !== url.origin) return false;
+  if (origin) {
+    if (origin !== url.origin) return false;
+  } else {
+    const referer = request.headers.get("referer");
+    if (!referer) return false;
+    try {
+      if (new URL(referer).origin !== url.origin) return false;
+    } catch {
+      return false;
+    }
+  }
+
   const fetchSite = String(request.headers.get("sec-fetch-site") || "").toLowerCase();
   return !fetchSite || fetchSite === "same-origin";
 };
@@ -174,14 +185,10 @@ export async function authorizeAdminRequest(request, env) {
     }
 
     // Compatibility path for the existing visual-editor fetch wrappers. The browser-controlled
-    // Origin and Sec-Fetch-Site checks above are the CSRF boundary; the signed HttpOnly session
-    // remains the credential. Legacy client authorization strings are never trusted here.
+    // Origin/Referer and Sec-Fetch-Site checks above are the CSRF boundary; the signed HttpOnly
+    // session remains the credential. Legacy client authorization strings are never trusted here.
     return { ok: true, user, session, csrfVerified: false };
   }
 
   return { ok: true, user, session, csrfVerified: false };
-}
-
-export function getClientCsrfCookieName() {
-  return CSRF_COOKIE;
 }
