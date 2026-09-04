@@ -1,12 +1,7 @@
-import { getAccessEmail } from "../../_shared/access-user.js";
+import { authorizeAdminRequest } from "../../_shared/admin-session.js";
 
-const ACCESS_TOKEN = "token mts-cloudflare-access";
 const REPOSITORY = "allie-mcfarlane/mercier-talent-solutions";
 const BRANCH = "main";
-const ALLOWED_USERS = new Set([
-  "allie@merciertalentsolutions.com",
-  "julia@merciertalentsolutions.com",
-]);
 const MAX_BYTES = 25 * 1024 * 1024;
 const IMAGE_EXTENSIONS = /\.(png|jpe?g|webp|gif|svg|avif)$/i;
 
@@ -19,14 +14,9 @@ const json = (value, status = 200) => new Response(JSON.stringify(value), {
   },
 });
 
-const authorize = async (request) => {
-  const email = await getAccessEmail(request);
-  if (!ALLOWED_USERS.has(email)) return json({ message: "Access denied." }, 403);
-  if (request.headers.get("authorization") !== ACCESS_TOKEN) return json({ message: "Invalid admin session." }, 401);
-  const origin = request.headers.get("origin");
-  const requestUrl = new URL(request.url);
-  if (origin && origin !== requestUrl.origin) return json({ message: "Cross-origin request blocked." }, 403);
-  return null;
+const authorize = async (request, env) => {
+  const auth = await authorizeAdminRequest(request, env);
+  return auth.ok ? null : json({ message: auth.message }, auth.status);
 };
 
 const cleanPath = (value) => String(value || "")
@@ -93,7 +83,7 @@ const listDirectory = async (env, prefix) => {
 };
 
 export async function onRequestGet({ request, env }) {
-  const denied = await authorize(request);
+  const denied = await authorize(request, env);
   if (denied) return denied;
   if (!env.GITHUB_ADMIN_TOKEN) {
     return json({ configured: false, items: [], message: "Website media publishing is not configured yet." }, 503);
@@ -114,7 +104,7 @@ export async function onRequestGet({ request, env }) {
 }
 
 export async function onRequestPost({ request, env }) {
-  const denied = await authorize(request);
+  const denied = await authorize(request, env);
   if (denied) return denied;
   if (!env.GITHUB_ADMIN_TOKEN) {
     return json({ configured: false, message: "Website media publishing is not configured yet." }, 503);
