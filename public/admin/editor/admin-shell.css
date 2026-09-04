@@ -1,0 +1,75 @@
+/* Shared Mercier editor shell cleanup.
+   Keeps the existing editor behavior while making navigation, status, and publish controls clearer. */
+
+@media (min-width:1121px){
+  .ve-editor{height:calc(100vh - 116px);min-height:0;overflow:hidden}
+  .ve-sidebar,.ve-editor-pane,.ve-preview-pane{position:relative;top:auto;height:100%;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+  .ve-preview-pane{overflow:hidden}
+  .ve-preview-frame{height:calc(100% - 48px)}
+  .ve-editor-head{position:sticky;top:-22px;z-index:25;margin:-22px -22px 15px;padding:16px 22px 14px;border-bottom:1px solid var(--line);background:rgba(246,248,251,.97);backdrop-filter:blur(10px)}
+}
+
+.ve-topbar{box-shadow:0 2px 12px rgba(26,43,70,.035)}
+.ve-brand-copy strong{letter-spacing:-.01em}
+.ve-draft-pill{background:#eef3f8;color:#385679}
+.ve-nav{overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}
+.ve-nav a,.ve-nav button{flex:0 0 auto}
+.ve-nav a[aria-current="page"]{border-color:#cbd7e4;background:var(--blue-soft);color:var(--navy)}
+
+.ve-home-grid{align-items:stretch}
+.ve-home-card{min-height:205px}
+.ve-secondary-tools{margin-top:38px}
+.ve-secondary-tools>h2{font-size:12px;letter-spacing:.01em}
+.ve-tool-row a{min-height:76px;align-content:start}
+
+.ve-context-link{display:inline-flex;align-items:center;gap:6px;margin:0 0 13px;color:var(--blue);font-size:10px;font-weight:800;text-decoration:none}
+.ve-context-link:hover{text-decoration:underline}
+
+.ve-careers-spotlight{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;align-items:center;margin:30px 0 0;border:1px solid var(--line);border-radius:16px;padding:24px 26px;background:var(--paper)}
+.ve-careers-spotlight-copy{display:grid;gap:6px;max-width:720px}
+.ve-careers-spotlight-kicker{color:var(--blue);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.ve-careers-spotlight h2{margin:0;color:var(--navy);font-size:22px;letter-spacing:-.025em}
+.ve-careers-spotlight h2 em{color:var(--blue);font-family:Georgia,serif;font-style:italic;font-weight:600}
+.ve-careers-spotlight p{margin:0;color:var(--muted);font-size:11.5px;line-height:1.55}
+.ve-careers-spotlight a{display:inline-flex;align-items:center;justify-content:center;min-height:40px;border:1px solid var(--navy);border-radius:9px;padding:0 15px;background:var(--navy);color:#fff;font-size:11px;font-weight:800;text-decoration:none;white-space:nowrap}
+.ve-careers-spotlight a:hover,.ve-careers-spotlight a:focus-visible{background:#263b59}
+
+.ve-preview-bar{position:relative;z-index:8}
+.ve-preview-tools{display:flex!important;grid-auto-flow:column;align-items:center;gap:7px!important}
+.ve-preview-top,.ve-editor-top{display:inline-flex;min-height:30px;align-items:center;justify-content:center;border:1px solid var(--line-dark);border-radius:8px;padding:0 9px;background:#fff;color:#45628e;font-size:9.5px;font-weight:800;cursor:pointer}
+.ve-preview-top:hover,.ve-editor-top:hover{border-color:#9fb0c2;background:#f7f9fb}
+
+.ve-save-note{margin:8px 0 0;border-left:2px solid #cad6e2;padding:2px 0 2px 9px;color:#718096;font-size:9.5px;line-height:1.5}
+.ve-save-note strong{color:#45628e}
+
+.ve-publish-dock{position:fixed;right:24px;bottom:22px;z-index:90;display:flex;align-items:center;gap:8px;border:1px solid #cfd8e2;border-radius:14px;padding:9px 10px;background:rgba(255,255,255,.98);box-shadow:0 18px 48px rgba(26,43,70,.16);backdrop-filter:blur(12px)}
+.ve-publish-dock-copy{display:grid;gap:1px;padding:0 7px 0 4px}
+.ve-publish-dock-copy strong{color:#1a2b46;font-size:10.5px}
+.ve-publish-dock-copy span{color:#758397;font-size:8.5px;white-space:nowrap}
+.ve-publish-dock .ve-button{min-height:34px;padding:0 11px;font-size:10px}
+
+.ve-tool-transition{display:block;margin-top:4px;color:#8190a1;font-size:9px;font-style:normal;line-height:1.35}
+
+@media(max-width:1120px){
+  .ve-publish-dock{right:14px;bottom:14px}
+  .ve-publish-dock-copy{display:none}
+  .ve-nav{padding-bottom:7px}
+}
+
+@media(max-width:760px){
+  .ve-brand-row{align-items:flex-start}
+  .ve-brand-copy{display:none}
+  .ve-brand img{width:140px}
+  .ve-home-grid,.ve-page-grid{grid-template-columns:1fr}
+  .ve-tool-row{grid-template-columns:1fr 1fr}
+  .ve-careers-spotlight{grid-template-columns:1fr;padding:20px}
+  .ve-careers-spotlight a{justify-self:start}
+}
+
+@media(max-width:620px){
+  .ve-actions{gap:5px}
+  .ve-actions a{padding:0 9px}
+  .ve-tool-row{grid-template-columns:1fr}
+  .ve-publish-dock{left:10px;right:10px;justify-content:flex-end}
+  .ve-publish-dock .ve-button{flex:1}
+}
