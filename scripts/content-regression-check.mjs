@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 
 const read = (path) => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+const exists = (path) => fs.existsSync(new URL(`../${path}`, import.meta.url));
 const failures = [];
 
 const expect = (condition, message) => {
@@ -12,12 +13,20 @@ const homeRoute = read('functions/index.js');
 const newsRoute = read('functions/news.js');
 const postRoute = read('functions/post/[[slug]].js');
 const whitepapersRoute = read('functions/whitepapers.js');
+const staticHome = read('src/pages/index.astro');
+const staticNews = read('src/pages/news.astro');
+const staticPost = read('src/pages/post/[slug].astro');
 const staticWhitepapers = read('src/pages/whitepapers.astro');
 const staticServices = read('src/pages/services.astro');
+const baseLayout = read('src/layouts/BaseLayout.astro');
+const contentConfig = read('src/content.config.ts');
+const categoryHelper = read('src/lib/categoryPills.ts');
 const visualPageEdits = read('src/components/VisualPageEdits.astro');
 const categoryPills = read('public/category-pills.js');
 const servicesFixes = read('public/services-final-fixes.css');
+const legacyAdminIndex = read('public/admin/index.html');
 const editorHtml = read('public/admin/editor/index.html');
+const editorJs = read('public/admin/editor/editor.js');
 const editorGithubCompat = read('public/admin/editor/editor-github-compat.js');
 const directCanvas = read('public/admin/editor/direct-canvas.js');
 const publishGuard = read('public/admin/editor/publish-guard.js');
@@ -48,20 +57,43 @@ expect(
 expect(newsRoute.includes('serveBridgedExistingPage(context, "news")'), 'News route no longer targets only the News page through the runtime bridge.');
 expect(whitepapersRoute.includes('serveBridgedExistingPage(context, "whitepapers")'), 'White Papers route no longer targets only White Papers through the runtime bridge.');
 
-// Homepage article cards: only Read more should be interactive and author thumbnails stay hidden.
+// Homepage article cards: only Read more should be interactive at runtime, and static source contains no author-thumbnail fallback.
 expect(homeRoute.includes('element.tagName = "article"'), 'Homepage news cards can become whole-card links again.');
 expect(homeRoute.includes('.news-band .news-card a'), 'Homepage news-card nested-link cleanup is missing.');
-expect(homeRoute.includes('.news-band .news-card .news-author img'), 'Homepage news-card author-image cleanup is missing.');
+expect(homeRoute.includes('.news-band .news-card .news-author img'), 'Homepage runtime author-image cleanup is missing.');
 expect(homeRoute.includes('class="home-news-read-more"'), 'Homepage news cards are missing the single Read more action.');
 expect(!liveRender.includes('/images/julia-mercier.jpg'), 'Runtime rendering contains a Julia headshot fallback.');
+expect(!staticHome.includes('/images/julia-mercier.jpg'), 'Static homepage contains a Julia headshot fallback.');
+expect(!staticHome.includes('post.data.author} ·'), 'Static homepage still renders an author name that must be removed later in the browser.');
+expect(staticHome.includes('class="meta-row news-author"'), 'Static homepage date metadata was removed entirely.');
 
-// Category parity: all supported article categories must map to their dedicated site pill classes.
+// Category parity: all supported article categories map correctly in source and runtime without depending on browser repair.
 expect(liveRender.includes('Announcement: "pill-announcement"'), 'Runtime Announcement category styling is missing.');
 expect(liveRender.includes('News: "pill-news"'), 'Runtime News category styling is missing.');
 expect(categoryPills.includes("Announcement: 'pill-announcement'"), 'Fallback Announcement pill normalization is missing.');
 expect(categoryPills.includes("News: 'pill-news'"), 'Fallback News pill normalization is missing.');
-expect(newsRoute.includes('/category-pills.js'), 'News route is missing fallback category normalization.');
-expect(postRoute.includes('/category-pills.js'), 'Article route is missing fallback category normalization.');
+expect(categoryHelper.includes('Announcement: "pill-announcement"'), 'Shared static Announcement category mapping is missing.');
+expect(categoryHelper.includes('News: "pill-news"'), 'Shared static News category mapping is missing.');
+expect(staticHome.includes('import { categoryClass } from "../lib/categoryPills"'), 'Homepage does not use the shared static category mapping.');
+expect(staticNews.includes('import { categoryClass } from "../lib/categoryPills"'), 'News page does not use the shared static category mapping.');
+expect(staticPost.includes('import { categoryClass } from "../../lib/categoryPills"'), 'Article page does not use the shared static category mapping.');
+expect(!staticNews.includes('if (category === "Speaking")'), 'News page contains a duplicated partial category helper again.');
+expect(!staticPost.includes('if (category === "Speaking")'), 'Article page contains a duplicated partial category helper again.');
+expect(newsRoute.includes('/category-pills.js'), 'News route is missing fallback category normalization for brief D1 bridge renders.');
+expect(postRoute.includes('/category-pills.js'), 'Article route is missing fallback category normalization for brief D1 bridge renders.');
+
+// Static article author data is resolved from About/Our Team at build time; there are no Julia/Principal fallbacks to repair later.
+expect(contentConfig.includes('author: z.string(),'), 'Article author is no longer required by the Astro content schema.');
+expect(!contentConfig.includes('author: z.string().default("Julia Mercier")'), 'Article schema contains the retired Julia author default.');
+expect(!contentConfig.includes('authorTitle: z.string().default("Principal")'), 'Article schema contains the retired Principal role default.');
+expect(staticPost.includes('const aboutPage = await getEntry("pages", "about")'), 'Static article rendering no longer reads About/Our Team for author details.');
+expect(staticPost.includes('teamProfile?.image ?? post.data.authorImage ?? ""'), 'Static article headshot does not prioritize About/Our Team with an explicit-data fallback.');
+expect(staticPost.includes('teamProfile?.eyebrow ?? post.data.authorTitle ?? ""'), 'Static article role does not prioritize About/Our Team with an explicit-data fallback.');
+expect(!staticPost.includes('/images/julia-mercier.jpg'), 'Static article contains a Julia headshot fallback.');
+expect(!staticPost.includes('?? "Principal"'), 'Static article contains a Principal role fallback.');
+expect(!baseLayout.includes('const teamAuthors ='), 'BaseLayout still builds a client-side article author repair map.');
+expect(!baseLayout.includes('usesLegacyFallback'), 'BaseLayout still contains legacy article fallback repair logic.');
+expect(!baseLayout.includes('.news-band .news-author'), 'BaseLayout still repairs homepage article metadata after render.');
 
 // Runtime article parity: source renderer owns actions; route wrapper only loads supporting assets.
 expect(liveRender.includes('data-download-article'), 'Runtime article source is missing Download article.');
@@ -80,6 +112,14 @@ expect(staticWhitepapers.includes('(await paper.render()).Content'), 'Static Whi
 expect(staticWhitepapers.includes('<Content />'), 'Static White Papers are missing rendered body content.');
 expect(!staticWhitepapers.includes('<p class="paper-body">{paper.body}</p>'), 'Static White Papers can flatten Markdown to raw text again.');
 
+// Page-builder content is structurally typed in Astro as well as guarded in the editor.
+expect(contentConfig.includes('z.discriminatedUnion("type"'), 'Page-builder sections are no longer a typed discriminated union.');
+expect(contentConfig.includes('sections: z.array(builderSection).optional()'), 'Page-builder sections are not using the typed builder schema.');
+expect(!contentConfig.includes('sections: z.array(z.record(z.unknown()))'), 'Page-builder sections can become arbitrary untyped records again.');
+expect(contentConfig.includes('visualStyles: visualStyles.optional()'), 'Visual page settings are not using the bounded visual-style schema.');
+expect(!contentConfig.includes('visualStyles: z.record(z.record(z.unknown()))'), 'Visual page settings can become arbitrary untyped records again.');
+expect(contentConfig.includes('type: z.literal("html")'), 'Advanced HTML is missing from the controlled builder type list.');
+
 // Visual editor formatting should survive nearby DOM changes by recovering the unique saved source record.
 expect(visualPageEdits.includes('const matchingRecord = (scope, element, index)'), 'Public visual formatting no longer recovers from text-index shifts.');
 expect(visualPageEdits.includes('matches.length === 1 ? matches[0] : null'), 'Public visual formatting source matching is not ambiguity-safe.');
@@ -91,6 +131,12 @@ expect(!staticServices.includes('.service-number::before'), 'Services source can
 expect(staticServices.includes('text-shadow: none;'), 'Services source no longer explicitly prevents shadowed number lettering.');
 expect(!servicesFixes.includes('main .service-number::before'), 'Services final-fixes stylesheet still hides a source-level duplicate number layer.');
 expect(!servicesFixes.includes('main .service-number {'), 'Services final-fixes stylesheet still contains obsolete number suppression.');
+
+// The legacy /admin Decap shell is retired; the approved Mercier workspace is the single normal editor entry.
+expect(legacyAdminIndex.includes("window.location.replace('/admin/editor/')"), 'Legacy /admin no longer redirects directly to the Mercier editor workspace.');
+expect(legacyAdminIndex.includes('http-equiv="refresh" content="0; url=/admin/editor/"'), 'Legacy /admin is missing a no-script redirect to the Mercier editor workspace.');
+expect(!legacyAdminIndex.includes('decap-cms'), 'Legacy /admin still boots the old Decap shell.');
+expect(!exists('public/admin/admin-ui.js'), 'Retired legacy admin MutationObserver patch is still present.');
 
 // Editor publishing order: repository sync captures the real browser fetch, validation wraps it,
 // the compatibility layer captures both, Access wraps compatibility, and D1 direct is outermost.
@@ -128,6 +174,14 @@ expect(publishGuard.includes("<(script|style|link|meta|base|iframe)"), 'Advanced
 expect(publishGuard.includes("action === 'publish'"), 'Publish-time strict validation is missing.');
 expect(publishGuard.includes("type === 'post'"), 'Article validation is missing.');
 expect(publishGuard.includes("type === 'whitepaper'"), 'White paper validation is missing.');
+expect(!editorJs.includes('const AUTH ='), 'Custom editor can contain a fixed browser authorization placeholder again.');
+expect(!editorJs.includes("Authorization: AUTH"), 'Custom editor can send a fixed browser authorization placeholder again.');
+expect(editorJs.includes("['Choose an author', '']"), 'Blog author dropdown is missing an explicit choose-author state.');
+expect(!editorJs.includes("author: 'Julia Mercier'"), 'New blog posts can silently default to Julia again.');
+expect(editorJs.includes('/admin/editor/whitepapers.html'), 'Custom editor does not link directly to the native White Papers screen.');
+expect(editorJs.includes('/admin/editor/media.html'), 'Custom editor does not link directly to the native Media Assets screen.');
+expect(editorJs.includes('/admin/editor/menu.html'), 'Custom editor does not link directly to the native Top Menu screen.');
+expect(editorJs.includes('/admin/editor/design.html'), 'Custom editor does not link directly to the native Design screen.');
 
 // Admin security: Cloudflare Access identity is bound to a short-lived signed HttpOnly session,
 // and every write also requires the matching per-session CSRF value.
@@ -145,7 +199,7 @@ expect(adminAuth.includes('token: session.csrf'), 'Decap login no longer receive
 expect(sessionApi.includes('appendAdminSessionCookies(headers, session)'), 'Custom editor session bootstrap no longer sets signed session cookies.');
 expect(accessFetch.includes("const SESSION_ENDPOINT = '/admin/api/session';"), 'Custom editor no longer bootstraps a server session.');
 expect(accessFetch.includes("headers.set('X-MTS-CSRF', csrf)"), 'Custom editor no longer sends the per-session CSRF value.');
-expect(accessFetch.includes("headers.set('Authorization', `token ${csrf}`)"), 'Custom editor no longer replaces legacy authorization headers with the per-session value.');
+expect(accessFetch.includes("headers.set('Authorization', `token ${csrf}`)"), 'Custom editor no longer sends the per-session authorization value.');
 expect(editorGithubCompat.includes('const sessionHeaders = async (base = {})'), 'GitHub compatibility requests no longer obtain the current signed-session CSRF value.');
 expect(editorGithubCompat.includes("headers.set('X-MTS-CSRF', csrf)"), 'GitHub compatibility requests no longer send the per-session CSRF value.');
 expect(!editorGithubCompat.includes('const AUTH ='), 'GitHub compatibility can contain a fixed browser authorization value again.');
@@ -164,4 +218,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Content regression checks passed. Static/runtime parity, Services source cleanup, visual edit recovery, real repository synchronization, publishing safeguards, and strict signed admin-session protections are present.');
+console.log('Content regression checks passed. Source-level author/category cleanup, typed page-builder schemas, static/runtime parity, Services cleanup, visual edit recovery, repository synchronization, publishing safeguards, and strict signed admin-session protections are present.');
