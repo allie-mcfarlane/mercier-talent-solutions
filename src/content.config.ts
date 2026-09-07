@@ -1,11 +1,146 @@
 import { defineCollection, z } from "astro:content";
 
+const hexColor = z.string().regex(/^#[0-9a-f]{6}$/i);
+const numberInRange = (min: number, max: number) =>
+  z
+    .union([z.number(), z.string().regex(/^\d+(?:\.\d+)?$/)])
+    .refine((value) => {
+      const number = Number(value);
+      return Number.isFinite(number) && number >= min && number <= max;
+    }, `Value must be between ${min} and ${max}.`);
+
+const inlineFormat = z.object({
+  start: z.number().nonnegative(),
+  end: z.number().nonnegative(),
+  color: z.union([hexColor, z.null()]).optional(),
+  fontSize: z.union([numberInRange(10, 96), z.null()]).optional(),
+});
+
+const inlineRecord = z.object({
+  source: z.string(),
+  formats: z.array(inlineFormat),
+});
+
+const inlineStyleScope = z.record(inlineRecord);
+
+const builderCommon = {
+  editorId: z.string().optional(),
+  theme: z.enum(["white", "paper", "navy"]).optional(),
+  align: z.enum(["left", "center", "right"]).optional(),
+  paddingTop: numberInRange(0, 220).optional(),
+  paddingBottom: numberInRange(0, 220).optional(),
+  headingFontSize: numberInRange(22, 88).optional(),
+  bodyFontSize: numberInRange(12, 26).optional(),
+  headingColor: hexColor.optional(),
+  bodyColor: hexColor.optional(),
+  inlineStyles: inlineStyleScope.optional(),
+};
+
+const cardItem = z.object({
+  title: z.string(),
+  text: z.string().optional(),
+  image: z.string().optional(),
+  imageAlt: z.string().optional(),
+  buttonLabel: z.string().optional(),
+  buttonLink: z.string().optional(),
+});
+
+const builderSection = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("hero"),
+    ...builderCommon,
+    eyebrow: z.string().optional(),
+    title: z.string().optional(),
+    titleAccent: z.string().optional(),
+    text: z.string().optional(),
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    buttonLabel: z.string().optional(),
+    buttonLink: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal("text"),
+    ...builderCommon,
+    eyebrow: z.string().optional(),
+    title: z.string().optional(),
+    text: z.string().optional(),
+    headingSize: z.enum(["default", "small", "large"]).optional(),
+  }),
+  z.object({
+    type: z.literal("imageText"),
+    ...builderCommon,
+    eyebrow: z.string().optional(),
+    title: z.string().optional(),
+    text: z.string().optional(),
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    imagePosition: z.enum(["left", "right"]).optional(),
+    headingSize: z.enum(["default", "small", "large"]).optional(),
+    buttonLabel: z.string().optional(),
+    buttonLink: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal("cards"),
+    ...builderCommon,
+    eyebrow: z.string().optional(),
+    title: z.string().optional(),
+    headingSize: z.enum(["default", "small", "large"]).optional(),
+    columns: z.enum(["2", "3", "4"]).optional(),
+    items: z.array(cardItem).optional(),
+  }),
+  z.object({
+    type: z.literal("image"),
+    ...builderCommon,
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    caption: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal("callout"),
+    ...builderCommon,
+    eyebrow: z.string().optional(),
+    title: z.string().optional(),
+    text: z.string().optional(),
+    buttonLabel: z.string().optional(),
+    buttonLink: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal("html"),
+    ...builderCommon,
+    html: z.string().optional(),
+  }),
+]);
+
+const fixedVisualStyle = z.object({
+  paddingTop: numberInRange(0, 220).optional(),
+  paddingBottom: numberInRange(0, 220).optional(),
+  headingFontSize: numberInRange(22, 88).optional(),
+  headingColor: hexColor.optional(),
+  bodyFontSize: numberInRange(12, 26).optional(),
+  bodyColor: hexColor.optional(),
+});
+
+const visualStyles = z
+  .object({
+    __inline: z
+      .object({
+        scopes: z.record(inlineStyleScope),
+      })
+      .optional(),
+    __order: z
+      .object({
+        items: z.array(z.string()),
+      })
+      .optional(),
+  })
+  .catchall(fixedVisualStyle);
+
 const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     subtitle: z.string().optional(),
-    author: z.string().default("Julia Mercier"),
-    authorTitle: z.string().default("Principal"),
+    author: z.string(),
+    authorTitle: z.string().optional(),
     authorImage: z.string().optional(),
     authorImageAlt: z.string().optional(),
     pubDate: z.date(),
@@ -81,8 +216,8 @@ const pages = defineCollection({
     slug: z.string().optional(),
     navTitle: z.string().optional(),
     seoDescription: z.string().optional(),
-    sections: z.array(z.record(z.unknown())).optional(),
-    visualStyles: z.record(z.record(z.unknown())).optional(),
+    sections: z.array(builderSection).optional(),
+    visualStyles: visualStyles.optional(),
     primaryCta: z
       .object({
         label: z.string(),
