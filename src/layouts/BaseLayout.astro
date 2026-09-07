@@ -160,18 +160,6 @@ Object.entries(sectionSelectors).forEach(([sectionId, selector]) => {
 const fixedVisualCss = fixedDesktopRules.length
   ? `${fixedDesktopRules.join("\n")}\n${fixedMobileRules.length ? `@media(max-width:820px){${fixedMobileRules.join("\n")}}` : ""}`
   : "";
-
-const aboutEntry = await getEntry("pages", "about");
-const teamAuthors = Object.fromEntries(
-  (aboutEntry?.data.team ?? []).map((person) => [
-    person.name,
-    {
-      image: person.image,
-      imageAlt: person.imageAlt,
-      role: person.eyebrow,
-    },
-  ]),
-);
 ---
 
 <!doctype html>
@@ -239,45 +227,6 @@ const teamAuthors = Object.fromEntries(
     </main>
     <VisualPageEdits visualStyles={fixedVisualStyles} builderSections={visualBuilderSections} />
     <Footer />
-    <script is:inline define:vars={{ teamAuthors }}>
-      (() => {
-        document.querySelectorAll(".news-band .news-author").forEach((meta) => {
-          meta.querySelector("img")?.remove();
-          const text = meta.querySelector("span");
-          if (!text) return;
-          const parts = (text.textContent || "").split("·").map((part) => part.trim()).filter(Boolean);
-          if (parts.length > 1) text.textContent = parts.at(-1) || "";
-        });
-
-        const authorName = document.querySelector(".author-copy strong")?.textContent?.trim();
-        if (!authorName) return;
-
-        const profile = teamAuthors[authorName];
-        const photo = document.querySelector(".author-photo");
-        const role = document.querySelector(".author-copy span");
-
-        if (!profile) {
-          const usesLegacyFallback =
-            photo instanceof HTMLImageElement &&
-            (photo.getAttribute("src") || "").includes("/images/julia-mercier.jpg");
-
-          if (usesLegacyFallback) {
-            photo.remove();
-            if (role?.textContent?.trim() === "Principal") role.remove();
-          }
-          return;
-        }
-
-        if (photo instanceof HTMLImageElement && profile.image) {
-          photo.src = profile.image;
-          photo.alt = profile.imageAlt || authorName;
-        }
-
-        if (role && profile.role) {
-          role.textContent = profile.role;
-        }
-      })();
-    </script>
     <script>
       (() => {
         const typedNavigator = navigator as unknown as Navigator & Record<string, unknown>;
