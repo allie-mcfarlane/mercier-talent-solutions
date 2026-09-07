@@ -38,8 +38,6 @@ const normalizedPath = (path = "") => path.replace(/\[\d+\]/g, "[]");
 
 const isSeedDefault = (path, value) => {
   const key = normalizedPath(path);
-  if (key === "author" && value === "Julia Mercier") return true;
-  if (key === "authorTitle" && value === "Principal") return true;
   if (key === "roles[].description" && Array.isArray(value) && value.length === 0) return true;
   if (key === "applicationForm.eyebrow" && value === "Apply") return true;
   if (key === "applicationForm.title" && value === "Submit your application") return true;
