@@ -6,45 +6,15 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta name="referrer" content="same-origin" />
     <meta name="theme-color" content="#1a2b46" />
-    <title>Mercier Talent Solutions Admin</title>
-    <link rel="stylesheet" href="/admin/admin-ui.css" />
-    <link rel="stylesheet" href="/admin/page-guide.css" />
-    <link rel="stylesheet" href="/admin/page-editor-polish.css" />
-    <link rel="stylesheet" href="/admin/blog-editor.css" />
-    <link rel="stylesheet" href="/admin/editor-unified.css" />
-    <script>window.CMS_MANUAL_INIT = true;</script>
+    <meta http-equiv="refresh" content="0; url=/admin/editor/" />
+    <title>Opening Mercier Website Editor</title>
+    <script>
+      window.location.replace('/admin/editor/');
+    </script>
   </head>
   <body>
-    <script src="https://unpkg.com/decap-cms@3.15.1/dist/decap-cms.js"></script>
-    <script src="/admin/editor-components.js"></script>
-    <script>
-      window.CMS.registerPreviewStyle("/admin/preview.css");
-      window.CMS.registerPreviewStyle("/admin/page-preview.css");
-      window.CMS.registerPreviewStyle("/admin/preview-friendly.css");
-      window.CMS.registerPreviewStyle("/admin/page-live-preview.css");
-      window.CMS.registerPreviewStyle("/admin/preview-polish.css");
-
-      window.initCMS({
-        config: {
-          backend: {
-            name: "github",
-            repo: "allie-mcfarlane/mercier-talent-solutions",
-            branch: "main",
-            api_root: "https://merciertalentsolutions.com/admin/api/github",
-            base_url: "https://merciertalentsolutions.com",
-            auth_endpoint: "admin/auth",
-            site_domain: "merciertalentsolutions.com",
-            use_graphql: false
-          }
-        }
-      });
-    </script>
-    <script src="/admin/admin-preview.js"></script>
-    <script src="/admin/page-live-preview.js"></script>
-    <script src="/admin/settings-preview.js"></script>
-    <script src="/admin/admin-ui.js"></script>
-    <script src="/admin/page-guide.js"></script>
-    <script src="/admin/blog-guide.js"></script>
-    <script src="/admin/preview-click-sync.js"></script>
+    <main>
+      <p><a href="/admin/editor/">Open the Mercier Website Editor</a></p>
+    </main>
   </body>
 </html>
