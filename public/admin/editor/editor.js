@@ -4,7 +4,6 @@
   const REPO = 'allie-mcfarlane/mercier-talent-solutions';
   const OWNER = 'allie-mcfarlane';
   const API = '/admin/api/github';
-  const AUTH = 'token mts-cloudflare-access';
   const THEMES = ['white', 'paper', 'navy'];
   const IMAGE_EXT = /\.(png|jpe?g|webp|gif|svg)$/i;
 
@@ -121,7 +120,6 @@
       ...options,
       headers: {
         Accept: 'application/vnd.github+json',
-        Authorization: AUTH,
         ...(options.body ? { 'Content-Type': 'application/json' } : {}),
         ...(options.headers || {}),
       },
@@ -265,10 +263,10 @@
           <a class="${active === 'home' ? 'active' : ''}" href="#/">Home</a>
           <a class="${active === 'pages' ? 'active' : ''}" href="#/pages">Pages</a>
           <a class="${active === 'blog' ? 'active' : ''}" href="#/blog">Blog Posts</a>
-          <a href="/admin/#/collections/white-papers">White Papers</a>
-          <a href="/admin/#/media">Media Assets</a>
-          <a href="/admin/#/collections/navigation/entries/main">Top Menu</a>
-          <a href="/admin/#/collections/settings/entries/appearance">Design</a>
+          <a href="/admin/editor/whitepapers.html">White Papers</a>
+          <a href="/admin/editor/media.html">Media Assets</a>
+          <a href="/admin/editor/menu.html">Top Menu</a>
+          <a href="/admin/editor/design.html">Design</a>
         </nav>
       </header>
       ${content}
@@ -289,10 +287,10 @@
         <section class="ve-secondary-tools">
           <h2>More website tools</h2>
           <div class="ve-tool-row">
-            <a href="/admin/#/collections/white-papers"><strong>White Papers</strong><span>Manage PDFs and library entries</span></a>
-            <a href="/admin/#/media"><strong>Media Assets</strong><span>Browse or upload website images</span></a>
-            <a href="/admin/#/collections/navigation/entries/main"><strong>Top Menu</strong><span>Manage website navigation</span></a>
-            <a href="/admin/#/collections/settings/entries/appearance"><strong>Design</strong><span>Approved colors and font sizes</span></a>
+            <a href="/admin/editor/whitepapers.html"><strong>White Papers</strong><span>Manage PDFs and library entries</span></a>
+            <a href="/admin/editor/media.html"><strong>Media Assets</strong><span>Browse or upload website images</span></a>
+            <a href="/admin/editor/menu.html"><strong>Top Menu</strong><span>Manage website navigation</span></a>
+            <a href="/admin/editor/design.html"><strong>Design</strong><span>Approved colors and font sizes</span></a>
           </div>
         </section>
       </main>`, 'home');
@@ -717,7 +715,7 @@
     return state.team;
   };
 
-  const defaultPost = () => ({ title: '', subtitle: '', author: 'Julia Mercier', pubDate: new Date().toISOString().slice(0, 10), category: 'Insight', excerpt: '', image: '', imageAlt: '', references: [], seoTitle: '', seoDescription: '' });
+  const defaultPost = () => ({ title: '', subtitle: '', author: '', pubDate: new Date().toISOString().slice(0, 10), category: 'Insight', excerpt: '', image: '', imageAlt: '', references: [], seoTitle: '', seoDescription: '' });
 
   const editBlog = async (slug) => {
     loading(slug ? 'Opening blog post…' : 'Creating blog post…');
@@ -751,7 +749,7 @@
     ['optional', 'Optional settings', 'Search wording and updated date. Usually leave these alone.'],
   ];
 
-  const authorOptions = () => (state.team.length ? state.team.map((person) => [person.name, person.name]) : [['Julia Mercier', 'Julia Mercier'], ['Allie McFarlane', 'Allie McFarlane']]);
+  const authorOptions = () => [['Choose an author', ''], ...state.team.map((person) => [person.name, person.name])];
 
   const editorMarkdownToHtml = (markdown) => {
     const withCites = String(markdown || '').replace(/\[\[cite:([^\]]+)\]\]/g, (_, id) => `<sup class="editor-cite" data-cite="${esc(id)}">source</sup>`);
@@ -825,7 +823,7 @@
       text('.article-hero h1', state.data.title || 'Article headline');
       let subtitle = doc.querySelector('.article-preview-subtitle,.article-subtitle'); if (!subtitle) { subtitle = doc.createElement('p'); subtitle.className = 'article-preview-subtitle'; doc.querySelector('.article-hero h1')?.after(subtitle); }
       subtitle.textContent = state.data.subtitle || ''; subtitle.style.display = state.data.subtitle ? '' : 'none';
-      text('.article-hero .pill', state.data.category || 'Insight'); text('.author-copy strong', state.data.author || 'Julia Mercier'); text('.article-meta time', String(state.data.pubDate || '').slice(0, 10));
+      text('.article-hero .pill', state.data.category || 'Insight'); text('.author-copy strong', state.data.author || ''); text('.article-meta time', String(state.data.pubDate || '').slice(0, 10));
       const person = state.team.find((item) => item.name === state.data.author) || {}; const photo = doc.querySelector('.author-photo'); if (photo && person.image) { photo.src = person.image; photo.alt = person.name || ''; } text('.author-copy span', person.eyebrow || person.role || '');
       const refs = state.data.references || [];
       let html = window.marked.parse(String(state.body || '').replace(/\[\[cite:([^\]]+)\]\]/g, (_, id) => { const index = refs.findIndex((ref) => ref.id === id); return index >= 0 ? `<sup class="reference-marker"><a href="#reference-${index + 1}">${index + 1}</a></sup>` : ''; }));
