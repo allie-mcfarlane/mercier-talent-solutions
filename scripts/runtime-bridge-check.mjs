@@ -16,7 +16,6 @@ const seedEntry = {
     pubDate: '2026-09-01T00:00:00.000Z',
     category: 'Insight',
     author: 'Julia Mercier',
-    authorTitle: 'Principal',
   },
   body: 'Body copy\n',
 };
@@ -25,12 +24,18 @@ const matchingPublished = {
     title: 'Sample',
     pubDate: '2026-09-01',
     category: 'Insight',
+    author: 'Julia Mercier',
   },
   body: 'Body copy',
 };
 
-assert.equal(publishedMatchesSeed(matchingPublished, seedEntry), true, 'date normalization and real Astro schema defaults should still match');
+assert.equal(publishedMatchesSeed(matchingPublished, seedEntry), true, 'date normalization and explicit article data should still match');
 assert.equal(publishedMatchesSeed({ ...matchingPublished, data: { ...matchingPublished.data, title: 'Changed' } }, seedEntry), false, 'changed published data must not match the built seed');
+assert.equal(
+  publishedMatchesSeed({ ...matchingPublished, data: { title: 'Sample', pubDate: '2026-09-01', category: 'Insight' } }, seedEntry),
+  false,
+  'removing a required article author must remain a real D1 change instead of matching a retired schema default',
+);
 assert.equal(
   publishedMatchesSeed(matchingPublished, { ...seedEntry, data: { ...seedEntry.data, subtitle: 'Old subtitle' } }),
   false,
@@ -103,5 +108,7 @@ assert.match(bridgeSource, /return serveExistingPage\(context, pageKey\)/, 'pend
 assert.match(bridgeSource, /return serveLivePost\(context, slug\)/, 'pending posts must retain instant D1 rendering');
 assert.match(bridgeSource, /return serveCustomPage\(context, slug\)/, 'pending custom pages must retain instant D1 rendering');
 assert.match(bridgeSource, /if \(seedEntry && builtAt !== null\) return false;/, 'legacy rows with an existing built entry must fail safely to Astro when publish time is unknown');
+assert.doesNotMatch(bridgeSource, /key === "author"/, 'runtime bridge must not preserve the retired author schema default');
+assert.doesNotMatch(bridgeSource, /key === "authorTitle"/, 'runtime bridge must not preserve the retired author-title schema default');
 
 console.log(`Runtime bridge checks passed for ${routeExpectations.size} public routes from ${root}. D1 remains the instant-update bridge while caught-up requests fall back to Astro.`);
