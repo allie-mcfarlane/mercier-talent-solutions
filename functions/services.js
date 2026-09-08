@@ -1,6 +1,6 @@
 import { serveBridgedExistingPage } from "./_shared/runtime-bridge.js";
 
-const ASSET_VERSION = "20260903-1129";
+const ASSET_VERSION = "20260908-1442";
 
 export async function onRequestGet(context) {
   const response = await serveBridgedExistingPage(context, "services");
