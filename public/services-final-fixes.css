@@ -26,6 +26,25 @@ main .service-section .consulting-list p {
   line-height: 1.68 !important;
 }
 
+/* Executive Coaching only: give the two intro paragraphs more breathing room and restore the image scale/alignment. */
+main .coaching-copy-stack {
+  max-width: 900px !important;
+  gap: clamp(1.35rem, 1.8vw, 1.65rem) !important;
+}
+
+main .coaching-copy-stack .service-summary,
+main .coaching-copy-stack .service-detail-copy {
+  max-width: 900px !important;
+}
+
+main .coaching-image {
+  width: min(100%, 760px) !important;
+  max-width: none !important;
+  justify-self: end !important;
+  align-self: start !important;
+  aspect-ratio: 1.22 !important;
+}
+
 /* Use the same divider-to-copy spacing for Coaching, Assessments, Training and Consulting. */
 main .section-heading-anchor {
   margin-bottom: var(--service-heading-copy-gap) !important;
@@ -119,6 +138,18 @@ main .program-item > p {
     padding-block: 4rem !important;
   }
 
+  main .coaching-copy-stack,
+  main .coaching-copy-stack .service-summary,
+  main .coaching-copy-stack .service-detail-copy {
+    max-width: 760px !important;
+  }
+
+  main .coaching-image {
+    width: min(100%, 720px) !important;
+    justify-self: start !important;
+    aspect-ratio: 1.28 !important;
+  }
+
   main .program-groups > article {
     grid-template-columns: minmax(190px, 240px) minmax(0, 1fr) !important;
     column-gap: 2.25rem !important;
@@ -150,6 +181,10 @@ main .program-item > p {
   main .service-section .program-item p,
   main .service-section .consulting-list p {
     font-size: 16px !important;
+  }
+
+  main .coaching-copy-stack {
+    gap: 1.2rem !important;
   }
 
   main .training-text-column > .service-heading-block {
