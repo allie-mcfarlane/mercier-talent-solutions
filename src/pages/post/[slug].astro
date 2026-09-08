@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
+import { categoryClass } from "../../lib/categoryPills";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -19,18 +20,16 @@ const dateFormat = {
   timeZone: "UTC",
 } as const;
 
-const authorImage = post.data.authorImage ?? "/images/julia-mercier.jpg";
-const authorImageAlt = post.data.authorImageAlt ?? post.data.author;
-const authorTitle = post.data.authorTitle ?? "Principal";
+const aboutPage = await getEntry("pages", "about");
+const teamProfile = (aboutPage?.data.team ?? []).find(
+  (person) => person.name === post.data.author,
+);
+const authorImage = teamProfile?.image ?? post.data.authorImage ?? "";
+const authorImageAlt = teamProfile?.imageAlt ?? post.data.authorImageAlt ?? post.data.author;
+const authorTitle = teamProfile?.eyebrow ?? post.data.authorTitle ?? "";
 const articleUrl = new URL(`/post/${post.slug}/`, "https://merciertalentsolutions.com");
 articleUrl.searchParams.set("linkedin", "20260903");
 const linkedInArticleUrl = articleUrl.toString();
-
-const categoryClass = (category: string) => {
-  if (category === "Speaking") return "pill-speaking";
-  if (category === "White Paper") return "pill-whitepaper";
-  return "pill-insight";
-};
 ---
 
 <BaseLayout
@@ -57,17 +56,19 @@ const categoryClass = (category: string) => {
 
         <div class="article-meta">
           <div class="author-block">
-            <img
-              class="author-photo"
-              src={authorImage}
-              alt={authorImageAlt}
-              loading="eager"
-              decoding="async"
-            />
+            {authorImage && (
+              <img
+                class="author-photo"
+                src={authorImage}
+                alt={authorImageAlt}
+                loading="eager"
+                decoding="async"
+              />
+            )}
 
             <div class="author-copy">
               <strong>{post.data.author}</strong>
-              <span>{authorTitle}</span>
+              {authorTitle && <span>{authorTitle}</span>}
             </div>
           </div>
 

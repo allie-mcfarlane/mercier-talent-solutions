@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
 import { getCollection, getEntry } from "astro:content";
 import { site } from "../data/site";
+import { categoryClass } from "../lib/categoryPills";
 
 type HomeData = {
   eyebrow: string;
@@ -177,12 +178,11 @@ const stats = [
       <div class="news-list" data-news-carousel>
         {recentPosts.map((post) => (
           <a class="card news-card" href={`/post/${post.slug}/`}>
-            <span class="pill">{post.data.category}</span>
+            <span class={`pill ${categoryClass(post.data.category)}`}>{post.data.category}</span>
             <h3>{post.data.title}</h3>
             <p>{post.data.excerpt}</p>
             <span class="meta-row news-author">
-              <img src={post.data.image ?? "/images/julia-mercier.jpg"} alt="" loading="lazy" />
-              <span>{post.data.author} · {post.data.pubDate.toLocaleDateString("en-US", dateFormat)}</span>
+              <span>{post.data.pubDate.toLocaleDateString("en-US", dateFormat)}</span>
             </span>
           </a>
         ))}
@@ -750,7 +750,6 @@ const stats = [
   }
 
   .news-author { align-items: center; gap: 0.7rem; }
-  .news-author img { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 50%; object-fit: cover; object-position: center 30%; }
 
   .proof article[data-reveal],
   .stat[data-reveal],
