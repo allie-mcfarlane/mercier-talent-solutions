@@ -30,7 +30,7 @@ team:
       - As Practice Manager at Mercier Talent Solutions, Allie oversees the firm's operations, ensuring every aspect of the business runs smoothly behind the scenes. She manages client operations, financial management, technology and website initiatives, marketing, and day-to-day business operations, while continually improving internal processes to enhance efficiency, support the firm's growth, and deliver an exceptional client experience. Known for combining strategic thinking with a hands-on approach, Allie enjoys solving complex operational challenges and building practical solutions that improve the way people work. She is passionate about creating organized, scalable processes that allow teams to focus on delivering meaningful results for clients.
       - Outside of her professional work, Allie is actively involved in animal welfare, regularly volunteering at a local animal shelter. Her commitment to compassion, responsibility, and service extends beyond the workplace and reflects the values she brings to everything she does.
     email: allie@merciertalentsolutions.com
-    phone: (347) 254-9298
+    phone: (203) 290-1832
     linkedin: https://www.linkedin.com/in/allieemcfarlane/?isSelfProfile=false
     credentialsEyebrow: Credentials & Certifications
     credentials: B.A. Business Management, University of Huddersfield · Commissioned Notary Public
