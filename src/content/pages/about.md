@@ -33,5 +33,5 @@ team:
     phone: (203) 290-1832
     linkedin: https://www.linkedin.com/in/allieemcfarlane/?isSelfProfile=false
     credentialsEyebrow: Credentials & Certifications
-    credentials: B.A. Business Management, University of Huddersfield · Commissioned Notary Public
+    credentials: B.A. Business Management, University of Huddersfield · Commissioned Notary Public · AI for Leaders, Harvard Business School
 ---
