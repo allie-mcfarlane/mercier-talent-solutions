@@ -5,10 +5,10 @@ titleAccent: together
 contacts:
   - name: Julia Mercier
     email: julia@merciertalentsolutions.com
-    phone: (917) 808-5668
+    phone: (917) 382-4543
     linkedin: https://www.linkedin.com/in/juliamercier/
   - name: Allie McFarlane
     email: allie@merciertalentsolutions.com
-    phone: (203) 290-1832
+    phone: (917) 382-4615
     linkedin: https://www.linkedin.com/in/allieemcfarlane/?isSelfProfile=false
 ---
