@@ -17,7 +17,7 @@ team:
       - Her work focuses on strengthening leadership effectiveness, communication, and management capability in complex legal environments, with particular attention to the systems, habits, and leadership behaviors that reinforce accountability, collaboration, and high-performing teams. She is a frequent speaker for law firms and professional audiences on leadership, communication, and talent development.
       - Outside of client work, Julia contributes her expertise pro bono to the UN Women's Peace and Humanitarian Fund, and is an amateur competitive rider, often drawing on lessons from the discipline in her leadership work, particularly around presence and mindfulness.
     email: julia@merciertalentsolutions.com
-    phone: (917)808-5668
+    phone: (917) 382-4543
     linkedin: https://www.linkedin.com/in/juliamercier/
     credentialsEyebrow: Credentials & Certifications
     credentials: LLB, University of Montreal, 2004 · MBTI Certified Practitioner · Certified DISC Practitioner · Executive Coaching, NYU, 2016 · Mental Health First Aid Instructor · Leading Professional Services Firms - Harvard Business School, 2018 · Hogan Certified Coach
@@ -30,7 +30,7 @@ team:
       - As Practice Manager at Mercier Talent Solutions, Allie oversees the firm's operations, ensuring every aspect of the business runs smoothly behind the scenes. She manages client operations, financial management, technology and website initiatives, marketing, and day-to-day business operations, while continually improving internal processes to enhance efficiency, support the firm's growth, and deliver an exceptional client experience. Known for combining strategic thinking with a hands-on approach, Allie enjoys solving complex operational challenges and building practical solutions that improve the way people work. She is passionate about creating organized, scalable processes that allow teams to focus on delivering meaningful results for clients.
       - Outside of her professional work, Allie is actively involved in animal welfare, regularly volunteering at a local animal shelter. Her commitment to compassion, responsibility, and service extends beyond the workplace and reflects the values she brings to everything she does.
     email: allie@merciertalentsolutions.com
-    phone: (203) 290-1832
+    phone: (917) 382-4615
     linkedin: https://www.linkedin.com/in/allieemcfarlane/?isSelfProfile=false
     credentialsEyebrow: Credentials & Certifications
     credentials: B.A. Business Management, University of Huddersfield · Commissioned Notary Public · AI for Leaders, Harvard Business School
