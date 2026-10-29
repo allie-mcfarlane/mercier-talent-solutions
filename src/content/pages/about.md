@@ -20,7 +20,7 @@ team:
     phone: (917) 382-4543
     linkedin: https://www.linkedin.com/in/juliamercier/
     credentialsEyebrow: Credentials & Certifications
-    credentials: LLB, University of Montreal, 2004 · MBTI Certified Practitioner · Certified DISC Practitioner · Executive Coaching, NYU, 2016 · Mental Health First Aid Instructor · Leading Professional Services Firms - Harvard Business School, 2018 · Hogan Certified Coach
+    credentials: LLB, University of Montreal, 2004 · MBTI Certified Practitioner · Certified DISC Practitioner · Executive Coaching, NYU, 2016 · Mental Health First Aid Instructor · Leading Professional Services Firms - Harvard Business School, 2018 · Hogan Certified Coach · Artificial Intelligence For Business - Wharton Executive Education, 2026
   - eyebrow: Practice Manager
     name: Allie McFarlane
     image: /images/allie-mcfarlane-gray.png
