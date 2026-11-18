@@ -138,12 +138,22 @@ const pageHasPendingRuntime = async (context, seed, slug) => {
   return runtimeEntryIsAhead(entry, findSeedEntry(seed, "page", slug), seed?.generatedAt);
 };
 
+// A new White Paper can exist in the published content store before its
+// repository file reaches the next Astro build. Keep it in the library until
+// a matching static entry exists, even if another deployment has occurred.
+// Other content types retain the existing stale-entry protection.
+export const collectionEntryNeedsBridge = (entry, seedEntry, generatedAt, type) => {
+  if (type === "whitepaper" && !seedEntry && entry?.published) return true;
+  return runtimeEntryIsAhead(entry, seedEntry, generatedAt);
+};
+
 const collectionHasPendingRuntime = async (context, seed, type) => {
   const entries = await listEntriesSafe(context.env, type);
-  return entries.some((entry) => runtimeEntryIsAhead(
+  return entries.some((entry) => collectionEntryNeedsBridge(
     entry,
     findSeedEntry(seed, type, entry.slug),
     seed?.generatedAt,
+    type,
   ));
 };
 
