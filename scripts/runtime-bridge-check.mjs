@@ -7,6 +7,7 @@ const read = (path) => fs.readFileSync(new URL(`../${path}`, import.meta.url), '
 const {
   publishedMatchesSeed,
   runtimeEntryIsAhead,
+  collectionEntryNeedsBridge,
 } = await import('../functions/_shared/runtime-bridge.js');
 
 const seedEntry = {
@@ -65,6 +66,11 @@ assert.equal(runtimeEntryIsAhead(olderMismatch, seedEntry, builtAt), false, 'old
 assert.equal(runtimeEntryIsAhead({ published: matchingPublished, publishedAt: '2026-09-04T12:00:10.000Z' }, seedEntry, builtAt), false, 'matching built content must fall back to Astro even when D1 has a later timestamp');
 assert.equal(runtimeEntryIsAhead(newerMismatch, null, builtAt), true, 'new D1 content absent from the current build must bridge when it is newer');
 assert.equal(runtimeEntryIsAhead(olderMismatch, null, builtAt), false, 'stale timestamped D1 content absent from a newer build must not be resurrected');
+assert.equal(collectionEntryNeedsBridge(olderMismatch, null, builtAt, 'whitepaper'), true, 'published D1-only White Papers must stay visible until saved in Astro, even after an intervening rebuild');
+assert.equal(collectionEntryNeedsBridge(olderMismatch, null, builtAt, 'post'), false, 'the White Paper exception must not resurrect stale articles');
+assert.equal(collectionEntryNeedsBridge(olderMismatch, seedEntry, builtAt, 'whitepaper'), false, 'an outdated White Paper record must never override an existing static entry');
+assert.equal(collectionEntryNeedsBridge({ draft: olderMismatch.published }, null, builtAt, 'whitepaper'), false, 'a White Paper draft must not appear publicly');
+
 assert.equal(
   runtimeEntryIsAhead({ published: { ...matchingPublished, data: { ...matchingPublished.data, title: 'Legacy mismatch' } }, publishedAt: null }, seedEntry, builtAt),
   false,
