@@ -1,11 +1,13 @@
 (() => {
-  document.querySelectorAll('main .paper-action[href$=".pdf"]').forEach((link) => {
+  // Keep hosted PDFs readable in a new browser tab rather than forcing a download.
+  document.querySelectorAll('main .paper-action[href]').forEach((link) => {
     if (!(link instanceof HTMLAnchorElement)) return;
 
     const url = new URL(link.href, window.location.href);
-    const filename = url.pathname.split('/').filter(Boolean).pop() || 'white-paper.pdf';
+    if (!/\.pdf$/i.test(url.pathname)) return;
 
-    link.removeAttribute('target');
-    link.setAttribute('download', filename);
+    link.removeAttribute('download');
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
   });
 })();
