@@ -26,6 +26,7 @@ const categoryPills = read('public/category-pills.js');
 const servicesFixes = read('public/services-final-fixes.css');
 const legacyAdminIndex = read('public/admin/index.html');
 const editorHtml = read('public/admin/editor/index.html');
+const whitepapersEditorHtml = read('public/admin/editor/whitepapers.html');
 const editorJs = read('public/admin/editor/editor.js');
 const editorGithubCompat = read('public/admin/editor/editor-github-compat.js');
 const directCanvas = read('public/admin/editor/direct-canvas.js');
@@ -161,6 +162,22 @@ expect(
 expect(
   editorHtml.indexOf('/admin/editor/access-fetch-fix.js') < editorHtml.indexOf('/admin/editor/editor-d1-direct.js'),
   'D1 direct publishing must remain outermost so Publish requests enter the complete safety chain.',
+);
+// White Papers use a separate editor page and need the same publish safeguards.
+expect(
+  ['repository-sync.js', 'publish-guard.js', 'editor-github-compat.js', 'access-fetch-fix.js', 'editor-d1-direct.js']
+    .every((name) => whitepapersEditorHtml.includes(`/admin/editor/${name}`)),
+  'White Papers editor is missing a required secure publishing layer.',
+);
+expect(
+  ['/admin/editor/repository-sync.js', '/admin/editor/publish-guard.js', '/admin/editor/editor-github-compat.js', '/admin/editor/access-fetch-fix.js', '/admin/editor/editor-d1-direct.js']
+    .map((name) => whitepapersEditorHtml.indexOf(name))
+    .every((position, index, positions) => position >= 0 && (index === 0 || position > positions[index - 1])),
+  'White Papers editor must verify and sync repository content before instant publishing.',
+);
+expect(
+  staticWhitepapers.includes('<style is:global>') && staticWhitepapers.includes('.paper-cover {') && staticWhitepapers.includes('.paper-row {'),
+  'New White Papers must receive the real cover and row styles when dynamically rendered.',
 );
 expect(editorGithubCompat.includes('const nativeFetch = window.fetch.bind(window);'), 'GitHub compatibility no longer captures the safety chain as expected.');
 expect(repositorySync.includes("String(payload.action || 'draft') !== 'publish'"), 'Repository synchronization is not restricted to publishing.');
