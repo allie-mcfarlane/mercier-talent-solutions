@@ -8,6 +8,7 @@ const responseFromS3 = (response, relative) => {
     const value = response.headers.get(name);
     if (value) headers.set(name, value);
   }
+  if (relative.toLowerCase().endsWith(".pdf")) headers.set("content-type", "application/pdf");
   headers.set("cache-control", "public, max-age=0, must-revalidate");
   headers.set("content-disposition", `inline; filename="${relative.split("/").at(-1) || "document.pdf"}"`);
   headers.set("x-content-type-options", "nosniff");
@@ -25,6 +26,7 @@ export async function onRequestGet(context) {
     const headers = new Headers();
     object.writeHttpMetadata(headers);
     headers.set("etag", object.httpEtag);
+    if (relative.toLowerCase().endsWith(".pdf")) headers.set("content-type", "application/pdf");
     headers.set("cache-control", "public, max-age=0, must-revalidate");
     headers.set("content-disposition", `inline; filename="${relative.split("/").at(-1) || "document.pdf"}"`);
     headers.set("x-content-type-options", "nosniff");
