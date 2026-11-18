@@ -17,6 +17,8 @@ const staticHome = read('src/pages/index.astro');
 const staticNews = read('src/pages/news.astro');
 const staticPost = read('src/pages/post/[slug].astro');
 const staticWhitepapers = read('src/pages/whitepapers.astro');
+const whitepaperPdfLinks = read('public/whitepapers-final-fixes.js');
+const whitepaperDocumentRoute = read('functions/documents/[[path]].js');
 const staticServices = read('src/pages/services.astro');
 const baseLayout = read('src/layouts/BaseLayout.astro');
 const contentConfig = read('src/content.config.ts');
@@ -112,6 +114,18 @@ expect(liveRender.includes('<div class="paper-body">${bodyHtml}</div>'), 'Runtim
 expect(staticWhitepapers.includes('(await paper.render()).Content'), 'Static White Papers no longer render Markdown through Astro content.');
 expect(staticWhitepapers.includes('<Content />'), 'Static White Papers are missing rendered body content.');
 expect(!staticWhitepapers.includes('<p class="paper-body">{paper.body}</p>'), 'Static White Papers can flatten Markdown to raw text again.');
+
+// Hosted White Paper PDFs should open in their own tab and support browser print/download/share.
+expect(staticWhitepapers.includes('View White Paper'), 'Static White Papers must label the PDF action View White Paper.');
+expect(liveRender.includes('>View White Paper <span aria-hidden='), 'D1-rendered White Papers must use the same PDF action label.');
+expect(staticWhitepapers.includes('target="_blank"'), 'Static White Paper PDF links must open in a separate tab.');
+expect(liveRender.includes('class="paper-action" href="${safeUrl(data.document)}" target="_blank"'), 'Runtime White Paper links must open in a separate tab.');
+expect(whitepaperPdfLinks.includes("link.removeAttribute('download')"), 'White Paper links must not force file downloads.');
+expect(whitepaperPdfLinks.includes("link.setAttribute('target', '_blank')"), 'White Paper links must preserve new-tab PDF viewing.');
+expect(!whitepaperPdfLinks.includes("link.setAttribute('download'"), 'White Papers should never re-enable forced downloads.');
+expect(whitepaperDocumentRoute.includes('content-disposition", `inline; filename='), 'Hosted PDFs must be served inline.');
+expect(whitepaperDocumentRoute.includes('headers.set("content-type", "application/pdf")'), 'Hosted PDFs must advertise application/pdf.');
+
 
 // Page-builder content is structurally typed in Astro as well as guarded in the editor.
 expect(contentConfig.includes('z.discriminatedUnion("type"'), 'Page-builder sections are no longer a typed discriminated union.');
