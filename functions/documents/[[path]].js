@@ -37,6 +37,13 @@ export async function onRequestGet(context) {
   const { env, params } = context;
   const relative = getPath(params).replace(/^\/+/, "");
   if (!relative || relative.includes("..")) return context.next();
+  // The original Coaching Dividend URL must keep working after its revision.
+  // Its revised PDF also exists under the new asset address. Route the old
+  // public address to that verified copy instead of loading legacy R2 bytes.
+  if (relative === "the-coaching-dividend-white-paper-1.pdf") {
+    const revised = new URL("/documents/the-coaching-dividend.pdf", context.request.url);
+    return Response.redirect(revised.toString(), 302);
+  }
 
   const builtPdf = await staticPdfResponse(context, relative);
   if (builtPdf) return builtPdf;
