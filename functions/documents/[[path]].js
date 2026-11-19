@@ -15,10 +15,31 @@ const responseFromS3 = (response, relative) => {
   return new Response(response.body, { status: 200, headers });
 };
 
+// The published Astro build is the source of truth for documents committed
+// to the repository. Older R2 copies must not shadow updated PDFs at the same URL.
+const staticPdfResponse = async (context, relative) => {
+  if (!relative.toLowerCase().endsWith(".pdf") || !context.env?.ASSETS?.fetch) return null;
+  try {
+    const asset = await context.env.ASSETS.fetch(context.request);
+    if (!asset.ok || !/application\/pdf/i.test(asset.headers.get("content-type") || "")) return null;
+    const headers = new Headers(asset.headers);
+    headers.set("content-type", "application/pdf");
+    headers.set("cache-control", "public, max-age=0, must-revalidate");
+    headers.set("content-disposition", `inline; filename="${relative.split("/").at(-1) || "document.pdf"}"`);
+    headers.set("x-content-type-options", "nosniff");
+    return new Response(asset.body, { status: asset.status, headers });
+  } catch {
+    return null;
+  }
+};
+
 export async function onRequestGet(context) {
   const { env, params } = context;
   const relative = getPath(params).replace(/^\/+/, "");
   if (!relative || relative.includes("..")) return context.next();
+
+  const builtPdf = await staticPdfResponse(context, relative);
+  if (builtPdf) return builtPdf;
 
   if (env.MEDIA_BUCKET) {
     const object = await env.MEDIA_BUCKET.get(`documents/${relative}`);
