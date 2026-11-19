@@ -127,9 +127,9 @@ expect(whitepaperPdfLinks.includes("link.setAttribute('target', '_blank')"), 'Wh
 expect(!whitepaperPdfLinks.includes("link.setAttribute('download'"), 'White Papers should never re-enable forced downloads.');
 expect(whitepaperDocumentRoute.includes('content-disposition", `inline; filename='), 'Hosted PDFs must be served inline.');
 expect(whitepaperDocumentRoute.includes('headers.set("content-type", "application/pdf")'), 'Hosted PDFs must advertise application/pdf.');
-expect(staticHeaders.includes('/documents/*\\n  Cache-Control: no-store'), 'Static PDF responses must not cache outdated versions after replacement.');
-expect(!staticHeaders.includes('/documents/*\\n  Cache-Control: public, max-age=3600'), 'PDF caching must not mask newly published versions for an hour.');
-expect((whitepaperDocumentRoute.match(/headers\\.set\\("cache-control", "no-store"\\)/g) || []).length === 3, 'All hosted PDF sources must prevent stale cached copies.');
+expect(staticHeaders.includes('/documents/*\n  Cache-Control: no-store'), 'Static PDF responses must not cache outdated versions after replacement.');
+expect(!staticHeaders.includes('/documents/*\n  Cache-Control: public, max-age=3600'), 'PDF caching must not mask newly published versions for an hour.');
+expect((whitepaperDocumentRoute.split('headers.set("cache-control", "no-store");').length - 1) === 3, 'All hosted PDF sources must prevent stale cached copies.');
 
 expect(whitepaperDocumentRoute.includes('const builtPdf = await staticPdfResponse(context, relative);'), 'PDF hosting must check the latest built document before legacy media storage.');
 expect(whitepaperDocumentRoute.indexOf('if (builtPdf) return builtPdf;') < whitepaperDocumentRoute.indexOf('if (env.MEDIA_BUCKET) {'), 'An older R2 document must not shadow the current deployed PDF.');
