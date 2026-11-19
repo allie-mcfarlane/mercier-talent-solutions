@@ -9,7 +9,7 @@ const responseFromS3 = (response, relative) => {
     if (value) headers.set(name, value);
   }
   if (relative.toLowerCase().endsWith(".pdf")) headers.set("content-type", "application/pdf");
-  headers.set("cache-control", "public, max-age=0, must-revalidate");
+  headers.set("cache-control", "no-store");
   headers.set("content-disposition", `inline; filename="${relative.split("/").at(-1) || "document.pdf"}"`);
   headers.set("x-content-type-options", "nosniff");
   return new Response(response.body, { status: 200, headers });
@@ -24,7 +24,7 @@ const staticPdfResponse = async (context, relative) => {
     if (!asset.ok || !/application\/pdf/i.test(asset.headers.get("content-type") || "")) return null;
     const headers = new Headers(asset.headers);
     headers.set("content-type", "application/pdf");
-    headers.set("cache-control", "public, max-age=0, must-revalidate");
+    headers.set("cache-control", "no-store");
     headers.set("content-disposition", `inline; filename="${relative.split("/").at(-1) || "document.pdf"}"`);
     headers.set("x-content-type-options", "nosniff");
     return new Response(asset.body, { status: asset.status, headers });
@@ -48,7 +48,7 @@ export async function onRequestGet(context) {
     object.writeHttpMetadata(headers);
     headers.set("etag", object.httpEtag);
     if (relative.toLowerCase().endsWith(".pdf")) headers.set("content-type", "application/pdf");
-    headers.set("cache-control", "public, max-age=0, must-revalidate");
+    headers.set("cache-control", "no-store");
     headers.set("content-disposition", `inline; filename="${relative.split("/").at(-1) || "document.pdf"}"`);
     headers.set("x-content-type-options", "nosniff");
     return new Response(object.body, { headers });
