@@ -19,6 +19,7 @@ const staticPost = read('src/pages/post/[slug].astro');
 const staticWhitepapers = read('src/pages/whitepapers.astro');
 const whitepaperPdfLinks = read('public/whitepapers-final-fixes.js');
 const whitepaperDocumentRoute = read('functions/documents/[[path]].js');
+const whitepapersEditorJs = read('public/admin/editor/whitepapers.js');
 const staticServices = read('src/pages/services.astro');
 const baseLayout = read('src/layouts/BaseLayout.astro');
 const contentConfig = read('src/content.config.ts');
@@ -125,6 +126,13 @@ expect(whitepaperPdfLinks.includes("link.setAttribute('target', '_blank')"), 'Wh
 expect(!whitepaperPdfLinks.includes("link.setAttribute('download'"), 'White Papers should never re-enable forced downloads.');
 expect(whitepaperDocumentRoute.includes('content-disposition", `inline; filename='), 'Hosted PDFs must be served inline.');
 expect(whitepaperDocumentRoute.includes('headers.set("content-type", "application/pdf")'), 'Hosted PDFs must advertise application/pdf.');
+expect(whitepaperDocumentRoute.includes('const builtPdf = await staticPdfResponse(context, relative);'), 'PDF hosting must check the latest built document before legacy media storage.');
+expect(whitepaperDocumentRoute.indexOf('if (builtPdf) return builtPdf;') < whitepaperDocumentRoute.indexOf('if (env.MEDIA_BUCKET) {'), 'An older R2 document must not shadow the current deployed PDF.');
+expect(whitepapersEditorJs.includes("state.data.document?'Replace PDF':'Upload PDF'"), 'Existing White Papers must offer an obvious Replace PDF option.');
+expect(whitepapersEditorJs.includes("const existingPdf=String(state.data.document||'').match("), 'PDF replacement must reuse the existing document address.');
+expect(whitepapersEditorJs.includes('const pdfName=!state.isNew&&existingPdf?existingPdf[1]:'), 'Replacing a PDF must not rename its public URL based on the new file name.');
+expect(whitepapersEditorJs.includes('if(state.pendingPdf&&publish)'), 'Saving a draft must not replace the live PDF.');
+
 
 
 // Page-builder content is structurally typed in Astro as well as guarded in the editor.
