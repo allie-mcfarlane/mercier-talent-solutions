@@ -40,8 +40,8 @@ export async function onRequestGet(context) {
   // The original Coaching Dividend URL must keep working after its revision.
   // Its revised PDF also exists under the new asset address. Route the old
   // public address to that verified copy instead of loading legacy R2 bytes.
-  if (relative === "the-coaching-dividend-white-paper-1.pdf") {
-    const revised = new URL("/documents/the-coaching-dividend.pdf", context.request.url);
+  if (relative === "the-coaching-dividend-white-paper-1.pdf" || relative === "the-coaching-dividend.pdf") {
+    const revised = new URL("/documents/the-coaching-dividend-current.pdf", context.request.url);
     return Response.redirect(revised.toString(), 302);
   }
 
