@@ -768,7 +768,7 @@
     if (state.blogSection === 'summary') return `${field('excerpt', 'Short summary', state.data.excerpt, { type: 'textarea', rows: 5, hint: 'Shown on the Blog Posts landing page and used as the default search description.' })}${imageField('image', 'Featured image (optional)', 'imageAlt')}`;
     if (state.blogSection === 'sources') return `<div class="ve-group"><div class="ve-group-head"><h3>Sources</h3><button class="ve-button subtle" type="button" data-action="add-source">Add source</button></div>${(state.data.references || []).length ? `<div class="ve-list">${state.data.references.map((ref, i) => `<div class="ve-list-item"><div class="ve-list-item-head"><strong>${esc(ref.text || `Source ${i + 1}`)}</strong><button class="ve-icon-button" type="button" data-action="remove-source" data-index="${i}">×</button></div>${field(`references.${i}.text`, 'Source name', ref.text)}${field(`references.${i}.url`, 'Source link', ref.url)}</div>`).join('')}</div>` : '<div class="ve-empty"><div><h2>No sources added</h2><p>Add a source once. In Article text, highlight the relevant wording and choose that source from the Cite source menu. You can reuse it as many times as needed.</p></div></div>'}</div>`;
     if (state.blogSection === 'optional') return `${field('updatedDate', 'Last updated (optional)', String(state.data.updatedDate || '').slice(0, 10), { type: 'date' })}${field('seoTitle', 'Search title (optional)', state.data.seoTitle)}${field('seoDescription', 'Search description (optional)', state.data.seoDescription, { type: 'textarea' })}`;
-    return `<div class="ve-field"><label>Article text</label><small>Write like a normal document. Use Insert image to place a picture at the cursor. To cite a source, highlight the relevant text and choose the source from Cite source.</small><div class="ve-rich-toolbar"><button type="button" data-rich="bold"><b>B</b></button><button type="button" data-rich="italic"><i>I</i></button><button type="button" data-rich="h2">Heading</button><button type="button" data-rich="ul">Bullets</button><button type="button" data-rich="quote">Quote</button><button type="button" data-rich="image">Insert image</button><select id="ve-cite-select"><option value="">Cite source…</option>${(state.data.references || []).map((ref) => `<option value="${esc(ref.id)}">${esc(ref.text || ref.id)}</option>`).join('')}</select></div><div id="ve-rich-editor" class="ve-rich-editor" contenteditable="true">${editorMarkdownToHtml(state.body)}</div></div>`;
+    return `<div class="ve-field"><label>Article text</label><small>Write like a normal document. Use Insert image to place a picture at the cursor. To cite a source, highlight the relevant text and choose the source from Cite source.</small><div class="ve-rich-toolbar"><button type="button" data-rich="bold"><b>B</b></button><button type="button" data-rich="italic"><i>I</i></button><button type="button" data-rich="link">Link</button><button type="button" data-rich="h2">Heading</button><button type="button" data-rich="ul">Bullets</button><button type="button" data-rich="quote">Quote</button><button type="button" data-rich="image">Insert image</button><select id="ve-cite-select"><option value="">Cite source…</option>${(state.data.references || []).map((ref) => `<option value="${esc(ref.id)}">${esc(ref.text || ref.id)}</option>`).join('')}</select></div><div id="ve-rich-editor" class="ve-rich-editor" contenteditable="true">${editorMarkdownToHtml(state.body)}</div></div>`;
   };
 
   const blogPreviewRoute = () => state.blogSlug ? `/post/${state.blogSlug}/` : '/news/';
@@ -792,6 +792,15 @@
       const action = button.dataset.rich;
       if (action === 'bold') document.execCommand('bold');
       if (action === 'italic') document.execCommand('italic');
+      if (action === 'link') {
+        const selection = window.getSelection();
+        if (!selection || selection.isCollapsed) {
+          window.alert('Highlight the text you want to link first.');
+        } else {
+          const url = window.prompt('Paste the link address:');
+          if (url?.trim()) document.execCommand('createLink', false, url.trim());
+        }
+      }
       if (action === 'h2') document.execCommand('formatBlock', false, 'h2');
       if (action === 'ul') document.execCommand('insertUnorderedList');
       if (action === 'quote') document.execCommand('formatBlock', false, 'blockquote');
